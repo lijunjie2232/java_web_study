@@ -95,8 +95,6 @@ jsp annotation will not appear in HTML source code
 
 - jsp:include(support jsp language in tag)
 
-- jsp:forward(web route not change but content forward)
-
 - jsp:useBean / jsp:setProperty / jsp:getProperty
 
   ```jsp
@@ -169,4 +167,50 @@ jsp annotation will not appear in HTML source code
   }
   ```
 
-- 
+- jsp:forward(web route not change but content forward) / jsp:param (transport param from forward)
+
+  ```jsp
+  <%--login.jsp--%>
+  <h1>login</h1>
+  
+  <form action="" method="post" name="Login">
+      <label for="userName">username:</label>
+      <input type="text" name="userName" id="userName" value=""/>
+      <br/>
+  
+      <label for="password">password:</label>
+      <input type="password" name="password" id="password" value=""/>
+      <br/>
+  
+      <input type="submit" value="login"/>
+  </form>
+  <%
+      String un = request.getParameter("userName");
+      String pawd = request.getParameter("password");
+  //    check is pass
+      if (un != null && pawd != null && !un.isEmpty() && !pawd.isEmpty()) {
+  %>
+  <jsp:forward page="loginin.jsp">
+      <jsp:param name="un" value="<%=un%>"/>
+      <jsp:param name="pawd" value="<%=pawd%>"/>
+  </jsp:forward>
+  <%} %>
+  
+  <%--loginin.jsp--%>
+  <%
+  String un = request.getParameter("userName");
+  String pawd = request.getParameter("password");
+  %>
+  <h1>UserName:
+      <i>
+          <%=un%>
+      </i>
+  </h1>
+  <h1>Password:
+      <i>
+          <%=pawd%>
+      </i>
+  </h1>
+  ```
+
+  
