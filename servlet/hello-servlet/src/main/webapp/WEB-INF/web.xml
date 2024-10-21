@@ -4,4 +4,31 @@
 
 <web-app>
   <display-name>Archetype Created Web Application</display-name>
+  <context-param>
+    <param-name>application-id</param-name>
+    <param-value>v1.0.1</param-value>
+  </context-param>
+
+  <!-- 配置 config 对象参数 -->
+  <servlet>
+    <!-- 指定Servlet名字 -->
+    <servlet-name>config_test</servlet-name>
+    <!-- 指定将哪个JSP页面配置成Servlet -->
+    <jsp-file>/config_test.jsp</jsp-file>
+    <!-- 配置名为name的参数，值为crazyit.org -->
+    <init-param>
+      <param-name>name</param-name>
+      <param-value>li</param-value>
+    </init-param>
+    <!-- 配置名为age的参数，值为30 -->
+    <init-param>
+      <param-name>age</param-name>
+      <param-value>0</param-value>
+    </init-param>
+  </servlet>
+  <servlet-mapping>
+    <!-- 指定将config Servlet配置到/config URL-->
+    <servlet-name>config_test</servlet-name>
+    <url-pattern>/li_config_test</url-pattern>
+  </servlet-mapping>
 </web-app>
