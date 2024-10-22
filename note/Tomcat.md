@@ -19,7 +19,7 @@ tomcat/webapps
 
 
 
-- app: application root (html and static resource)
+- appName: application root (html and static resource)
 
 - WEB-INF: resource protected from browser(including jsp)
 
