@@ -25,41 +25,39 @@
 ---
 ## Maven dependency
 ```xml
-  <dependencies>
-    <dependency>
-      <groupId>junit</groupId>
-      <artifactId>junit</artifactId>
-      <version>3.8.1</version>
-      <scope>test</scope>
-    </dependency>
-    <!-- https://mvnrepository.com/artifact/jakarta.servlet/jakarta.servlet-api -->
-    <dependency>
-      <groupId>jakarta.servlet</groupId>
-      <artifactId>jakarta.servlet-api</artifactId>
-      <version>6.1.0</version>
-      <scope>provided</scope>
-    </dependency>
-    <!-- https://mvnrepository.com/artifact/jakarta.servlet.jsp/jakarta.servlet.jsp-api -->
-    <dependency>
-      <groupId>jakarta.servlet.jsp</groupId>
-      <artifactId>jakarta.servlet.jsp-api</artifactId>
-      <version>4.0.0</version>
-      <scope>provided</scope>
-    </dependency>
-    <!-- https://mvnrepository.com/artifact/jakarta.servlet.jsp.jstl/jakarta.servlet.jsp.jstl-api -->
-    <dependency>
-      <groupId>jakarta.servlet.jsp.jstl</groupId>
-      <artifactId>jakarta.servlet.jsp.jstl-api</artifactId>
-      <version>3.0.2</version>
-    </dependency>
-    <!-- https://mvnrepository.com/artifact/org.apache.taglibs/taglibs-standard-impl -->
-    <dependency>
-      <groupId>org.apache.taglibs</groupId>
-      <artifactId>taglibs-standard-impl</artifactId>
-      <version>1.2.5</version>
-      <scope>runtime</scope>
-    </dependency>
-  </dependencies>
+<dependency>
+    <groupId>junit</groupId>
+    <artifactId>junit</artifactId>
+    <version>3.8.1</version>
+    <scope>test</scope>
+</dependency>
+<!-- https://mvnrepository.com/artifact/jakarta.servlet/jakarta.servlet-api -->
+<dependency>
+    <groupId>jakarta.servlet</groupId>
+    <artifactId>jakarta.servlet-api</artifactId>
+    <version>6.1.0</version>
+    <scope>provided</scope>
+</dependency>
+<!-- https://mvnrepository.com/artifact/jakarta.servlet.jsp/jakarta.servlet.jsp-api -->
+<dependency>
+    <groupId>jakarta.servlet.jsp</groupId>
+    <artifactId>jakarta.servlet.jsp-api</artifactId>
+    <version>4.0.0</version>
+    <scope>provided</scope>
+</dependency>
+<!-- https://mvnrepository.com/artifact/jakarta.servlet.jsp.jstl/jakarta.servlet.jsp.jstl-api -->
+<dependency>
+    <groupId>jakarta.servlet.jsp.jstl</groupId>
+    <artifactId>jakarta.servlet.jsp.jstl-api</artifactId>
+    <version>3.0.2</version>
+</dependency>
+<!-- https://mvnrepository.com/artifact/org.apache.taglibs/taglibs-standard-impl -->
+<dependency>
+    <groupId>org.apache.taglibs</groupId>
+    <artifactId>taglibs-standard-impl</artifactId>
+    <version>1.2.5</version>
+    <scope>runtime</scope>
+</dependency>
 ```
 ---
 ## Tips
@@ -435,3 +433,90 @@ exc: <%=exception.toString() %>
 ...
 
 ## JavaBean
+- ```<jsp:useBean id="timer" class="bean.Timer"></jsp:useBean>``` to state a instance names timer
+- ```<jsp:setProperty name="timer" property="format"></jsp:setProperty>``` to get value from html form request
+- ```<jsp:getProperty name="timer" property="format"/>``` to get value of java bean
+- ```<%=timer.getFormatedTime()%>``` to call method of java bean
+
+```jsp
+<jsp:useBean id="timer" class="bean.Timer"></jsp:useBean>
+<jsp:setProperty name="timer" property="format"></jsp:setProperty>
+<%
+    String[] timeZone = request.getParameterValues("timeZone");
+    timer.setTimeZone(timeZone);
+%>
+<form action="<%=request.getRequestURI()%>" method="post">
+    <label for="format">Format: </label>
+    <input name="format" id="format" type="text" value="<jsp:getProperty name="timer" property="format"/>"/>
+    <ul>
+        <li>make a choice:</li>
+        <li>
+            <input type="checkbox" name="timeZone" value="z0"/>
+            <input type="checkbox" name="timeZone" value="z1"/>
+            <input type="checkbox" name="timeZone" value="z2"/>
+        </li>
+    </ul>
+    <input type="submit" value="getTime">
+</form>
+<p>Time:<input name="time" id="time" type="text" value="<%=timer.getFormatedTime()%>" disabled/></p>
+<p>choice:
+    <jsp:getProperty name="timer" property="timeZone"/>
+</p>
+```
+
+```java
+// Timer.java
+public class Timer implements Serializable {
+    private String format = "yyyy-MM-dd HH:mm:ss E曜日";
+    private SimpleDateFormat formatter = new SimpleDateFormat(format);
+    private String[] timeZone;
+
+    public Timer() {
+    }
+
+    public long getTime() {
+        return new Date().getTime();
+    }
+
+    public String getFormatedTime() {
+        return this.formatter.format(new Date(getTime()));
+    }
+
+    public String getFormat() {
+        return this.format;
+    }
+
+    public void setFormat(String format) {
+        try {
+            this.formatter = new SimpleDateFormat(format);
+            this.format = format;
+        } catch (Exception e) {
+            System.out.println("format invalid");
+            System.out.println(format);
+        }
+    }
+
+    public String getTimeZone() {
+        StringBuffer sb = new StringBuffer();
+        if (this.timeZone != null && this.timeZone.length > 0) {
+            for (String s : this.timeZone)
+                sb.append(String.format("%s,", s));
+            if (sb.length() > 0)
+                sb.deleteCharAt(sb.length() - 1);
+            return sb.toString();
+        }
+        else
+            return "None";
+    }
+
+    public void setTimeZone(String timeZone) {
+        this.timeZone = timeZone.split(",");
+        System.out.println(timeZone);
+    }
+
+    public void setTimeZone(String[] timeZone) {
+        this.timeZone = timeZone;
+        System.out.println(timeZone);
+    }
+}
+```

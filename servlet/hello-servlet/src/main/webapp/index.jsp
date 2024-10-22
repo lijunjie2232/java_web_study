@@ -40,13 +40,13 @@
     </i>
 </h1>
 <form action="msg.jsp" method="post">
-    <label for="msg">To:</label>
-    <input type="text" name="to" id="to" value="" />
+    <label for="to">To:</label>
+    <input type="text" name="to" id="to" value=""/>
     <br/>
     <label for="msg">Message:</label>
-    <input type="text" name="msg" id="msg" value="" />
+    <input type="text" name="msg" id="msg" value=""/>
     <br/>
-    <input type="submit" value="SEND" />
+    <input type="submit" value="SEND"/>
 </form>
 
 <p>------------------JSP Object Test------------------</p>
@@ -59,11 +59,16 @@
 %>
 <a href="cookie_test.jsp">cookie_test</a>
 <%--request get info--%>
-<p>protocol: <%=request.getProtocol()%></p>
-<p>url: <%=request.getRequestURL()%></p>
-<p>uri: <%=request.getRequestURI()%></p>
-<p>remote host: <%=request.getRemoteHost()%></p>
-<p>remote addr: <%=request.getRemoteAddr()%></p>
+<p>protocol: <%=request.getProtocol()%>
+</p>
+<p>url: <%=request.getRequestURL()%>
+</p>
+<p>uri: <%=request.getRequestURI()%>
+</p>
+<p>remote host: <%=request.getRemoteHost()%>
+</p>
+<p>remote addr: <%=request.getRemoteAddr()%>
+</p>
 <%--locale test--%>
 <%
     response.setLocale(Locale.JAPANESE);
@@ -78,6 +83,18 @@
 <a href="li_config_test">config_test</a><br/>
 
 
+<p>------------------Java Bean Test------------------</p>
+<jsp:useBean id="user" class="bean.User" scope="session"></jsp:useBean>
+<jsp:setProperty name="user" property="phone" value="111111"></jsp:setProperty>
+<jsp:setProperty name="user" property="userName" value="123"></jsp:setProperty>
+<jsp:setProperty name="user" property="password" value="321"></jsp:setProperty>
+<a href="javaBean_test.jsp">JavaBean_test</a><br/>
 
+
+<%--<form action="<%=request.getRequestURI()%>" method="post">--%>
+<%--    <label for="format">Format: </label>--%>
+<%--    <input name="format" id="format" type="text" value="<jsp:getProperty name="timer" property="format"/>"/>--%>
+<%--    <input type="submit" value="getTime">--%>
+<%--</form>--%>
 </body>
 </html>
