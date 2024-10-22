@@ -20,6 +20,8 @@
     - [out](#out)
     - [page](#page)
   - [JavaBean](#javabean)
+  - [Servlet](#servlet)
+    - [a simple servlet](#a-simple-servlet)
 
 
 ---
@@ -519,4 +521,36 @@ public class Timer implements Serializable {
         System.out.println(timeZone);
     }
 }
+```
+
+## Servlet
+### a simple servlet
+1. create a servlet class extends HttpServlet(implements Servlet)
+2. config servlet and servlet-mapping tag in web.xml
+3. write a jsp
+
+```java
+public class UserServlet extends HttpServlet {
+    @Override
+    protected void service(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        String username = req.getParameter("username");
+        String password = req.getParameter("password");
+
+        if (username != null && password != null && !username.isEmpty() && !password.isEmpty()) {
+            resp.getWriter().write(new User(username, password).toString());
+        }else resp.getWriter().write("bad login");
+    }
+}
+```
+
+```xml
+  <servlet>
+    <servlet-name>login</servlet-name>
+    <servlet-class>servlet.UserServlet</servlet-class>
+  </servlet>
+  
+  <servlet-mapping>
+    <servlet-name>login</servlet-name>
+    <url-pattern>/userlogin</url-pattern>
+  </servlet-mapping>
 ```
