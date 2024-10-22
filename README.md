@@ -1,4 +1,5 @@
 # My Java Web Study
 
-## [Servlet](servlet/README.md)
+## [Tomcat](note/Tomcat.md)
+## [JSP](note/JSP.md)
 
