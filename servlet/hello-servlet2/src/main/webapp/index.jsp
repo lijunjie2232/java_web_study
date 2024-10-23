@@ -5,8 +5,16 @@
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 </head>
 <body>
+<p>---------------servlet test---------------</p>
 <a href="login.jsp">login</a><br/>
+
+<p>---------------urlpattern test---------------</p>
 <a href="urlpatterntest">urlpatterntest</a><br/>
 <a href="upt">upt</a><br/>
+
+<p>---------------annotation test---------------</p>
+<a href="annotest">annotest</a><br/>
+<a href="ant">ant</a><br/>
+
 </body>
 </html>

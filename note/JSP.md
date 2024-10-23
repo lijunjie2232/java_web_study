@@ -533,7 +533,7 @@ public class Timer implements Serializable {
 ## Servlet
 ### a simple servlet
 1. create a servlet class extends HttpServlet(implements Servlet)
-2. config servlet and servlet-mapping tag in web.xml
+2. config servlet and servlet-mapping tag in web.xml or annotation
 3. write a jsp
 
 ```java
