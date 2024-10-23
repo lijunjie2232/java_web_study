@@ -14,4 +14,14 @@
     <servlet-name>login</servlet-name>
     <url-pattern>/userlogin</url-pattern>
   </servlet-mapping>
+  
+  <servlet>
+    <servlet-name>urlpatterntest</servlet-name>
+    <servlet-class>servlet.UrlPatternServlet</servlet-class>
+  </servlet>
+  <servlet-mapping>
+    <servlet-name>urlpatterntest</servlet-name>
+    <url-pattern>/urlpatterntest</url-pattern>
+    <url-pattern>/upt</url-pattern>
+  </servlet-mapping>
 </web-app>
