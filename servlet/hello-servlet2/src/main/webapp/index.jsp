@@ -16,5 +16,13 @@
 <a href="annotest">annotest</a><br/>
 <a href="ant">ant</a><br/>
 
+<p>---------------annotation test---------------</p>
+<a href="slc">lifecycle</a><br/>
+
+<p>---------------annotation test---------------</p>
+<a href="si">servletInterface</a><br/>
+
+<p>---------------file test---------------</p>
+<a href="fileManager.jsp">filemanager</a><br/>
 </body>
 </html>

@@ -72,3 +72,5 @@ Thumbs.db
 .mvn/
 mvnw.cmd
 mvnw
+
+servlet/hello-servlet2/src/main/webapp/filemanager/
