@@ -7,6 +7,7 @@
     - [Multicheckbox param in request](#multicheckbox-param-in-request)
     - [Form-data in request body](#form-data-in-request-body)
     - [`name` in WebServlet could not to be the same](#name-in-webservlet-could-not-to-be-the-same)
+    - [The priority of `web.xml` is heigher than annotation](#the-priority-of-webxml-is-heigher-than-annotation)
   - [A simple servlet](#a-simple-servlet)
   - [Servlet life cycle](#servlet-life-cycle)
   - [From Source Code](#from-source-code)
@@ -21,6 +22,8 @@
     - [Servlet Request get data](#servlet-request-get-data)
     - [Servlet Response API](#servlet-response-api)
     - [forward \& redirect](#forward--redirect)
+  - [Filter](#filter)
+    - [A simple filter:](#a-simple-filter)
   - [Use UTF-8 charset](#use-utf-8-charset)
     - [HTML](#html)
     - [JSP](#jsp)
@@ -92,6 +95,7 @@
 - `<form action="xxx.jsp"method="post">` => sends post request with x-www-form-urlencoded data in body while `<form action="xxx.jsp"method="post" enctype="multipart/form-data">` sends post request with form-data in body could including far big mount of of data
 - use `@MultipartConfig` for servlet to get text(String) param from form-data enctyped  body like `<form action="xxx.jsp"method="post" enctype="multipart/form-data">` to avoid `req.getParameter` to return `null`
 ### `name` in WebServlet could not to be the same
+### The priority of `web.xml` is heigher than annotation
 
 ## A simple servlet
 1. create a servlet class extends HttpServlet(implements Servlet) and override method (init/service/doGet/doPost/destroy)
@@ -648,6 +652,67 @@ System.out.println(new String(sb));
 | get resource out of app | x                               | o                                |
 
 **page change: if both, use redirect**
+
+## Filter
+### A simple filter:
+1. create a class implements `jakarta.servlet.Filter`
+2. override three method: init / destroy / doFilter
+3. add filter and filter-mapping tag in web.xml or use @WebFilter
+```java
+// FilterTest.java
+@WebFilter(
+        filterName = "filtertest",
+        urlPatterns = {"/loginin.jsp"},
+        dispatcherTypes = {
+                DispatcherType.REQUEST,
+                DispatcherType.FORWARD// filte forward by servlet
+        }
+)
+public class FilterTest implements Filter {
+    @Override
+    public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException {
+        System.out.println("pic requested");
+        HttpServletRequest request = (HttpServletRequest) servletRequest;
+        HttpServletResponse response = (HttpServletResponse) servletResponse;
+        HttpSession session = request.getSession();
+        if (session.getAttribute("user") == null) {
+            System.out.println("user not logged in");
+            response.sendRedirect("login.jsp");
+            filterChain.doFilter(servletRequest, servletResponse);
+        } else {
+            System.out.println("user logged in");
+            System.out.println(session.getAttribute("user"));
+            filterChain.doFilter(servletRequest, servletResponse);
+        }
+    }
+    @Override
+    public void init(FilterConfig filterConfig) throws ServletException {
+        System.out.println("filter init");
+        Filter.super.init(filterConfig);
+    }
+
+    @Override
+    public void destroy() {
+        Filter.super.destroy();
+        System.out.println("filter destroy");
+    }
+}
+```
+```xml
+<!-- web.xml -->
+<filter>
+    <filter-name>filtertest</filter-name>
+    <filter-class>servlet.FilterTest</filter-class>
+</filter>
+<filter-mapping>
+    <filter-name>filtertest</filter-name>
+    <url-pattern>*.png</url-pattern>
+    <url-pattern>*.jpg</url-pattern>
+</filter-mapping>
+```
+- Filter inited before servlet and destroyed after sevlet
+- Filter would not filte forward of request object inner server by default in newer servlet, by adding `dispatcherTypes = {DispatcherType.REQUEST, DispatcherType.FORWARD} `to `@WebFilter` allowing filter catch forward inner server.
+
 
 ## Use UTF-8 charset
 ### HTML

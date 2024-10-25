@@ -33,4 +33,14 @@
         <url-pattern>/urlpatterntest</url-pattern>
         <url-pattern>/upt</url-pattern>
     </servlet-mapping>
+
+<!--    <filter>-->
+<!--        <filter-name>filtertest</filter-name>-->
+<!--        <filter-class>servlet.FilterTest</filter-class>-->
+<!--    </filter>-->
+<!--    <filter-mapping>-->
+<!--        <filter-name>filtertest</filter-name>-->
+<!--        <url-pattern>*.png</url-pattern>-->
+<!--        <url-pattern>*.jpg</url-pattern>-->
+<!--    </filter-mapping>-->
 </web-app>
