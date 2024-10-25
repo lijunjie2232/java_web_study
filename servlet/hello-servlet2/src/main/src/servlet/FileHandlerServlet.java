@@ -24,7 +24,6 @@ import java.util.List;
         loadOnStartup = 10
 )
 @MultipartConfig
-
 public class FileHandlerServlet extends HttpServlet {
     private File tmpDir = null;
     private int __BUFFER_SIZE__ = 64 * 1024;// 64KB

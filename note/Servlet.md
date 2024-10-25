@@ -4,7 +4,10 @@
   - [Maven dependency](#maven-dependency)
   - [Tips](#tips)
     - [URL \& URI](#url--uri)
-  - [a simple servlet](#a-simple-servlet)
+    - [Multicheckbox param in request](#multicheckbox-param-in-request)
+    - [Form-data in request body](#form-data-in-request-body)
+    - [`name` in WebServlet could not to be the same](#name-in-webservlet-could-not-to-be-the-same)
+  - [A simple servlet](#a-simple-servlet)
   - [Servlet life cycle](#servlet-life-cycle)
   - [From Source Code](#from-source-code)
     - [Servlet Interface](#servlet-interface)
@@ -13,6 +16,10 @@
     - [ServletContext Interface](#servletcontext-interface)
     - [GenericServlet Class](#genericservlet-class)
     - [HttpServlet Class](#httpservlet-class)
+  - [Servlet Request and Response](#servlet-request-and-response)
+    - [Different type of data in request body](#different-type-of-data-in-request-body)
+    - [Servlet Request get data](#servlet-request-get-data)
+    - [Servlet Response API](#servlet-response-api)
 
 
 ---
@@ -67,9 +74,14 @@
 - URI：统一资源标志符(Uniform Resource Identifier)
   - /hello_servlet2_war_exploded/si
 - "localhost:8080" is pc(server) name
+### Multicheckbox param in request
+- multicheckbox sends params via url like:`http://localhost:8080/api?checks=v1?checks=v2`, could be received by `String[] checkBoxValues = req.getParameterValues("checks");` or `Map<String, String[]> paramsMap = req.getParameterMap();`
+### Form-data in request body
+- `<form action="xxx.jsp"method="post">` => sends post request with x-www-form-urlencoded data in body while `<form action="xxx.jsp"method="post" enctype="multipart/form-data">` sends post request with form-data in body could including far big mount of of data
+- use `@MultipartConfig` for servlet to get text(String) param from form-data enctyped  body like `<form action="xxx.jsp"method="post" enctype="multipart/form-data">` to avoid `req.getParameter` to return `null`
+### `name` in WebServlet could not to be the same
 
-
-## a simple servlet
+## A simple servlet
 1. create a servlet class extends HttpServlet(implements Servlet) and override method (init/service/doGet/doPost/destroy)
 2. config servlet and servlet-mapping tag in web.xml or annotation
 3. write a jsp
@@ -509,3 +521,108 @@ public abstract class GenericServlet implements Servlet, ServletConfig, Serializ
         resp.sendError(this.getMethodNotSupportedCode(protocol), msg);
     }
 ```
+## Servlet Request and Response
+### Different type of data in request body
+| type                    | frontend                                                              | backend                                                                        |
+| ----------------------- | --------------------------------------------------------------------- | ------------------------------------------------------------------------------ |
+| `form-data`             | HTML form with `<form enctype="multipart/form-data">`or`FormData` API | `@MultipartConfig`decorate servlet + `request.getParameter`or`request.getPart` |
+| `x-www-form-urlencoded` | HTML form or`URLSearchParams`                                         | `request.getParameter`                                                         |
+| `raw` (JSON, XML)       | `fetch`using`JSON.stringify`                                          | `request.getReader` + paras JSON String                                        |
+
+### Servlet Request get data
+1. get `x-www-form-urlencoded` data in request body or param via url
+```java
+// get all params from params in url by param name
+Enumeration<String> allParams = req.getParameterNames();
+while (allParams.hasMoreElements()) {
+    String param = allParams.nextElement();
+    if (param.equals("lang")) {
+        String[] lang = req.getParameterValues("lang");
+        for (String l : lang) {
+            System.out.println(String.format("[lang]: %s", l));
+        }
+    } else
+        System.out.println(String.format("[%s]: %s", param, req.getParameter(param).toString()));
+}
+System.out.println("-----------------getParameterMap-----------------");
+// get all params from params in url by map
+Map<String, String[]> paramsMap = req.getParameterMap();
+Set<Map.Entry<String, String[]>> entries = paramsMap.entrySet();
+for (Map.Entry<String, String[]> entry : entries) {
+    System.out.println(String.format("[%s]: %s", entry.getKey(), Arrays.toString(entry.getValue())));
+}
+```
+2. get `form-data`
+```java
+@MultipartConfig
+public class ServletReqTest extends HttpServlet {
+    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+       System.out.println(req.getParameter("name"));
+    }
+}
+```
+3. get `raw` in `json`
+- method1:
+```java
+StringBuffer sb = new StringBuffer();
+try(BufferedReader input = req.getReader()){
+    String line;
+    while ((line = input.readLine()) != null)
+        sb.append(line);
+} catch (Exception e) {
+    e.printStackTrace();
+}
+System.out.println(new String(sb));
+```
+- method 2
+```java
+StringBuffer sb = new StringBuffer();
+try (ServletInputStream input = req.getInputStream()) {
+    byte[] cache = new byte[128];
+    for (int len = input.read(cache); len != -1; len = input.read(cache)) {
+        sb.append(new String(cache, 0, len));
+    }
+} catch (Exception e) {
+    e.printStackTrace();
+}
+System.out.println(new String(sb));
+```
+
+### Servlet Response API
+1. `resp.setStatus` set response status codes
+    1. 情報レスポンス (100 – 199)
+    2. 成功レスポンス (200 – 299)
+    3. リダイレクトメッセージ (300 – 399)
+    4. クライアントエラーレスポンス (400 – 499)
+    5. サーバーエラーレスポンス (500 – 599)
+
+| 状态码  | 分类                  | 含义                                             |
+| ------- | --------------------- | ------------------------------------------------ |
+| **1xx** | **信息响应**          | 表示请求已被接收，需要客户端继续操作             |
+| 100     | Continue              | 客户端可以继续发送请求，服务器暂未处理完所有请求 |
+| 101     | Switching Protocols   | 服务器同意客户端请求，正在切换协议               |
+| **2xx** | **成功响应**          | 表示请求成功且服务器已正常处理                   |
+| 200     | OK                    | 请求成功，返回所请求的资源                       |
+| 201     | Created               | 请求成功并在服务器上创建了新的资源               |
+| 202     | Accepted              | 请求被接受，但尚未处理                           |
+| 204     | No Content            | 请求成功，无内容返回                             |
+| **3xx** | **重定向**            | 表示请求资源的位置发生变更，客户端需进一步处理   |
+| 301     | Moved Permanently     | 资源已永久移至新位置，使用新的URI                |
+| 302     | Found                 | 资源临时移至新位置，可暂时使用新的URI            |
+| 304     | Not Modified          | 资源未更改，客户端可使用缓存                     |
+| **4xx** | **客户端错误**        | 表示客户端请求错误，服务器无法处理               |
+| 400     | Bad Request           | 请求语法错误或参数错误                           |
+| 401     | Unauthorized          | 未授权，需进行身份验证                           |
+| 403     | Forbidden             | 拒绝访问，无权查看该资源                         |
+| 404     | Not Found             | 资源未找到，服务器无法找到所请求的资源           |
+| 405     | Method Not Allowed    | 请求方法不被允许                                 |
+| **5xx** | **服务器错误**        | 表示服务器在处理请求时发生内部错误               |
+| 500     | Internal Server Error | 服务器内部错误，无法完成请求                     |
+| 501     | Not Implemented       | 服务器不支持请求的功能                           |
+| 502     | Bad Gateway           | 网关或代理服务器从上游服务器接收到无效响应       |
+| 503     | Service Unavailable   | 服务器暂时无法处理请求，通常是由于过载或维护     |
+| 504     | Gateway Timeout       | 网关或代理服务器在等待上游服务器响应时超时       |
+
+2. `resp.setHeader` set response header
+3. `resp.getOutputStream`(binary data) & `resp.getWriter`(text data): output method to response
+4. 
