@@ -26,6 +26,10 @@
     - [JSP](#jsp)
     - [Tomcat log](#tomcat-log)
     - [Java](#java)
+    - [Request parameter (param at url)](#request-parameter-param-at-url)
+    - [Request parameter (param in body)](#request-parameter-param-in-body)
+    - [Response](#response)
+  - [Path](#path)
 
 
 ---
@@ -659,12 +663,29 @@ System.out.println(new String(sb));
 <!-- tomcat/conf/server.xml -->
 <Connector connectionTimeout="20000" port="8080" protocol="HTTP/1.1" redirectPort="8443" URIEncoding="UTF-8"/>
 ```
-```conf
-# conf/logging.properties
-UTF-8 -> [charset]
-```
-```bash
-# tomcat/bin/catalina.sh
-export JAVA_OPTS=-Xms512m -Xmx1024m -XX:MaxPermSize=1024m -Dfile.encoding=UTF-8
-```
+use UTF-8 in conf/logging.properties
 ### Java
+```bash
+-Dfile.encoding=UTF-8
+```
+
+### Request parameter (param at url)
+```xml
+<!-- tomcat/conf/server.xml -->
+<Connector ... ... URIEcoding="UTF-8">
+```
+
+### Request parameter (param in body)
+```java
+req.setCharacterEncoding("UTF-8")
+```
+
+### Response
+```java
+// response content encoded using utf-8 by servlet
+resp.setCharacterEncoding("UTF-8")
+// client decodes response using utf-8
+resp.setContentType("text/html;charset=UTF-8")
+```
+
+## Path
