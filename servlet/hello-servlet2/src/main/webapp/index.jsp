@@ -31,5 +31,16 @@
 
 <p>---------------redirect test---------------</p>
 <a href="redirecttest">redirecttest</a><br/>
+
+<p>---------------path test a---------------</p>
+<a href="pathtest/a">pathtesta</a><br/>
+<p>---------------path test b---------------</p>
+<a href="pathtest/b">pathtestb</a><br/>
+<p>---------------path test d---------------</p>
+<a href="a/b/c/d.html">pathtestd</a><br/>
+<p>---------------path test view---------------</p>
+<a href="pathtest/view">pathtestview</a><br/>
+<p>---------------path test pic---------------</p>
+<img src="static/img/deformableDETR.png" alt="pic not found" width="700"/>
 </body>
 </html>

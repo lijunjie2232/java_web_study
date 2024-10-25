@@ -30,6 +30,8 @@
     - [Request parameter (param in body)](#request-parameter-param-in-body)
     - [Response](#response)
   - [Path](#path)
+    - [Frontend](#frontend)
+    - [Backend](#backend)
 
 
 ---
@@ -606,32 +608,32 @@ System.out.println(new String(sb));
     4. クライアントエラーレスポンス (400 – 499)
     5. サーバーエラーレスポンス (500 – 599)
 
-| 状态码  | 分类                  | 含义                                             |
-| ------- | --------------------- | ------------------------------------------------ |
-| **1xx** | **信息响应**          | 表示请求已被接收，需要客户端继续操作             |
-| 100     | Continue              | 客户端可以继续发送请求，服务器暂未处理完所有请求 |
-| 101     | Switching Protocols   | 服务器同意客户端请求，正在切换协议               |
-| **2xx** | **成功响应**          | 表示请求成功且服务器已正常处理                   |
-| 200     | OK                    | 请求成功，返回所请求的资源                       |
-| 201     | Created               | 请求成功并在服务器上创建了新的资源               |
-| 202     | Accepted              | 请求被接受，但尚未处理                           |
-| 204     | No Content            | 请求成功，无内容返回                             |
-| **3xx** | **重定向**            | 表示请求资源的位置发生变更，客户端需进一步处理   |
-| 301     | Moved Permanently     | 资源已永久移至新位置，使用新的URI                |
-| 302     | Found                 | 资源临时移至新位置，可暂时使用新的URI            |
-| 304     | Not Modified          | 资源未更改，客户端可使用缓存                     |
-| **4xx** | **客户端错误**        | 表示客户端请求错误，服务器无法处理               |
-| 400     | Bad Request           | 请求语法错误或参数错误                           |
-| 401     | Unauthorized          | 未授权，需进行身份验证                           |
-| 403     | Forbidden             | 拒绝访问，无权查看该资源                         |
-| 404     | Not Found             | 资源未找到，服务器无法找到所请求的资源           |
-| 405     | Method Not Allowed    | 请求方法不被允许                                 |
-| **5xx** | **服务器错误**        | 表示服务器在处理请求时发生内部错误               |
-| 500     | Internal Server Error | 服务器内部错误，无法完成请求                     |
-| 501     | Not Implemented       | 服务器不支持请求的功能                           |
-| 502     | Bad Gateway           | 网关或代理服务器从上游服务器接收到无效响应       |
-| 503     | Service Unavailable   | 服务器暂时无法处理请求，通常是由于过载或维护     |
-| 504     | Gateway Timeout       | 网关或代理服务器在等待上游服务器响应时超时       |
+| 状态码(partial) | 分类                  | 含义                                             |
+| --------------- | --------------------- | ------------------------------------------------ |
+| **1xx**         | **信息响应**          | 表示请求已被接收，需要客户端继续操作             |
+| 100             | Continue              | 客户端可以继续发送请求，服务器暂未处理完所有请求 |
+| 101             | Switching Protocols   | 服务器同意客户端请求，正在切换协议               |
+| **2xx**         | **成功响应**          | 表示请求成功且服务器已正常处理                   |
+| 200             | OK                    | 请求成功，返回所请求的资源                       |
+| 201             | Created               | 请求成功并在服务器上创建了新的资源               |
+| 202             | Accepted              | 请求被接受，但尚未处理                           |
+| 204             | No Content            | 请求成功，无内容返回                             |
+| **3xx**         | **重定向**            | 表示请求资源的位置发生变更，客户端需进一步处理   |
+| 301             | Moved Permanently     | 资源已永久移至新位置，使用新的URI                |
+| 302             | Found                 | 资源临时移至新位置，可暂时使用新的URI            |
+| 304             | Not Modified          | 资源未更改，客户端可使用缓存                     |
+| **4xx**         | **客户端错误**        | 表示客户端请求错误，服务器无法处理               |
+| 400             | Bad Request           | 请求语法错误或参数错误                           |
+| 401             | Unauthorized          | 未授权，需进行身份验证                           |
+| 403             | Forbidden             | 拒绝访问，无权查看该资源                         |
+| 404             | Not Found             | 资源未找到，服务器无法找到所请求的资源           |
+| 405             | Method Not Allowed    | 请求方法不被允许                                 |
+| **5xx**         | **服务器错误**        | 表示服务器在处理请求时发生内部错误               |
+| 500             | Internal Server Error | 服务器内部错误，无法完成请求                     |
+| 501             | Not Implemented       | 服务器不支持请求的功能                           |
+| 502             | Bad Gateway           | 网关或代理服务器从上游服务器接收到无效响应       |
+| 503             | Service Unavailable   | 服务器暂时无法处理请求，通常是由于过载或维护     |
+| 504             | Gateway Timeout       | 网关或代理服务器在等待上游服务器响应时超时       |
 
 2. `resp.setHeader` set response header
 3. `resp.getOutputStream`(binary data) & `resp.getWriter`(text data): output method to response
@@ -689,3 +691,32 @@ resp.setContentType("text/html;charset=UTF-8")
 ```
 
 ## Path
+### Frontend
+**Frontend path is base on directory of the current resource**
+**Backend path is base on server name**
+```
+http://localhost:8080/hello_servlet2_war_exploded/pathtest/view
+=> name of current resource: view
+=> directory of current resource: http://localhost:8080/hello_servlet2_war_exploded/pathtest
+=> server name: http://localhost:8080
+```
+1. relative path
+```java
+@WebServlet(name = "/pathtestview", urlPatterns = "/pathtest/view")
+```
+```html
+<img src="../static/img/deformableDETR.png" alt="pic not found"/>
+```
+1. absolute path
+```html
+<img src="/hello_servlet2_war_exploded/static/img/deformableDETR.png" alt="pic not found"/>
+```
+### Backend
+**relative path always references from the path of the most current requested resource**.
+1. redirect path reference is the same as frondend. Because of references from the **current requested resource**, the 2nd requested resource is the redirected resource by the 1st requested resource by returning code 302, and after receiveing code 302, the current requested resource now is the 1st resource, then following request will reference from the directory of the 1st resource.
+2. forward: relative path reference is the same as frondend,
+```java
+// absolute path
+// absolute path of servlet forward get by method getRequestDispatcher does not need app name().
+req.getRequestDispatcher("/WEB-INF/view/view.html").forward(req, resp);
+```
