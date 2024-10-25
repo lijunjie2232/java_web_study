@@ -25,5 +25,11 @@
 <p>---------------file test---------------</p>
 <a href="fileManager.jsp">filemanager</a><br/>
 
+
+<p>---------------forward test---------------</p>
+<a href="forwardtest">forwardtest</a><br/>
+
+<p>---------------redirect test---------------</p>
+<a href="redirecttest">redirecttest</a><br/>
 </body>
 </html>

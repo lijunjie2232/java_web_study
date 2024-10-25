@@ -20,6 +20,12 @@
     - [Different type of data in request body](#different-type-of-data-in-request-body)
     - [Servlet Request get data](#servlet-request-get-data)
     - [Servlet Response API](#servlet-response-api)
+    - [forward \& redirect](#forward--redirect)
+  - [Use UTF-8 charset](#use-utf-8-charset)
+    - [HTML](#html)
+    - [JSP](#jsp)
+    - [Tomcat log](#tomcat-log)
+    - [Java](#java)
 
 
 ---
@@ -625,4 +631,40 @@ System.out.println(new String(sb));
 
 2. `resp.setHeader` set response header
 3. `resp.getOutputStream`(binary data) & `resp.getWriter`(text data): output method to response
-4. 
+
+### forward & redirect
+| action                  | forward                         | redirect                         |
+| ----------------------- | ------------------------------- | -------------------------------- |
+| 場所                    | inner server                    | outer server                     |
+| browser url change      | x                               | o                                |
+| param passing           | request + session + application | session + application            |
+| response status code    | 200                             | 302 + 200 (two times of request) |
+| get resource out of app | x                               | o                                |
+
+**page change: if both, use redirect**
+
+## Use UTF-8 charset
+### HTML
+```html
+<head>
+    <meta charset="UTF-8">
+</head>
+```
+### JSP
+```jsp
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
+```
+### Tomcat log
+```xml
+<!-- tomcat/conf/server.xml -->
+<Connector connectionTimeout="20000" port="8080" protocol="HTTP/1.1" redirectPort="8443" URIEncoding="UTF-8"/>
+```
+```conf
+# conf/logging.properties
+UTF-8 -> [charset]
+```
+```bash
+# tomcat/bin/catalina.sh
+export JAVA_OPTS=-Xms512m -Xmx1024m -XX:MaxPermSize=1024m -Dfile.encoding=UTF-8
+```
+### Java
