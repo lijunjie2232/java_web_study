@@ -698,6 +698,8 @@ User user = (User)session.getAttribute("user");
 if (user != null) {
     System.out.println("user in session");
     System.out.println(user);
+    // remove user from session
+    session.removeAttribute("user");
 }
 else if (!sessionParams.hasMoreElements())
     System.out.println("empty session");
