@@ -22,8 +22,10 @@
     - [Servlet Request get data](#servlet-request-get-data)
     - [Servlet Response API](#servlet-response-api)
     - [forward \& redirect](#forward--redirect)
+  - [Cookie \& Session](#cookie--session)
+    - [Set Cookie](#set-cookie)
   - [Filter](#filter)
-    - [A simple filter:](#a-simple-filter)
+    - [A simple filter](#a-simple-filter)
   - [Use UTF-8 charset](#use-utf-8-charset)
     - [HTML](#html)
     - [JSP](#jsp)
@@ -653,8 +655,27 @@ System.out.println(new String(sb));
 
 **page change: if both, use redirect**
 
+## Cookie & Session
+- Cookie in browser, session in server
+
+### Set Cookie
+```java
+// set cookie
+Cookie c1 = new Cookie("id", "2cceb827-8102-480e-aceb-6ce5868ba47c");
+Cookie c2 = new Cookie("auth", "6876434864341864");
+// set cookie affect route
+c1.setPath("/cookietest1");
+// set c2 valids in 10 seconds
+c2.setMaxAge(10);
+response.addCookie(c1);
+response.addCookie(c2);
+
+// get cookie
+Cookie[] cookies = req.getCookies()// if no cookie, cookies is null
+```
+
 ## Filter
-### A simple filter:
+### A simple filter
 1. create a class implements `jakarta.servlet.Filter`
 2. override three method: init / destroy / doFilter
 3. add filter and filter-mapping tag in web.xml or use @WebFilter

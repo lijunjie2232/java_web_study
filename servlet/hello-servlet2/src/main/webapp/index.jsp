@@ -42,5 +42,18 @@
 <a href="pathtest/view">pathtestview</a><br/>
 <p>---------------path test pic---------------</p>
 <img src="static/img/deformableDETR.png" alt="pic not found" width="700"/>
+
+<p>---------------cookie test---------------</p>
+<%
+    Cookie c1 = new Cookie("id", "2cceb827-8102-480e-aceb-6ce5868ba47c");
+    Cookie c2 = new Cookie("auth", "6876434864341864");
+    // set cookie affect route
+    c1.setPath("/cookietest1");
+    // set c2 valids in 10 seconds
+    c2.setMaxAge(10);
+    response.addCookie(c1);
+    response.addCookie(c2);
+%>
+<a href="cookietest">cookietest</a><br/>
 </body>
 </html>
