@@ -15,6 +15,7 @@ import java.util.Enumeration;
 public class SessionServlet extends HttpServlet {
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         HttpSession session = req.getSession();
+        session.setMaxInactiveInterval(15*60);
         String SessionID = session.getId();
         System.out.println(SessionID);
         System.out.println(session.isNew());

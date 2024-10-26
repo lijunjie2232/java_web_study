@@ -685,6 +685,8 @@ Cookie[] cookies = req.getCookies()// if no cookie, cookies is null
 ```java
 // get session
 HttpSession session = req.getSession();
+// set session timeout (second)
+session.setMaxInactiveInterval(15*60);
 // check session is newly created
 System.out.println(session.isNew());
 // get JSESSIONID
@@ -706,6 +708,15 @@ else {
     }
 }
 ```
+- default session timeout is 30 minute, if not requests session longer than 30 minute, session will be invalid and next request will get a new session.
+- set `<session-timeout>` in `<session-config>` in web.xml  to change session timeout or call `session.setMaxInactiveInterval(second)` to specify timeout for a session object, default `session-timeout` is set in `tomcat/conf/web.xml`.
+```xml
+<!-- web.xml -->
+<session-config>
+    <session-timeout>15</session-timeout>
+</session-config>
+```
+
 
 ## Filter
 ### A simple filter

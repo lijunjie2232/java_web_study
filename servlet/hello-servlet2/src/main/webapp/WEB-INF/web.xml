@@ -43,4 +43,7 @@
 <!--        <url-pattern>*.png</url-pattern>-->
 <!--        <url-pattern>*.jpg</url-pattern>-->
 <!--    </filter-mapping>-->
+    <session-config>
+        <session-timeout>15</session-timeout>
+    </session-config>
 </web-app>
