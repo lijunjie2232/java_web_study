@@ -30,6 +30,8 @@
   - [Listener](#listener)
     - [Classify](#classify)
     - [A simple Listener](#a-simple-listener)
+  - [Use UTF-8 charset](#use-utf-8-charset)
+    - [HTML](#html)
     - [JSP](#jsp)
     - [Tomcat log](#tomcat-log)
     - [Java](#java)
@@ -39,6 +41,7 @@
   - [Path](#path)
     - [Frontend](#frontend)
     - [Backend](#backend)
+  - [Servlet async](#servlet-async)
 
 
 ---
@@ -864,7 +867,7 @@ public class ListenerTest implements ServletContextListener, ServletContextAttri
 <listener>
     <listener-class>servlet.ListenerTest</listener-class>
 </listener>
-``
+```
 
 ## Use UTF-8 charset
 ### HTML
@@ -936,4 +939,59 @@ http://localhost:8080/hello_servlet2_war_exploded/pathtest/view
 // absolute path
 // absolute path of servlet forward get by method getRequestDispatcher does not need app name().
 req.getRequestDispatcher("/WEB-INF/view/view.html").forward(req, resp);
+```
+
+## Servlet async
+1. set `asyncSupported = true` in `@WebServlet`
+2. `AsyncContext ac = req.startAsync(req, resp);` to get `AsyncContext` object
+3. `ac.addListener(new AsyncListener() {...})` to add listener for AsyncContext
+4. call `ac.start(Runnable var1)`
+- in Runnable var1 (this is a lambda interface `()->{...}`), `ac.complete()` **must be called explicitly** in the end, otherwise browser will always wait until request timeouts.
+- if use `PrintWriter writer = ac.getResponse().getWriter()` and writed text to `writer`, `writer.flush()` **must be called explicitly**.
+```java
+@WebServlet(name = "asynctest", value = "/asynctest", asyncSupported = true)
+public class AsyncServlet extends HttpServlet {
+    @Override
+    public void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        System.out.println(String.format("[Main Thread: %s]: doget", Thread.currentThread().getName()));
+        AsyncContext ac = req.startAsync(req, resp);
+        ac.addListener(new AsyncListener() {
+            @Override
+            public void onComplete(AsyncEvent asyncEvent) throws IOException {
+                System.out.println(String.format("[Thread: %s]: complete", Thread.currentThread().getName()));
+            }
+
+            @Override
+            public void onTimeout(AsyncEvent asyncEvent) throws IOException {
+
+            }
+
+            @Override
+            public void onError(AsyncEvent asyncEvent) throws IOException {
+
+            }
+
+            @Override
+            public void onStartAsync(AsyncEvent asyncEvent) throws IOException {
+                System.out.println(String.format("[Thread: %s]: start", Thread.currentThread().getName()));
+            }
+        });
+        ac.start(() -> {
+            System.out.println(String.format("[Thread: %s]: run", Thread.currentThread().getName()));
+            try {
+                PrintWriter writer = ac.getResponse().getWriter();
+                writer.write("async ok");
+                writer.flush();
+                Thread.sleep(2000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            System.out.println(String.format("[Thread: %s]: finish", Thread.currentThread().getName()));
+            ac.complete();
+        });
+        System.out.println(String.format("[Main Thread: %s]: finish", Thread.currentThread().getName()));
+    }
+}
 ```

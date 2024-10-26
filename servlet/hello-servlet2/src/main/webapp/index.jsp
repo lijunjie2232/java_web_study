@@ -68,5 +68,8 @@
     System.out.println("[index.jsp]: applicatin attribute remove");
     application.removeAttribute("app_param");
 %>
+
+<p>---------------async test---------------</p>
+<a href="asynctest">asynctest</a><br/>
 </body>
 </html>
