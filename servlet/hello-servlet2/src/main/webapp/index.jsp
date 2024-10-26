@@ -55,5 +55,8 @@
     response.addCookie(c2);
 %>
 <a href="cookietest">cookietest</a><br/>
+
+<p>---------------session test---------------</p>
+<a href="sessiontest">sessiontest</a><br/>
 </body>
 </html>

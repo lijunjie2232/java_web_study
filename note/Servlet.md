@@ -23,7 +23,8 @@
     - [Servlet Response API](#servlet-response-api)
     - [forward \& redirect](#forward--redirect)
   - [Cookie \& Session](#cookie--session)
-    - [Set Cookie](#set-cookie)
+    - [Cookie](#cookie)
+    - [Session](#session)
   - [Filter](#filter)
     - [A simple filter](#a-simple-filter)
   - [Use UTF-8 charset](#use-utf-8-charset)
@@ -658,7 +659,7 @@ System.out.println(new String(sb));
 ## Cookie & Session
 - Cookie in browser, session in server
 
-### Set Cookie
+### Cookie
 ```java
 // set cookie
 Cookie c1 = new Cookie("id", "2cceb827-8102-480e-aceb-6ce5868ba47c");
@@ -672,6 +673,38 @@ response.addCookie(c2);
 
 // get cookie
 Cookie[] cookies = req.getCookies()// if no cookie, cookies is null
+```
+### Session
+- Session is handled automaticly by servlet, referencing `JSESSIONID` in cookie, so if browser bans all the cookie, session function is not work
+- what happened after `req.getSession()`:
+- check `JSESSIONID` in req cookie:
+   - if `JSESSIONID` found => find session by `JSESSIONID`:
+     - if could not find session by `JSESSIONID` => ***create new session and return it***
+     - if found session by `JSESSIONID` => ***return found session***
+   - if `JSESSIONID` not found => ***create a new session and return it***
+```java
+// get session
+HttpSession session = req.getSession();
+// check session is newly created
+System.out.println(session.isNew());
+// get JSESSIONID
+System.out.println(session.getId());
+
+// get values in session
+Enumeration<String> sessionParams = session.getAttributeNames();
+User user = (User)session.getAttribute("user");
+if (user != null) {
+    System.out.println("user in session");
+    System.out.println(user);
+}
+else if (!sessionParams.hasMoreElements())
+    System.out.println("empty session");
+else {
+    while (sessionParams.hasMoreElements()) {
+        String key = sessionParams.nextElement();
+        System.out.println(String.format("[%s]: %s", key, session.getAttribute(key)));
+    }
+}
 ```
 
 ## Filter
