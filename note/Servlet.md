@@ -725,6 +725,7 @@ else {
 1. create a class implements `jakarta.servlet.Filter`
 2. override three method: init / destroy / doFilter
 3. add filter and filter-mapping tag in web.xml or use @WebFilter
+4. only call filterChain.doFilter(servletRequest, servletResponse) could pass the request goes on
 ```java
 // FilterTest.java
 @WebFilter(
@@ -745,13 +746,19 @@ public class FilterTest implements Filter {
         if (session.getAttribute("user") == null) {
             System.out.println("user not logged in");
             response.sendRedirect("login.jsp");
-            filterChain.doFilter(servletRequest, servletResponse);
         } else {
             System.out.println("user logged in");
             System.out.println(session.getAttribute("user"));
+            Date start = new Date();
+            DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            System.out.println(String.format("[%s]: %s %s %s", dateFormat.format(start), session.getAttribute("user"), request.getMethod(), request.getRequestURI()));
             filterChain.doFilter(servletRequest, servletResponse);
+            Date end = new Date();
+            System.out.println(String.format("[%s]: handle %s %s use %d ms", dateFormat.format(end), request.getMethod(), request.getRequestURI(), end.getTime() - start.getTime()));
+            System.out.println("filter passed hook");
         }
     }
+
     @Override
     public void init(FilterConfig filterConfig) throws ServletException {
         System.out.println("filter init");
