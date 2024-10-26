@@ -43,6 +43,9 @@
 <!--        <url-pattern>*.png</url-pattern>-->
 <!--        <url-pattern>*.jpg</url-pattern>-->
 <!--    </filter-mapping>-->
+<!--    <listener>-->
+<!--        <listener-class>servlet.ListenerTest</listener-class>-->
+<!--    </listener>-->
     <session-config>
         <session-timeout>15</session-timeout>
     </session-config>

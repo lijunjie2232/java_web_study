@@ -27,8 +27,9 @@
     - [Session](#session)
   - [Filter](#filter)
     - [A simple filter](#a-simple-filter)
-  - [Use UTF-8 charset](#use-utf-8-charset)
-    - [HTML](#html)
+  - [Listener](#listener)
+    - [Classify](#classify)
+    - [A simple Listener](#a-simple-listener)
     - [JSP](#jsp)
     - [Tomcat log](#tomcat-log)
     - [Java](#java)
@@ -734,7 +735,8 @@ else {
         dispatcherTypes = {
                 DispatcherType.REQUEST,
                 DispatcherType.FORWARD// filte forward by servlet
-        }
+        },
+        servletNames={"login"}
 )
 public class FilterTest implements Filter {
     @Override
@@ -775,6 +777,15 @@ public class FilterTest implements Filter {
 ```xml
 <!-- web.xml -->
 <filter>
+    <filter-name>filtertest2</filter-name>
+    <filter-class>servlet.FilterTest2</filter-class>
+</filter>
+<filter-mapping>
+    <filter-name>filtertest2</filter-name>
+    <url-pattern>*.png</url-pattern>
+    <url-pattern>*.jpg</url-pattern>
+</filter-mapping>
+<filter>
     <filter-name>filtertest</filter-name>
     <filter-class>servlet.FilterTest</filter-class>
 </filter>
@@ -786,7 +797,74 @@ public class FilterTest implements Filter {
 ```
 - Filter inited before servlet and destroyed after sevlet
 - Filter would not filte forward of request object inner server by default in newer servlet, by adding `dispatcherTypes = {DispatcherType.REQUEST, DispatcherType.FORWARD} `to `@WebFilter` allowing filter catch forward inner server.
+- tag `<filter-mapping>` in `web.xml` controls order of filters catch requests, for example, below configuration set two filter for the same resource, `filtertest2` is before `filtertest`, so, request to get a png file will first caught by filtertest2. **However**, if using @WebFilter to set filter, the order is alphabeta order of filters' **class name**.
+- `servletNames` parameter set servlet names to be filted
 
+## Listener
+### Classify
+1. by listening object
+   1. application listener: **`ServletContextListener`** / `ServletContextAttributeListener`
+   2. session listener: `HttpSessionListener` / `HttpSessionAttributeListener` / `HttpSessionActivationListener` / `HttpSessionBindingListener` / `HttpSessionIdListener`
+   3. request listener: `ServletRequestListener` / `ServletRequestAttributeListener`
+2. by events
+   1. instance construct and destroy: `ServletContextListener` / `HttpSessionListener` / `ServletRequestListener`
+   2. data change: `ServletContextAttributeListener` / `HttpSessionAttributeListener` / `ServletRequestAttributeListener`
+   3. other: `HttpSessionActivationListener` / `HttpSessionBindingListener` / `HttpSessionIdListener` / ...
+
+### A simple Listener
+1. implements a listener interface
+2. override specific methods
+3. configure `<listener>` and `<listener-class>` tags in `web.xml` or use `@WebListener()`
+```java
+// @WebListener()
+public class ListenerTest implements ServletContextListener, ServletContextAttributeListener {
+    // method in ServletContextListener
+    @Override
+    public void contextInitialized(ServletContextEvent sce) {
+        ServletContext application = sce.getServletContext();
+        System.out.println(String.format("[ListenerTest][application-%s]: application initialized", application.hashCode()));
+    }
+
+    // method in ServletContextListener
+    @Override
+    public void contextDestroyed(ServletContextEvent sce) {
+        ServletContext application = sce.getServletContext();
+        System.out.println(String.format("ListenerTest][application-%s]: application destroyed", application.hashCode()));
+    }
+
+    // method in ServletContextAttributeListener
+    @Override
+    public void attributeAdded(ServletContextAttributeEvent sce) {
+        ServletContext application = sce.getServletContext();
+        System.out.println(String.format("ListenerTest][application-%s]: attribute \"%s\" added", application.hashCode(), sce.getName()));
+    }
+
+    // method in ServletContextAttributeListener
+    @Override
+    public void attributeRemoved(ServletContextAttributeEvent sce) {
+        ServletContext application = sce.getServletContext();
+        System.out.println(String.format("ListenerTest][application-%s]: attribute \"%s\" removed", application.hashCode(), sce.getName()));
+    }
+
+    // method in ServletContextAttributeListener
+    @Override
+    public void attributeReplaced(ServletContextAttributeEvent sce) {
+        ServletContext application = sce.getServletContext();
+        String key = sce.getName();
+        // old value
+        String oldValue = (String) sce.getValue();
+        // new value
+        String newValue = (String) application.getAttribute(key);
+        System.out.println(String.format("ListenerTest][application-%s]: attribute \"%s\" changed from \"%s\" to \"%s\"", application.hashCode(), key, oldValue, newValue));
+    }
+}
+```
+```xml
+<!-- web.xml -->
+<listener>
+    <listener-class>servlet.ListenerTest</listener-class>
+</listener>
+``
 
 ## Use UTF-8 charset
 ### HTML

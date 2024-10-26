@@ -14,11 +14,12 @@ import java.util.Date;
 
 @WebFilter(
         filterName = "filtertest",
-        urlPatterns = {"/loginin.jsp"},
+        value = {"/loginin.jsp"},
         dispatcherTypes = {
                 DispatcherType.REQUEST,
                 DispatcherType.FORWARD
-        }
+        },
+        servletNames={"login"}
 )
 public class FilterTest implements Filter {
     @Override

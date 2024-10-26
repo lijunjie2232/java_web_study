@@ -58,5 +58,15 @@
 
 <p>---------------session test---------------</p>
 <a href="sessiontest">sessiontest</a><br/>
+
+<%
+    // application attribute listener test
+    System.out.println("[index.jsp]: applicatin attribute add");
+    application.setAttribute("app_param", "123123");
+    System.out.println("[index.jsp]: applicatin attribute change");
+    application.setAttribute("app_param", "111111");
+    System.out.println("[index.jsp]: applicatin attribute remove");
+    application.removeAttribute("app_param");
+%>
 </body>
 </html>
