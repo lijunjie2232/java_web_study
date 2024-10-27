@@ -1027,6 +1027,15 @@ public class AsyncServlet extends HttpServlet {
 2. check enable annotation processing
 3. import lombok dependence
 4. use annotation to decorate beans class
+```xml
+<!-- pom.xml -->
+<dependency>
+    <groupId>org.projectlombok</groupId>
+    <artifactId>lombok</artifactId>
+    <version>1.18.34</version>
+    <scope>provided</scope>
+</dependency>
+```
 ```java
 import lombok.*;
 
@@ -1048,5 +1057,6 @@ public class SysUser implements Serializable {
 
 ### DAO(Data access Object)
 - a dao class has all needed operations to one corresponding sql table
-- first `interface`, then implements
-- **docs should be writen for interface**
+- first `interface`, then implements: `SysUserDao`(interface) -> `SysUserDaoImpl`(dao class)
+- **docs should be writen in interface**
+
