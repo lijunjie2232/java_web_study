@@ -8,10 +8,14 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
 import java.io.IOException;
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.ResultSet;
+import java.sql.Statement;
+import java.util.Scanner;
 
-@WebServlet(name = "jdbcquick", value = "/jdbcquick")
-public class JDBCQuick extends HttpServlet {
+@WebServlet(name = "jdbcinject", value = "/jdbcinject")
+public class JDBCInject extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         try {
@@ -31,7 +35,8 @@ public class JDBCQuick extends HttpServlet {
                 try (Statement stmt = conn.createStatement()) {
 
                     // 4. exec sql
-                    String sql = "select * from t_emp";
+                    String id = "' OR TRUE OR '";
+                    String sql = "SELECT * FROM t_emp WHERE emp_id = '" + id + "'";
                     try (ResultSet result = stmt.executeQuery(sql)) {
                         // 5. get result from ResultSet
                         while (result.next()) {

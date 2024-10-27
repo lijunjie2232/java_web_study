@@ -10,8 +10,8 @@ import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.sql.*;
 
-@WebServlet(name = "jdbcquick", value = "/jdbcquick")
-public class JDBCQuick extends HttpServlet {
+@WebServlet(name = "jdbcprepared", value = "/jdbcprepared")
+public class JDBCPrepared extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         try {
@@ -27,12 +27,15 @@ public class JDBCQuick extends HttpServlet {
             String password = "lijunjie";
             try (Connection conn = DriverManager.getConnection(url, username, password)) {
 
-                // 3. get statement
-                try (Statement stmt = conn.createStatement()) {
-
+//                String id = "' OR TRUE OR '";
+                String id = "1";
+                String sql = "SELECT * FROM t_emp WHERE emp_id = ?";
+                // 3. get PreparedStatement from Connection
+                try(PreparedStatement stmt = conn.prepareStatement(sql)){
+                    stmt.setString(1, id);
+                    System.out.println(stmt);
                     // 4. exec sql
-                    String sql = "select * from t_emp";
-                    try (ResultSet result = stmt.executeQuery(sql)) {
+                    try (ResultSet result = stmt.executeQuery()) {
                         // 5. get result from ResultSet
                         while (result.next()) {
                             int emp_id = result.getInt("emp_id");

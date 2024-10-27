@@ -11,6 +11,8 @@
     <title>Title</title>
 </head>
 <body>
-<a href="jdbcquick">jdbcquick</a>
+<a href="jdbcquick">jdbcquick</a><br/>
+<a href="jdbcinject">jdbcinject</a><br/>
+<a href="jdbcprepared">jdbcprepared</a><br/>
 </body>
 </html>
