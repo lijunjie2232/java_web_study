@@ -42,6 +42,10 @@
     - [Frontend](#frontend)
     - [Backend](#backend)
   - [Servlet async](#servlet-async)
+  - [MVC](#mvc)
+    - [POJO:](#pojo)
+    - [lombok plugin](#lombok-plugin)
+    - [DAO(Data access Object)](#daodata-access-object)
 
 
 ---
@@ -995,3 +999,54 @@ public class AsyncServlet extends HttpServlet {
     }
 }
 ```
+
+## MVC
+- View
+  - Web resources
+- Controler
+  - Servlet
+- Model
+  - service
+  - DAO
+  - POJO / beans / entities
+
+### POJO:
+- class name <--> sql table name
+- member properties <--> sql table column
+- properties should:
+  - `private`
+  - getter + setter
+- class should:
+  - explicitly declares the parameterless constructor
+  - implements `Serializable`
+  - override `hashcode` and `equals`
+- override toString? with pleasure
+
+### lombok plugin
+1. install lombok plugin
+2. check enable annotation processing
+3. import lombok dependence
+4. use annotation to decorate beans class
+```java
+import lombok.*;
+
+import java.io.Serializable;
+
+@AllArgsConstructor
+@NoArgsConstructor
+// @Getter
+// @Setter
+// @EqualsAndHashCode
+// @ToString
+@Data//@Data = @Getter + @Setter + @EqualsAndHashCode + @ToString
+public class SysUser implements Serializable {
+    private Integer uid;
+    private String username;
+    private String password;
+}
+```
+
+### DAO(Data access Object)
+- a dao class has all needed operations to one corresponding sql table
+- first `interface`, then implements
+- **docs should be writen for interface**
