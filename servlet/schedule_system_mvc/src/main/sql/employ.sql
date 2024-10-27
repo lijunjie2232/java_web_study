@@ -14,3 +14,5 @@ INSERT INTO `t_emp` (`emp_name`, `emp_salary`, `emp_age`)
 VALUES ('zhao', 100.00, 20),
        ('qian', 200.00, 22),
        ('shun', 700.765, 40);
+
+SELECT VERSION();
