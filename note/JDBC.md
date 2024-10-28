@@ -11,6 +11,7 @@ JDBC provides interface
     - [Basic operations with JDBC](#basic-operations-with-jdbc)
   - [Advanced of JDBC](#advanced-of-jdbc)
     - [Entity class and ORM](#entity-class-and-orm)
+    - [Statement options](#statement-options)
 
 ## Use JDBC in project
 ### Environment prepare
@@ -261,6 +262,91 @@ public class JDBCORMTest {
                     }
                 }
             }
+        }
+    }
+}
+```
+### Statement options
+```java
+/**
+ * The constant indicating that the current {@code ResultSet} object
+ * should be closed when calling {@code getMoreResults}.
+ *
+ * @since 1.4
+ */
+int CLOSE_CURRENT_RESULT = 1;
+
+/**
+* The constant indicating that the current {@code ResultSet} object
+* should not be closed when calling {@code getMoreResults}.
+*
+* @since 1.4
+*/
+int KEEP_CURRENT_RESULT = 2;
+
+/**
+* The constant indicating that all {@code ResultSet} objects that
+* have previously been kept open should be closed when calling
+* {@code getMoreResults}.
+*
+* @since 1.4
+*/
+int CLOSE_ALL_RESULTS = 3;
+
+/**
+* The constant indicating that a batch statement executed successfully
+* but that no count of the number of rows it affected is available.
+*
+* @since 1.4
+*/
+int SUCCESS_NO_INFO = -2;
+
+/**
+* The constant indicating that an error occurred while executing a
+* batch statement.
+*
+* @since 1.4
+*/
+int EXECUTE_FAILED = -3;
+
+/**
+* The constant indicating that generated keys should be made
+* available for retrieval.
+*
+* @since 1.4
+*/
+int RETURN_GENERATED_KEYS = 1;
+
+/**
+* The constant indicating that generated keys should not be made
+* available for retrieval.
+*
+* @since 1.4
+*/
+int NO_GENERATED_KEYS = 2;
+```
+- `RETURN_GENERATED_KEYS`: return auto increased primary key after sucessfully inserting, call `PreparedStatement.getGeneratedKeys()` to get it.
+```java
+@Test
+public void primaryKeyCallback() throws Exception {
+    try (Connection conn = DriverManager.getConnection("jdbc:mysql://localhost:13306/webtest", "root", "lijunjie")) {
+        try (PreparedStatement ps = conn.prepareStatement("INSERT INTO `t_emp` (`emp_name`, `emp_age`, emp_salary) VALUES (?, ?, ?)", Statement.RETURN_GENERATED_KEYS)) {
+            Employee emp = new Employee(null, "zhen", 35, 555.555);
+            ps.setString(1, emp.getEmpName());
+            ps.setInt(2, emp.getEmpAge());
+            ps.setDouble(3, emp.getEmpSalary());
+            int af = ps.executeUpdate();
+            if (af > 0) {
+                System.out.println("success");
+                try (ResultSet rs = ps.getGeneratedKeys()) {
+                    if (rs.next()) {
+                        int empId = rs.getInt(1);
+                        emp.setEmpId(empId);
+                        System.out.println(emp);
+                    }
+                }
+            } else
+                System.out.println("not success yet");
         }
     }
 }

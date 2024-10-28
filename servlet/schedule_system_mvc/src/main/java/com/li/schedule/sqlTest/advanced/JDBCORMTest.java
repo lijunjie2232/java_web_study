@@ -32,4 +32,30 @@ public class JDBCORMTest {
             }
         }
     }
+
+    @Test
+    public void primaryKeyCallback() throws Exception {
+        try (Connection conn = DriverManager.getConnection("jdbc:mysql://localhost:13306/webtest", "root", "lijunjie")) {
+            try (PreparedStatement ps = conn.prepareStatement("INSERT INTO `t_emp` (`emp_name`, `emp_age`, emp_salary) VALUES (?, ?, ?)", Statement.RETURN_GENERATED_KEYS)) {
+                Employee emp = new Employee(null, "zhen", 35, 555.555);
+                ps.setString(1, emp.getEmpName());
+                ps.setInt(2, emp.getEmpAge());
+                ps.setDouble(3, emp.getEmpSalary());
+                int af = ps.executeUpdate();
+                if (af > 0) {
+                    System.out.println("success");
+                    try (ResultSet rs = ps.getGeneratedKeys()) {
+                        if (rs.next()) {
+                            int empId = rs.getInt(1);
+                            emp.setEmpId(empId);
+                            System.out.println(emp);
+                        }
+                    }
+                } else
+                    System.out.println("not success yet");
+            }
+        }
+    }
+
+    
 }
