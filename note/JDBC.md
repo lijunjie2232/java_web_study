@@ -1,8 +1,7 @@
 # JDBC (Java Database Connectivity)
-JDBC provides interface
----
+
 - [JDBC (Java Database Connectivity)](#jdbc-java-database-connectivity)
-  - [JDBC provides interface](#jdbc-provides-interface)
+  - [JDBC provides interaction](#jdbc-provides-interaction)
   - [Use JDBC in project](#use-jdbc-in-project)
     - [Environment prepare](#environment-prepare)
     - [JDBC usage](#jdbc-usage)
@@ -11,9 +10,15 @@ JDBC provides interface
     - [Basic operations with JDBC](#basic-operations-with-jdbc)
   - [Advanced of JDBC](#advanced-of-jdbc)
     - [Entity class and ORM](#entity-class-and-orm)
-    - [Statement options](#statement-options)
-    - [Insert large number of row](#insert-large-number-of-row)
-
+    - [Statement options and return generated keys](#statement-options-and-return-generated-keys)
+    - [Insert large number of rows](#insert-large-number-of-rows)
+  - [Connection Pool](#connection-pool)
+    - [Druid](#druid)
+        - [Init DataSource](#init-datasource)
+          - [method 1: use set method](#method-1-use-set-method)
+          - [method 2: via db.properties](#method-2-via-dbproperties)
+      - [use of Druid](#use-of-druid)
+## JDBC provides interaction
 ## Use JDBC in project
 ### Environment prepare
 1. prepare sql
@@ -267,7 +272,7 @@ public class JDBCORMTest {
     }
 }
 ```
-### Statement options
+### Statement options and return generated keys
 ```java
 /**
  * The constant indicating that the current {@code ResultSet} object
@@ -353,7 +358,7 @@ public void primaryKeyCallback() throws Exception {
 }
 ```
 
-### Insert large number of row
+### Insert large number of rows
 - add `rewriteBatchedStatements=true` parameter to jdbc url
 - sql should not end with `';'`, and use `VALUES` instead of `VALUE`
 - call `PreparedStatement.addBatch()` for each row to add one insert
@@ -384,4 +389,78 @@ public void testInsertMany() throws Exception{
         }
     }
 }
+```
+## Connection Pool
+### Druid
+1. create `db.properties` in resources directory and state `driverClassName/url/username/password/...`
+2. create DruidDataSource
+3. get Connection from DruidDataSource
+4. use Connection as in JDBC
+5. recycle Connection with `close()`
+
+##### Init DataSource
+###### method 1: use set method
+```java
+DruidDataSource dds = new DruidDataSource();
+dds.setDriverClassName("com.mysql.cj.jdbc.Driver");
+dds.setUsername("root");
+dds.setPassword("lijunjie");
+dds.setUrl("jdbc:mysql://127.0.0.1:13306/webtest");
+dds.setInitialSize(5);
+dds.setMaxActive(10);
+```
+###### method 2: via db.properties
+- `DruidDataSourceFactory.createDataSource` only return a `DataSource` object instead of `DruidDataSource`
+```properties
+# db.properties
+driverClassName=com.mysql.cj.jdbc.Driver
+url=jdbc:mysql://127.0.0.1:13306/webtest
+username=root
+password=lijunjie
+initialSize=5
+maxAcitve=10
+```
+```java
+// get properties context
+Properties druidProperties = new Properties();
+InputStream propertiesStream = DruidTest.class.getClassLoader().getResourceAsStream("db.properties");
+druidProperties.load(propertiesStream);
+// create DataSource by DruidDataSourceFactory
+DataSource dds = DruidDataSourceFactory.createDataSource(druidProperties);
+```
+
+#### use of Druid
+```java
+List<Thread> threads = new LinkedList<>();
+for (int i = 1; i < 12; i++) {
+    final String emp_id = String.valueOf(i);
+    threads.add(new Thread(() -> {
+        System.out.println(Thread.currentThread().getId());
+        try (Connection conn = dds.getConnection()) {
+            System.out.println(conn);
+            Thread.sleep(2000);
+            try (PreparedStatement ps = conn.prepareStatement("SELECT * FROM `t_emp` WHERE `emp_id`=?")) {
+                ps.setString(1, emp_id);
+                try (ResultSet rs = ps.executeQuery()) {
+                    while (rs.next())
+                        System.out.println(
+                                new Employee(
+                                        rs.getInt("emp_id"),
+                                        rs.getString("emp_name"),
+                                        rs.getInt("emp_age"),
+                                        rs.getDouble("emp_salary")
+                                )
+                        );
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }));
+}
+for (Thread thread : threads)
+    thread.start();
+
+for (Thread thread : threads)
+    thread.join();
 ```
