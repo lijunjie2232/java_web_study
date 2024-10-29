@@ -15,6 +15,12 @@
       <version>4.13.2</version>
       <scope>test</scope>
     </dependency>
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <version>4.13.2</version>
+      <scope>compile</scope>
+    </dependency>
     <!-- https://mvnrepository.com/artifact/org.junit.jupiter/junit-jupiter-api -->
     <dependency>
       <groupId>org.junit.jupiter</groupId>
@@ -139,7 +145,6 @@
       <artifactId>HikariCP</artifactId>
       <version>6.0.0</version>
     </dependency>
-
   </dependencies>
   <build>
     <finalName>schedule_system_mvc</finalName>

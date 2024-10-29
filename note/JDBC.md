@@ -8,7 +8,7 @@
     - [Use PreparedStatement to avoid injection](#use-preparedstatement-to-avoid-injection)
     - [ResultSet only store result of query](#resultset-only-store-result-of-query)
     - [Basic operations with JDBC](#basic-operations-with-jdbc)
-  - [Advanced of JDBC](#advanced-of-jdbc)
+  - [Efficienct JDBC](#efficienct-jdbc)
     - [Entity class and ORM](#entity-class-and-orm)
     - [Statement options and return generated keys](#statement-options-and-return-generated-keys)
     - [Insert large number of rows](#insert-large-number-of-rows)
@@ -22,6 +22,8 @@
         - [Init DataSource](#init-datasource-1)
           - [method 1: use set method](#method-1-use-set-method-1)
           - [method 1: use set method](#method-1-use-set-method-2)
+  - [Advanced JDBC Utils](#advanced-jdbc-utils)
+    - [A simple JDBC Util class](#a-simple-jdbc-util-class)
 ## JDBC provides interaction
 ## Use JDBC in project
 ### Environment prepare
@@ -230,7 +232,7 @@ public class JDBCOperation {
     }
 }
 ```
-## Advanced of JDBC
+## Efficienct JDBC
 ### Entity class and ORM
 One entity class for one database table:
 ```java
@@ -487,6 +489,7 @@ System.out.println(String.format("use time: %dms", System.currentTimeMillis() - 
 ```java
 // create hikari datasource and configure
 HikariDataSource hds = new HikariDataSource();
+// init HikariDataSource
 hds.setDriverClassName("com.mysql.cj.jdbc.Driver");
 hds.setJdbcUrl("jdbc:mysql://127.0.0.1:13306/webtest");
 hds.setUsername("root");
@@ -517,4 +520,88 @@ hikariProperties.load(propertiesInputStream);
 HikariConfig hikariConfig = new HikariConfig(hikariProperties);
 // create HikariDataSource with HikariConfig
 HikariDataSource hds = new HikariDataSource(hikariConfig);
+```
+## Advanced JDBC Utils
+### A simple JDBC Util class
+```java
+/**
+ * JDBC Util class
+ * 1. connection pool maintenance
+ * 2. get connection
+ * 3. recycle connection
+ */
+public class JDBCUtil {
+    private static DataSource ds;
+
+    private static void genDataSource() {
+        try {
+            Properties prop = new Properties();
+            InputStream in = JDBCUtil.class.getClassLoader().getResourceAsStream("db_h.properties");
+            prop.load(in);
+            HikariConfig config = new HikariConfig(prop);
+            ds = new HikariDataSource(config);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static synchronized DataSource getDataSource() {
+        if (ds == null) {
+            System.out.println("construct DataSource");
+            genDataSource();
+        }
+        return ds;
+    }
+
+    public static Connection getConnection() throws SQLException {
+        return getDataSource().getConnection();
+    }
+
+    // ignore if try is used to get Connection
+    public static void release(Connection conn) throws SQLException {
+        conn.close();
+    }
+}
+
+@Test
+public void testGetConnection() throws Exception {
+
+    Date start = new Date();
+
+    List<Thread> threads = new LinkedList<>();
+    for (int i = 1; i < 12; i++) {
+        final String emp_id = String.valueOf(i);
+        threads.add(new Thread(() -> {
+            System.out.println(Thread.currentThread().getId());
+            try (Connection conn = JDBCUtil.getConnection()) {
+                System.out.println(JDBCUtil.getDataSource());
+                System.out.println(conn);
+                Thread.sleep(2000);
+                try (PreparedStatement ps = conn.prepareStatement("SELECT * FROM `t_emp` WHERE `emp_id`=?")) {
+                    ps.setString(1, emp_id);
+                    try (ResultSet rs = ps.executeQuery()) {
+                        while (rs.next())
+                            System.out.println(
+                                    new Employee(
+                                            rs.getInt("emp_id"),
+                                            rs.getString("emp_name"),
+                                            rs.getInt("emp_age"),
+                                            rs.getDouble("emp_salary")
+                                    )
+                            );
+                    }
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }));
+    }
+    for (Thread thread : threads)
+        thread.start();
+
+    for (Thread thread : threads)
+        thread.join();
+
+    System.out.println(String.format("use time: %dms", System.currentTimeMillis() - start.getTime()));
+}
 ```
