@@ -1,9 +1,12 @@
 package com.li.schedule.sqlTest;
 
+import com.li.schedule.sqlTest.advanced.pojo.Employee;
 import com.mysql.cj.jdbc.Driver;
 import org.junit.jupiter.api.Test;
 
 import java.sql.*;
+import java.util.LinkedList;
+import java.util.List;
 
 public class JDBCOperation {
     @Test
@@ -77,6 +80,31 @@ public class JDBCOperation {
                 ps.setDouble(3, emp_salary);
                 int result = ps.executeUpdate();
                 System.out.println("affect rows: " + result);
+            }
+        }
+    }
+
+    @Test
+    public void testInsertMany() throws Exception{
+        DriverManager.registerDriver(new Driver());
+        try (Connection conn = DriverManager.getConnection("jdbc:mysql://localhost:13306/webtest?rewriteBatchedStatements=true", "root", "lijunjie")) {
+            List<Employee> employees = new LinkedList<>();
+            employees.add(new Employee(null, "aaa", 20, 200.0));
+            employees.add(new Employee(null, "bbb", 20, 200.0));
+            employees.add(new Employee(null, "ccc", 20, 200.0));
+            employees.add(new Employee(null, "ddd", 20, 200.0));
+            try (PreparedStatement ps = conn.prepareStatement("INSERT INTO `t_emp` (`emp_name`, `emp_age`, emp_salary) VALUES (?, ?, ?)")) {
+                for (Employee employee : employees) {
+                    ps.setString(1, employee.getEmpName());
+                    ps.setInt(2, employee.getEmpAge());
+                    ps.setDouble(3, employee.getEmpSalary());
+                    ps.addBatch();
+                }
+                int[] result = ps.executeBatch();
+                for (int i = 0; i < result.length; i++) {
+                    System.out.println("affect rows: " + result[i]);
+                }
+                System.out.println("affect rows: " + result.length);
             }
         }
     }

@@ -12,6 +12,7 @@ JDBC provides interface
   - [Advanced of JDBC](#advanced-of-jdbc)
     - [Entity class and ORM](#entity-class-and-orm)
     - [Statement options](#statement-options)
+    - [Insert large number of row](#insert-large-number-of-row)
 
 ## Use JDBC in project
 ### Environment prepare
@@ -347,6 +348,39 @@ public void primaryKeyCallback() throws Exception {
                 }
             } else
                 System.out.println("not success yet");
+        }
+    }
+}
+```
+
+### Insert large number of row
+- add `rewriteBatchedStatements=true` parameter to jdbc url
+- sql should not end with `';'`, and use `VALUES` instead of `VALUE`
+- call `PreparedStatement.addBatch()` for each row to add one insert
+- call `PreparedStatement.executeBatch()` after all row has been added
+- `PreparedStatement.executeBatch()` returns an int array, each int means result of on row, for `Statement.SUCCESS_NO_INFO` is `-2`, so the int `-2` means successful.
+```java
+@Test
+public void testInsertMany() throws Exception{
+    DriverManager.registerDriver(new Driver());
+    try (Connection conn = DriverManager.getConnection("jdbc:mysql://localhost:13306/webtest?rewriteBatchedStatements=true", "root", "lijunjie")) {
+        List<Employee> employees = new LinkedList<>();
+        employees.add(new Employee(null, "aaa", 20, 200.0));
+        employees.add(new Employee(null, "bbb", 20, 200.0));
+        employees.add(new Employee(null, "ccc", 20, 200.0));
+        employees.add(new Employee(null, "ddd", 20, 200.0));
+        try (PreparedStatement ps = conn.prepareStatement("INSERT INTO `t_emp` (`emp_name`, `emp_age`, emp_salary) VALUES (?, ?, ?)")) {
+            for (Employee employee : employees) {
+                ps.setString(1, employee.getEmpName());
+                ps.setInt(2, employee.getEmpAge());
+                ps.setDouble(3, employee.getEmpSalary());
+                ps.addBatch();
+            }
+            int[] result = ps.executeBatch();
+            for (int i = 0; i < result.length; i++) {
+                System.out.println("affect rows: " + result[i]);
+            }
+            System.out.println("affect rows: " + result.length);
         }
     }
 }
