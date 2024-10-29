@@ -17,7 +17,11 @@
         - [Init DataSource](#init-datasource)
           - [method 1: use set method](#method-1-use-set-method)
           - [method 2: via db.properties](#method-2-via-dbproperties)
-      - [use of Druid](#use-of-druid)
+      - [usage of DataSource](#usage-of-datasource)
+    - [Hikari](#hikari)
+        - [Init DataSource](#init-datasource-1)
+          - [method 1: use set method](#method-1-use-set-method-1)
+          - [method 1: use set method](#method-1-use-set-method-2)
 ## JDBC provides interaction
 ## Use JDBC in project
 ### Environment prepare
@@ -360,10 +364,10 @@ public void primaryKeyCallback() throws Exception {
 
 ### Insert large number of rows
 - add `rewriteBatchedStatements=true` parameter to jdbc url
-- sql should not end with `';'`, and use `VALUES` instead of `VALUE`
+- sql should not end with `';'`, and should use `VALUES` instead of `VALUE`
 - call `PreparedStatement.addBatch()` for each row to add one insert
 - call `PreparedStatement.executeBatch()` after all row has been added
-- `PreparedStatement.executeBatch()` returns an int array, each int means result of on row, for `Statement.SUCCESS_NO_INFO` is `-2`, so the int `-2` means successful.
+- `PreparedStatement.executeBatch()` returns an int array, each int means result of on row, for `Statement.SUCCESS_NO_INFO` is `-2`, so the int `-2` means successful
 ```java
 @Test
 public void testInsertMany() throws Exception{
@@ -392,8 +396,8 @@ public void testInsertMany() throws Exception{
 ```
 ## Connection Pool
 ### Druid
-1. create `db.properties` in resources directory and state `driverClassName/url/username/password/...`
-2. create DruidDataSource
+1. create `db.properties` in resource directory and state `driverClassName/url/username/password/...`
+2. create and init DruidDataSource
 3. get Connection from DruidDataSource
 4. use Connection as in JDBC
 5. recycle Connection with `close()`
@@ -401,7 +405,9 @@ public void testInsertMany() throws Exception{
 ##### Init DataSource
 ###### method 1: use set method
 ```java
+// create DruidDataSource
 DruidDataSource dds = new DruidDataSource();
+// init DruidDataSource
 dds.setDriverClassName("com.mysql.cj.jdbc.Driver");
 dds.setUsername("root");
 dds.setPassword("lijunjie");
@@ -423,14 +429,16 @@ maxAcitve=10
 ```java
 // get properties context
 Properties druidProperties = new Properties();
-InputStream propertiesStream = DruidTest.class.getClassLoader().getResourceAsStream("db.properties");
+InputStream propertiesInputStream = this.getClass().getClassLoader().getResourceAsStream("db.properties");
 druidProperties.load(propertiesStream);
+
 // create DataSource by DruidDataSourceFactory
 DataSource dds = DruidDataSourceFactory.createDataSource(druidProperties);
 ```
 
-#### use of Druid
+#### usage of DataSource
 ```java
+Date start = new Date();
 List<Thread> threads = new LinkedList<>();
 for (int i = 1; i < 12; i++) {
     final String emp_id = String.valueOf(i);
@@ -445,10 +453,10 @@ for (int i = 1; i < 12; i++) {
                     while (rs.next())
                         System.out.println(
                                 new Employee(
-                                        rs.getInt("emp_id"),
-                                        rs.getString("emp_name"),
-                                        rs.getInt("emp_age"),
-                                        rs.getDouble("emp_salary")
+                                    rs.getInt("emp_id"),
+                                    rs.getString("emp_name"),
+                                    rs.getInt("emp_age"),
+                                    rs.getDouble("emp_salary")
                                 )
                         );
                 }
@@ -463,4 +471,50 @@ for (Thread thread : threads)
 
 for (Thread thread : threads)
     thread.join();
+
+System.out.println(String.format("use time: %dms", System.currentTimeMillis() - start.getTime()));
+```
+
+### Hikari
+1. create `db_h.properties` in resource directory and state `driverClassName/jdbcUrl/username/password/...`
+2. create and initDruidDataSource
+3. get Connection from DruidDataSource
+4. use Connection as in JDBC
+5. recycle Connection with `close()`
+
+##### Init DataSource
+###### method 1: use set method
+```java
+// create hikari datasource and configure
+HikariDataSource hds = new HikariDataSource();
+hds.setDriverClassName("com.mysql.cj.jdbc.Driver");
+hds.setJdbcUrl("jdbc:mysql://127.0.0.1:13306/webtest");
+hds.setUsername("root");
+hds.setPassword("lijunjie");
+hds.setMinimumIdle(5);
+hds.setMaximumPoolSize(10);
+```
+###### method 1: use set method
+1. create and read properties file
+2. use properties file to create `HikariConfig`
+3. use `HikariConfig` to create `HikariDataSource`
+```properties
+# db_h.properties
+driverClassName=com.mysql.cj.jdbc.Driver
+jdbcUrl=jdbc:mysql://127.0.0.1:13306/webtest
+username=root
+password=lijunjie
+minimumIdle=5
+maximumPoolSize=10
+```
+```java
+// create properties set
+Properties hikariProperties = new Properties();
+// read properties file
+InputStream propertiesInputStream = this.getClass().getClassLoader().getResourceAsStream("db_h.properties");
+hikariProperties.load(propertiesInputStream);
+// create HikariConfig object with properties set
+HikariConfig hikariConfig = new HikariConfig(hikariProperties);
+// create HikariDataSource with HikariConfig
+HikariDataSource hds = new HikariDataSource(hikariConfig);
 ```
