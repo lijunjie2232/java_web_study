@@ -27,7 +27,7 @@ public interface SysUserDao {
      * @param user SysUser object
      * @return affect row == 0 means not succeed yet
      */
-    int addUser(SysUser user);
+    SysUser addUser(SysUser user);
 
     /**
      * update user

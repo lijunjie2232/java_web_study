@@ -14,5 +14,6 @@
 <a href="jdbcquick">jdbcquick</a><br/>
 <a href="jdbcinject">jdbcinject</a><br/>
 <a href="jdbcprepared">jdbcprepared</a><br/>
+<a href="signin.jsp">signintest</a><br/>
 </body>
 </html>

@@ -758,14 +758,18 @@ public class BaseDao {
                 int columnCount = rsmd.getColumnCount();
                 while (rs.next()) {
                     T t = clazz.getDeclaredConstructor().newInstance();
-                    for (int j = 0; j < columnCount; j++) {
-                        String fieldName = rsmd.getColumnName(j + 1);
-                        Field field = clazz.getField(fieldName);
-                        field.set(t, rsmd.getColumnLabel(j + 1));
+                    for (int i = 1; i <= columnCount; i++) {
+                        String fieldName = rsmd.getColumnLabel(i);
+                        Field field = clazz.getDeclaredField(fieldName);
+                        field.setAccessible(true);
+                        field.set(t, rs.getObject(i));
+                        field.setAccessible(false);
                     }
                     clazzList.add(t);
                 }
             }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
         JDBCUtilWithThreadLocal.release();
         return clazzList;
@@ -780,7 +784,7 @@ public class BaseDao {
      * @return query result
      * @throws
      */
-    public <T> T executeFirstQuery(Class<T> clazz, String sql, Object... params) throws Exception {
+    public <T> T executeQuery4OneRow(Class<T> clazz, String sql, Object... params) throws Exception {
         List<T> result = this.executeQuery(clazz, sql, params);
         if (result.size() > 0) {
             return result.get(0);
