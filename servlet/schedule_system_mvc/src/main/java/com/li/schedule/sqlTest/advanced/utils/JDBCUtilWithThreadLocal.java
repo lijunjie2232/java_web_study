@@ -24,7 +24,7 @@ import java.util.Properties;
  * 4. bind one connectino to one thread
  */
 public class JDBCUtilWithThreadLocal {
-    private static DataSource ds;
+    private static volatile DataSource ds;
     private static ThreadLocal<Connection> threadConn = new ThreadLocal<>();
 
     private static void genDataSource() {

@@ -23,7 +23,7 @@ import java.util.Properties;
  * 3. recycle connection
  */
 public class JDBCUtil {
-    private static DataSource ds;
+    private static volatile DataSource ds;
 
     private static void genDataSource() {
         try {
