@@ -1,4 +1,4 @@
-package com.li.schedule.sqlTest;
+package com.li.schedule.sqlTest.daoTest;
 
 import com.li.schedule.dao.impl.BaseDao;
 import com.li.schedule.dao.impl.SysUserDaoImpl;
@@ -28,7 +28,11 @@ public class SysUserDaoImplTest {
         SysUser user = new SysUser(3, "user0", BaseDao.MD5("user0"), null);
         System.out.println(sysUserDao.updateUser(user));
     }
-//    @Test
+    @Test
+    public void testDeleteById(){
+        SysUserDaoImpl sysUserDao = new SysUserDaoImpl();
+        System.out.println(sysUserDao.deleteByUid(7));
+    }
     @Test
     public void testMD5(){
         SysUserDaoImpl sysUserDao = new SysUserDaoImpl();

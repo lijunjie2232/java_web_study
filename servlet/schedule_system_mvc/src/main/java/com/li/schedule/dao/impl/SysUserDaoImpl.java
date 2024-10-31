@@ -63,6 +63,12 @@ public class SysUserDaoImpl extends BaseDao implements SysUserDao {
 
     @Override
     public int deleteByUid(Integer uid) {
+        String sql = "DELETE FROm `sys_user` WHERE `uid`=?";
+        try {
+            return this.executeUpdate(sql, uid);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         return 0;
     }
 }
