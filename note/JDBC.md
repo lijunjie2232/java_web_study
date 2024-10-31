@@ -27,6 +27,9 @@
     - [Use ThreadLocal to bind a connection to a thread](#use-threadlocal-to-bind-a-connection-to-a-thread)
     - [DAO and BaseDAO](#dao-and-basedao)
       - [A simple BaseDAO](#a-simple-basedao)
+    - [Transaction](#transaction)
+      - [Isolation level:](#isolation-level)
+      - [JDBC transaction](#jdbc-transaction)
 ## JDBC provides interaction
 ## Use JDBC in project
 ### Environment prepare
@@ -857,6 +860,90 @@ public class SysUserDaoImpl extends BaseDao implements SysUserDao {
             e.printStackTrace();
         }
         return 0;
+    }
+}
+```
+### Transaction
+- type sql cmd `SHOW VARIABLES LIKE 'autocommit'` to check if transaction commit automaticly feature is enabled
+- type sql cmd `SET autocommit = FALSE` or `SET autocommit = 0` to disable transaction commit automaticly feature
+- sql transaction oprations:
+  - transactin features:
+    - Atomicity: 事务的整个过程如原子操作一样，最终要么全部成功，或者全部失败，这个原子性是从最终结果来看的，从最终结果来看这个过程是不可分割的。
+    - Aconsistency: 一个事务必须使数据库从一个一致性状态变换到另一个一致性状态。
+    - Isolation: 一个事务的执行不能被其他事务干扰。
+    - Durability: 一个事务一旦提交，他对数据库中数据的改变就应该是永久性的。
+  - `COMMIT` commit manually above sql operations
+  - `ROLLBACK` discommit all sql operations above
+#### Isolation level:
+- 读未提交：read uncommitted
+- 读已提交：read committed
+- 可重复读：repeatable read
+- 串行化：serializable, 会让并发的事务串行执行（多个事务之间读写、写读、写写会产生互斥，效果就是串行执行，多个事务之间的读读不会产生互斥）。
+- check isolation level:
+```sql
+show variables like 'transaction_isolation';
+```
+- modify isolation level in my.init setting `transaction-isolation=[isolation_level]`
+
+| 隔离级别         | 脏读可能性 | 不可重复读可能性 | 幻读可能性 |
+| ---------------- | ---------- | ---------------- | ---------- |
+| READ-UNCOMMITTED | 有         | 有               | 有         |
+| READ-COMMITTED   | 无         | 有               | 有         |
+| REPEATABLE-READ  | 无         | 无               | 有         |
+| SERIALIZABLE     | 无         | 无               | 无         |
+- 脏读 (Dirty Read): 一个事务会读到另一个事务更新后但未提交的数据
+- 不可重复读: 在同一事务中，多次读取同一数据返回的结果有所不同(其他事务修改导致)
+- 幻读： 由于可重复读，其他事务实时提交的更改无法获取，导致本事务接下来的更改与其他事务刚刚提交的更改冲突
+
+#### JDBC transaction
+- ThreadLocal must be used to get Connection object
+- key code piece
+```java
+// JDBCUtilWithThreadLocal.java
+// change release to fix connection auto commit
+public static void release() throws Exception {
+    Connection conn = threadConn.get();
+    if (conn != null && conn.getAutoCommit()) {
+        threadConn.remove();
+        conn.close();
+    } else {
+        System.out.println("change connection autocommit to true before release");
+    }
+}
+```
+```java
+@Test
+public void JDBCTransactionTest() throws SQLException {
+    Connection conn = null;
+    try {
+        AccountDaoImpl accountDaoImpl = new AccountDaoImpl();
+        Account ac_a = accountDaoImpl.selectById(1);
+        Account ac_b = accountDaoImpl.selectById(2);
+        System.out.println(ac_a);
+        System.out.println(ac_b);
+        conn = JDBCUtilWithThreadLocal.getConnection();
+        System.out.println(conn);
+        // disable auto commit
+        conn.setAutoCommit(false);
+        accountDaoImpl.balanceChange(ac_b, 10000.0);
+        System.out.println(accountDaoImpl.selectById(ac_b.getId()));
+        accountDaoImpl.balanceChange(ac_a, -10000.0);
+        System.out.println(accountDaoImpl.selectById(ac_a.getId()));
+        conn.commit();
+    } catch (Exception e) {
+        e.printStackTrace();
+        if (conn != null) {
+            System.out.println("rollback ...");
+            // rollback transaction if get error
+            conn.rollback();
+        }
+    } finally {
+        if (conn != null) {
+            System.out.println("do finally routine ...");
+            // enable auto commit
+            conn.setAutoCommit(true);
+            JDBCUtilWithThreadLocal.release();
+        }
     }
 }
 ```

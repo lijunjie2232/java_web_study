@@ -58,9 +58,11 @@ public class JDBCUtilWithThreadLocal {
 
     public static void release() throws SQLException {
         Connection conn = threadConn.get();
-        if (conn != null) {
+        if (conn != null && conn.getAutoCommit()) {
             threadConn.remove();
             conn.close();
+        } else {
+            System.out.println("change connection autocommit to true before release");
         }
     }
 
@@ -75,7 +77,7 @@ public class JDBCUtilWithThreadLocal {
             threads.add(new Thread(() -> {
                 System.out.println(Thread.currentThread().getId());
                 System.out.println(JDBCUtilWithThreadLocal.getDataSource());
-                for (int j = 0; j < 10; j ++) {
+                for (int j = 0; j < 10; j++) {
                     try {
                         Connection conn = JDBCUtilWithThreadLocal.getConnection();
                         System.out.println(String.format("[threadId]: %d, [Connection]: %s", Thread.currentThread().getId(), conn));

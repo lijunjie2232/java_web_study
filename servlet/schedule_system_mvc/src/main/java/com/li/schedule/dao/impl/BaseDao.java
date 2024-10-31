@@ -21,6 +21,7 @@ public class BaseDao {
      */
     public int executeUpdate(String sql, Object... params) throws Exception {
         Connection conn = JDBCUtilWithThreadLocal.getConnection();
+        System.out.println(String.format("[Connection]: %s, [autoCommit]: %s" , conn, conn.getAutoCommit()));
         int row = 0;
         try (PreparedStatement ps = conn.prepareStatement(sql)) {
             for (int i = 0; i < params.length; i++) {
