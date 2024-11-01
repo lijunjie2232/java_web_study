@@ -45,7 +45,8 @@
   - [MVC](#mvc)
     - [POJO:](#pojo)
     - [lombok plugin](#lombok-plugin)
-    - [DAO(Data access Object)](#daodata-access-object)
+    - [DAO (Data access Object)](#dao-data-access-object)
+    - [Service ()](#service-)
 
 
 ---
@@ -1055,8 +1056,12 @@ public class SysUser implements Serializable {
 }
 ```
 
-### DAO(Data access Object)
+### DAO (Data access Object)
 - a dao class has all needed operations to one corresponding sql table
-- first `interface`, then implements: `SysUserDao`(interface) -> `SysUserDaoImpl`(dao class)
+- first `interface`, then implements: `SysUserDao`(dao interface) -> `SysUserDaoImpl`(dao class)
 - **docs should be writen in interface**
+
+### Service ()
+- a service foucus on one sql table, handles request and checks data
+- first `interface`, then implements: `SysUserService`(service interface) -> `SysUserServiceImpl`(service class)
 

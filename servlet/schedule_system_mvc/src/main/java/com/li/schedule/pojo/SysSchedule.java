@@ -14,15 +14,11 @@ import java.io.Serializable;
 // @EqualsAndHashCode
 // @ToString
 @Data//@Data = @Getter + @Setter + @EqualsAndHashCode + @ToString
-public class SysSchedule implements Serializable, SysScheduleDao {
+public class SysSchedule implements Serializable {
 
     private Integer sid;
     private Integer uid;
     private String title;
-    private Integer completed;
+    private Integer completed=0;
 
-    @Override
-    public int addSchedule(SysSchedule schedule) {
-        return 0;
-    }
 }

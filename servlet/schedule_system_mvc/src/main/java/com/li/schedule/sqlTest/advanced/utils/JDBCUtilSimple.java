@@ -22,13 +22,13 @@ import java.util.Properties;
  * 2. get connection
  * 3. recycle connection
  */
-public class JDBCUtil {
+public class JDBCUtilSimple {
     private static volatile DataSource ds;
 
     private static void genDataSource() {
         try {
             Properties prop = new Properties();
-            InputStream in = JDBCUtil.class.getClassLoader().getResourceAsStream("db_h.properties");
+            InputStream in = JDBCUtilSimple.class.getClassLoader().getResourceAsStream("db_h.properties");
             prop.load(in);
             HikariConfig config = new HikariConfig(prop);
             ds = new HikariDataSource(config);
@@ -63,8 +63,8 @@ public class JDBCUtil {
             final String emp_id = String.valueOf(i);
             threads.add(new Thread(() -> {
                 System.out.println(Thread.currentThread().getId());
-                try (Connection conn = JDBCUtil.getConnection()) {
-                    System.out.println(JDBCUtil.getDataSource());
+                try (Connection conn = JDBCUtilSimple.getConnection()) {
+                    System.out.println(JDBCUtilSimple.getDataSource());
                     System.out.println(conn);
                     Thread.sleep(2000);
                     try (PreparedStatement ps = conn.prepareStatement("SELECT * FROM `t_emp` WHERE `emp_id`=?")) {
