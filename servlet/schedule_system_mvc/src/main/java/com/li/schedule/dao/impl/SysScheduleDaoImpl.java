@@ -97,6 +97,15 @@ public class SysScheduleDaoImpl extends BaseDao implements SysScheduleDao {
         }
     }
 
+    public int updateSchedule(SysSchedule schedule) {
+        String sql = "UPDATE `sys_schedule` SET `title`=?, `completed`=? WHERE `sid`=?";
+        try {
+            return this.executeUpdate(sql, schedule.getTitle(), schedule.getCompleted(), schedule.getSid());
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
     public int removeSchedule(SysSchedule schedule) {
         String sql = "DELETE FROM `sys_schedule` WHERE `sid`=?";
         try {

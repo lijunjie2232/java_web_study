@@ -75,6 +75,12 @@ public interface SysScheduleDao {
     int completeSchedule(SysSchedule schedule);
 
     /**
+     * update schedule info
+     * @param schedule
+     * @return
+     */
+    int updateSchedule(SysSchedule schedule);
+    /**
      * set a schedule to uncomplete
      *
      * @param schedule: SysSchedule obejct

@@ -46,7 +46,9 @@
     - [POJO:](#pojo)
     - [lombok plugin](#lombok-plugin)
     - [DAO (Data access Object)](#dao-data-access-object)
-    - [Service ()](#service-)
+    - [Service](#service)
+    - [Controller](#controller)
+      - [Base controller](#base-controller)
 
 
 ---
@@ -1061,7 +1063,36 @@ public class SysUser implements Serializable {
 - first `interface`, then implements: `SysUserDao`(dao interface) -> `SysUserDaoImpl`(dao class)
 - **docs should be writen in interface**
 
-### Service ()
-- a service foucus on one sql table, handles request and checks data
+### Service
+- a service foucus on one sql table, handles requests from controller and checks data
 - first `interface`, then implements: `SysUserService`(service interface) -> `SysUserServiceImpl`(service class)
 
+### Controller
+- a controller bases on a servlet, handles requests form frontend, call service to process data and response result
+
+#### Base controller
+```java
+public class BaseController extends HttpServlet {
+
+    @Override
+    protected void service(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        String[] uriSp = req.getRequestURI().split("/");
+        String methodName = uriSp[uriSp.length - 1];
+
+        try {
+            if (methodName.equals("service"))
+                throw new Exception("invalid api");
+            Method method = this.getClass().getDeclaredMethod(methodName, HttpServletRequest.class, HttpServletResponse.class);
+            method.invoke(this, req, resp);
+        } catch (InvocationTargetException e) {
+            throw new RuntimeException(e);
+        } catch (NoSuchMethodException e) {
+            throw new RuntimeException(e);
+        } catch (IllegalAccessException e) {
+            throw new RuntimeException(e);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+}
+```
