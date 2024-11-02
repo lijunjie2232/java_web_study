@@ -15,5 +15,11 @@
 <a href="jdbcinject">jdbcinject</a><br/>
 <a href="jdbcprepared">jdbcprepared</a><br/>
 <a href="signin.jsp">signintest</a><br/>
+<a href="schedule">usertest</a><br/>
+
+<p>------------sysuser test------------</p>
+<a href="login.jsp">login</a><br/>
+<a href="sign.jsp">sign</a><br/>
+<a href="usermanager.jsp">manage</a><br/>
 </body>
 </html>

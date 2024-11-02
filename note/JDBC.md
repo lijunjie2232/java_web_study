@@ -21,7 +21,7 @@
     - [Hikari](#hikari)
         - [Init DataSource](#init-datasource-1)
           - [method 1: use set method](#method-1-use-set-method-1)
-          - [method 1: use set method](#method-1-use-set-method-2)
+          - [method 2: via db.properties](#method-2-via-dbproperties-1)
   - [Advanced JDBC Utils](#advanced-jdbc-utils)
     - [A simple JDBC Util class](#a-simple-jdbc-util-class)
     - [Use ThreadLocal to bind a connection to a thread](#use-threadlocal-to-bind-a-connection-to-a-thread)
@@ -503,7 +503,7 @@ hds.setPassword("lijunjie");
 hds.setMinimumIdle(5);
 hds.setMaximumPoolSize(10);
 ```
-###### method 1: use set method
+###### method 2: via db.properties
 1. create and read properties file
 2. use properties file to create `HikariConfig`
 3. use `HikariConfig` to create `HikariDataSource`

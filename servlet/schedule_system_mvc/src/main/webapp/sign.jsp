@@ -1,17 +1,17 @@
 <%--
   Created by IntelliJ IDEA.
   User: 25335
-  Date: 2024/10/30
-  Time: 下午11:30
+  Date: 2024/11/1
+  Time: 下午4:53
   To change this template use File | Settings | File Templates.
 --%>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <html>
 <head>
-    <title>Title</title>
+    <title>sign</title>
 </head>
 <body>
-<form action="signintest" method="post">
+<form action="user/sign" method="post">
     <label name="username">
         username:
         <input name="username" type="text"/>

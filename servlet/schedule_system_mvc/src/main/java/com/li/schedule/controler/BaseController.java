@@ -25,15 +25,17 @@ public class BaseController extends HttpServlet {
             if (methodName.equals("service"))
                 throw new Exception("invalid api");
             Method method = this.getClass().getDeclaredMethod(methodName, HttpServletRequest.class, HttpServletResponse.class);
+            method.setAccessible(true);
             method.invoke(this, req, resp);
-        } catch (InvocationTargetException e) {
-            throw new RuntimeException(e);
-        } catch (NoSuchMethodException e) {
-            throw new RuntimeException(e);
-        } catch (IllegalAccessException e) {
-            throw new RuntimeException(e);
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    public static HttpServletRequest setForwardMessage(HttpServletRequest req, String title, String message, String forward) {
+        req.setAttribute("title", title);
+        req.setAttribute("message", message);
+        req.setAttribute("forward", forward);
+        return req;
     }
 }

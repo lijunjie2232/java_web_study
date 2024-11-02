@@ -33,6 +33,18 @@ public class SysUserDaoImpl extends BaseDao implements SysUserDao {
     }
 
     @Override
+    public SysUser selectByUsername(String username) {
+        String sql = "SELECT * FROM `sys_user` WHERE `username`=?";
+        SysUser user = null;
+        try {
+            user = this.executeQuery4OneRow(SysUser.class, sql, username);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return user;
+    }
+
+    @Override
     public SysUser addUser(SysUser user) {
         String sql = "INSERT INTO `sys_user`(`username`, `password`) VALUES (?,?)";
         try {

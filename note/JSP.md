@@ -20,6 +20,10 @@
     - [out](#out)
     - [page](#page)
   - [JavaBean](#javabean)
+  - [EL (Expression Language)](#el-expression-language)
+  - [JSTL (JSP Standard Tag Library)](#jstl-jsp-standard-tag-library)
+    - [JSTL Examples](#jstl-examples)
+    - [LoopTagStatus](#looptagstatus)
 
 
 ---
@@ -525,5 +529,128 @@ public class Timer implements Serializable {
         this.timeZone = timeZone;
         System.out.println(timeZone);
     }
+}
+```
+## EL (Expression Language)
+- output info in jsp page, replacing jsp expression
+- if null, el outputs "" while jsp outputs "null"
+- Servlet 3.0 ignores el by default
+- use `map["key"]` to get value from map, use `obj.member` to get a member from a object instance
+
+## JSTL (JSP Standard Tag Library)
+- to replace jsp script
+### JSTL Examples
+```xml
+<%--out--%>
+<c:out value="${userList[0]}"/>
+
+<%--set/remove--%>
+<c:set scope="page" var="users" value="${userList}"/><br/>
+${userList[0]}<br/>
+<c:remove scope="page" var="users"/><br/><br/>
+${userList[0]}<br/>
+
+<%--if--%>
+<c:if test="${userList.size() > 1}">${userList.size()}</c:if><br/>
+
+<%--choose-when--%>
+<%--html annotation could not in choose--%>
+<c:choose>
+    <c:when test="${userList.size() le 3}"><=3</c:when>
+    <c:when test="${userList.size() le 5}"><=5</c:when>
+    <c:otherwise>>5</c:otherwise>
+</c:choose>
+<br/>
+
+<%--forEach--%>
+<c:forEach begin="1" end="10" step="2" var="i">
+    <button>${i}</button>
+</c:forEach>
+<br/>
+
+<p>full table</p>
+<table style="border-width: 1px">
+    <tr>
+        <th>id</th>
+        <th>username</th>
+    </tr>
+    <c:forEach items="${userList}" var="item">
+        <tr>
+            <td>${item.uid}</td>
+            <td>${item.username}</td>
+        </tr>
+    </c:forEach>
+</table>
+
+<p>table index:[1-3]</p>
+<table style="border-width: 1px">
+    <tr>
+        <th>id</th>
+        <th>username</th>
+    </tr>
+    <c:forEach begin="1" end="3" items="${userList}" var="item">
+        <tr>
+            <td>${item.uid}</td>
+            <td>${item.username}</td>
+        </tr>
+    </c:forEach>
+</table>
+
+<%
+    Map<String, String> testMap = new HashMap<>();
+    testMap.put("key1", "value1");
+    testMap.put("key2", "value2");
+    testMap.put("key3", "value3");
+    request.setAttribute("testMap", testMap);
+%>
+<table style="border-width: 1px">
+    <tr>
+        <th>key</th>
+        <th>value</th>
+        <th>status</th>
+    </tr>
+    <c:forEach items="${testMap}" var="entry" varStatus="status">
+        <tr>
+            <td>${entry.key}</td>
+            <td>${entry.value}</td>
+            <td>${status}</td>
+        </tr>
+    </c:forEach>
+</table>
+
+<%--url--%>
+<c:url value="/user/login" var="loginUrl">
+    <c:param name="username" value="admin"/>
+    <c:param name="password" value="admin"/>
+</c:url>
+<a href="${loginUrl}">login</a>
+```
+### LoopTagStatus
+- state `varStatus="status"` in `<c:forEach>` tag get a object implements `LoopTagStatus`
+```java
+public interface LoopTagStatus {
+    // get current object of c:forEach tag
+    Object getCurrent();
+
+    // get current index of c:forEach tag
+    int getIndex();
+
+    // get total size of item up to now
+    int getCount();
+
+    // is current item the first
+    boolean isFirst();
+
+    // is current item the latest
+    boolean isLast();
+
+    // get begin of foreach tag
+    Integer getBegin();
+
+    // get end of foreach tag
+    Integer getEnd();
+
+    // get step of foreach tag
+    Integer getStep();
 }
 ```

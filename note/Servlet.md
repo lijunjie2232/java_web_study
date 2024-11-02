@@ -1083,6 +1083,7 @@ public class BaseController extends HttpServlet {
             if (methodName.equals("service"))
                 throw new Exception("invalid api");
             Method method = this.getClass().getDeclaredMethod(methodName, HttpServletRequest.class, HttpServletResponse.class);
+            method.setAccessible(true);
             method.invoke(this, req, resp);
         } catch (InvocationTargetException e) {
             throw new RuntimeException(e);

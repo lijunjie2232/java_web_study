@@ -21,6 +21,12 @@ public interface SysUserDao {
      * @return target user
      */
     SysUser selectByUid(Integer uid);
+    /**
+     * get one user by username
+     * @param username: username of user
+     * @return target user
+     */
+    SysUser selectByUsername(String username);
 
     /**
      * add user to table sys_user
