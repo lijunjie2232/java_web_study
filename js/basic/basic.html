@@ -6,7 +6,7 @@
 
 <body></body>
 <script>
-    console.log("--------- == and === ---------");
+    console.log("--------- == and === ---------")
     console.log("1 == 1:", 1 == 1)
     console.log("1 == '1':", 1 == '1')
     console.log("1 == true:", 1 == true)
@@ -15,17 +15,17 @@
     console.log("1 === '1':", 1 === '1')
     console.log("1 === true:", 1 === true)
 
-    console.log("--------- for each ---------");
+    console.log("--------- for each ---------")
     var arr = ["java", "python", "c++"]
     for (var index in arr) {
         console.log("index: ", arr[index])
     }
 
 
-    console.log("--------- function state ---------");
+    console.log("--------- function state ---------")
     // method 1:(traditional)
     function sum(a, b) {
-        return a + b;
+        return a + b
     }
     // method 2:
     var sum = function (a, b) {
@@ -42,7 +42,7 @@
     }
     console.log(invoke(sum, 1, 2))
 
-    console.log("--------- JS object ---------");
+    console.log("--------- JS object ---------")
     // method 1
     // create object
     var myObject = new Object()
@@ -68,9 +68,86 @@
     myObject.myfunc()
 
 
-    console.log("--------- JS object ---------");
-    console.log(JSON.parse('{"name":"li", "age": 0}'));
+    console.log("--------- JS object ---------")
+    console.log(JSON.parse('{"name":"li", "age": 0}'))
     console.log(JSON.stringify(myObject))
+
+    console.log("--------- Array object ---------")
+    var arr = new Array()
+    console.log(arr.length)
+    arr[arr.length] = "java"
+    arr[arr.length] = "python"
+    arr[arr.length] = "c++"
+    console.log(arr)
+    console.log("arr.length: ", arr.length)
+    arr.length = 5
+    console.log("arr.length = 5: ", arr.length)
+    console.log(arr)
+    for (var i in arr) {
+        console.log(i, ": ", arr[i])
+    }
+    var arr = new Array("java", "python", "c++")
+    console.log(arr.length)
+    console.log(arr)
+    console.log("includes c++:", arr.includes("c++"))
+    console.log("index of c++:", arr.indexOf("c++"))
+    console.log("index of c:", arr.indexOf("c"))
+
+    console.log(arr.join(','))
+
+    console.log(Array.isArray(arr))
+
+    console.log(arr.keys())
+
+    arr.map((value, index, array) => {
+        console.log("value: ", value, ", index: ", index, ", array:", array)
+    })
+
+    console.log(arr.reverse())
+    arr_r = arr.reverse()
+    console.log(arr_r);
+    console.log(arr)
+
+    console.log(arr.push("c"))
+    console.log(arr)
+    console.log(arr.pop())
+    console.log(arr)
+
+    console.log(arr.shift())
+    console.log(arr)
+    console.log(arr.unshift("java"))
+    console.log(arr)
+
+    console.log(arr.slice(1, 2))
+
+    console.log(arr.some((value, index, array) => {
+        console.log("value: ", value, ", index: ", index, ", array:", array)
+        return false
+    }))
+
+
+    console.log(arr.reduce((previousItem, currentItem, currentIndex, array) => {
+        console.log("currentIndex: ", currentIndex)
+        console.log("previousItem:", previousItem)
+        return previousItem + "[:reduce:]" + currentItem
+    }))
+
+    console.log(arr.reduce((previousItem, currentItem, currentIndex, array) => { return previousItem + "[:reduce:]" + currentItem }))
+
+    console.log(arr.filter((item) => {return item !== "c++"}))
+
+    console.log(arr)
+    console.log(arr.splice(1, 1, "py", "c"))
+    console.log(arr)
+    console.log(arr.splice(1, 0, "py", "c"))
+    console.log(arr)
+    console.log(arr.splice(-1, 0, "typescript"))
+    console.log(arr)
+    
+    
+
+
+
 
 
 </script>
