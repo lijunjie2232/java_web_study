@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>ajaxtest</title>
+</head>
+<body>
+<button onclick="xhrGet()">xhr get</button>
+<button onclick="xhrPost()">xhr post</button>
+</body>
+<script language="JavaScript">
+    const xhrGet = () => {
+        const xhr = new XMLHttpRequest();
+        xhr.withCredentials = true;
+
+        // xhr.onreadystatechange = () => {
+        //     if (xhr.readyState === 4) {
+        //         if ((xhr.status >= 200 && xhr.status < 300) || xhr.status === 304) {
+        //             console.log(
+        //                 JSON.parse(xhr.response)
+        //             )
+        //         } else {
+        //             console.log(xhr.response)
+        //         }
+        //     }
+        // }
+        xhr.addEventListener("readystatechange", () => {
+            if (xhr.readyState === 4) {
+                if ((xhr.status >= 200 && xhr.status < 300) || xhr.status === 304) {
+                    console.log(
+                        JSON.parse(xhr.response)
+                    )
+                } else {
+                    console.log(xhr.response)
+                }
+            }
+        });
+
+        xhr.open("GET", "/ajax/api?param1=value1&param2=value2");
+        xhr.setRequestHeader("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/118.0.0.0 Safari/537.36");
+
+        xhr.send();
+    }
+    const xhrPost = () => {
+        const xhr = new XMLHttpRequest();
+        xhr.withCredentials = true;
+
+        xhr.onreadystatechange = () => {
+            if (xhr.readyState === 4) {
+                if ((xhr.status >= 200 && xhr.status < 300) || xhr.status === 304) {
+                    console.log(
+                        JSON.parse(xhr.response)
+                    )
+                } else {
+                    console.log(xhr.response)
+                }
+            }
+        }
+
+        xhr.open("POST", "/ajax/api", true);
+        xhr.setRequestHeader("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/118.0.0.0 Safari/537.36");
+
+        // // json raw
+        // var data = JSON.stringify({
+        //     "k1": "v1"
+        // });
+        // xhr.setRequestHeader("Content-Type", "application/json");
+        //
+        // // form data
+        // var data = new FormData();
+        // data.append("k1", "v1");
+        // data.append("myfile", fileInput.files[0]);
+
+        // x-www-form-urlencoded
+        var data = "k1=v1&k2=v2";
+        xhr.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+
+        xhr.send(data);
+    }
+</script>
+</html>

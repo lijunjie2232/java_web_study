@@ -14,13 +14,20 @@
 <form action="user/sign" method="post">
     <label name="username">
         username:
-        <input name="username" type="text"/>
+        <input name="username" id="username" type="text" /><br/>
+        <p id="usernameInfo"></p>
     </label><br/>
     <label name="password">
         password:
-        <input name="password" type="password"/>
+        <input name="password" id="password" type="password"/><br/>
+        <p id="passwordInfo"></p>
     </label><br/>
     <input type="submit" value="signin"/><br/>
 </form>
 </body>
+<script language="JavaScript">
+document.getElementById("username").on("focusout", ()=>{
+    console.log("abort")
+})
+</script>
 </html>

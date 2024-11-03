@@ -21,5 +21,8 @@
 <a href="login.jsp">login</a><br/>
 <a href="sign.jsp">sign</a><br/>
 <a href="usermanager.jsp">manage</a><br/>
+
+<p>------------ajax test------------</p>
+<a href="ajaxtest.html">ajaxtest</a><br/>
 </body>
 </html>

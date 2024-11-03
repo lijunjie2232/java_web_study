@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+
+<head>
+    <title>basic js</title>
+</head>
+
+<body></body>
+<script>
+    console.log("--------- == and === ---------");
+    console.log("1 == 1:", 1 == 1)
+    console.log("1 == '1':", 1 == '1')
+    console.log("1 == true:", 1 == true)
+
+    console.log("1 === 1:", 1 === 1)
+    console.log("1 === '1':", 1 === '1')
+    console.log("1 === true:", 1 === true)
+
+    console.log("--------- for each ---------");
+    var arr = ["java", "python", "c++"]
+    for (var index in arr) {
+        console.log("index: ", arr[index])
+    }
+
+
+    console.log("--------- function state ---------");
+    // method 1:(traditional)
+    function sum(a, b) {
+        return a + b;
+    }
+    // method 2:
+    var sum = function (a, b) {
+        return a + b
+    }
+    // method 3: (es)
+    var sum = (a, b) => {
+        return a + b
+    }
+
+    // function as argument:
+    var invoke = (func, ...args) => {
+        return func(...args)
+    }
+    console.log(invoke(sum, 1, 2))
+
+    console.log("--------- JS object ---------");
+    // method 1
+    // create object
+    var myObject = new Object()
+    // object attribute
+    myObject.name = "li"
+    myObject.age = 0
+    console.log(myObject.age)
+    // object method
+    myObject.myfunc = () => {
+        console.log("myobject function")
+    }
+    myObject.myfunc()
+
+    // method 2
+    var myObject = {
+        name: "li",
+        age: 0,
+        myfunc: () => {
+            console.log("myobject function")
+        }
+    }
+    console.log(myObject.age)
+    myObject.myfunc()
+
+
+    console.log("--------- JS object ---------");
+    console.log(JSON.parse('{"name":"li", "age": 0}'));
+    console.log(JSON.stringify(myObject))
+
+
+</script>
