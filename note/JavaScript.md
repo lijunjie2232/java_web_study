@@ -3,18 +3,24 @@
 - [for each](#for-each)
 - [function state](#function-state)
 - [JS object](#js-object)
-- [JSON in JS](#json-in-js)
-- [JS Array](#js-array)
-  - [api of Array](#api-of-array)
-- [JS Boolean](#js-boolean)
-- [JS Date](#js-date)
-- [JS Math](#js-math)
-  - [Math 对象属性](#math-对象属性)
-  - [Math 对象方法](#math-对象方法)
-- [JS Number](#js-number)
-  - [Number 对象属性](#number-对象属性)
-  - [Number 对象方法](#number-对象方法)
-- [JS String](#js-string)
+  - [JSON in JS](#json-in-js)
+  - [JS Array](#js-array)
+    - [api of Array](#api-of-array)
+  - [JS Boolean](#js-boolean)
+  - [JS Date](#js-date)
+  - [JS Math](#js-math)
+    - [Math 对象属性](#math-对象属性)
+    - [Math 对象方法](#math-对象方法)
+  - [JS Number](#js-number)
+    - [Number 对象属性](#number-对象属性)
+    - [Number 对象方法](#number-对象方法)
+  - [JS String](#js-string)
+    - [JS String Template](#js-string-template)
+- [JS Event](#js-event)
+  - [mouse event](#mouse-event)
+  - [keyboard event](#keyboard-event)
+  - [键盘事件](#键盘事件)
+  - [Full event api](#full-event-api)
 
 
 # Basic Data Operation
@@ -94,7 +100,7 @@ var myObject = {
 }
 ```
 
-# JSON in JS
+## JSON in JS
 - `JSON` is an inner object of JavaScript
 - `JSON object` dose not exist, it is a common object in js, operation is the same as common js object
 - use `JSON.parse(string)` to transform json string into object
@@ -105,14 +111,14 @@ console.log(j1)
 console.log(JSON.stringify(j1))
 ```
 
-# JS Array
+## JS Array
 - create: `var arr = new Array("java", "python", "c++")`
 - add：
   - `var newLength = arr.push("c")` = `arr[arr.length] = "java"`
   - `var newLength = arr.unshift("java")`
 - modify: `arr[0] = "java"`
 - delete: `var last = arr.pop()`
-## api of Array
+### api of Array
 - includes: `arr.includes("c++")`
 - indexOf & lastIndexOf: get the first & last index of an item
 - isArray: `Array.isArray(arr)`
@@ -206,13 +212,13 @@ console.log(arr.splice(-1, 0, "typescript"))
 console.log(arr)
 ```
 
-# JS Boolean
+## JS Boolean
 ```javascript
 var bool = new Boolean(0)
 var boolValue = bool.valueOf()
 ```
 
-# JS Date
+## JS Date
 
 | 方法                                                                               | 描述                                                                                                       |
 | :--------------------------------------------------------------------------------- | :--------------------------------------------------------------------------------------------------------- |
@@ -272,9 +278,9 @@ var boolValue = bool.valueOf()
   4. day month year: `04 Nov 2024`
 - Default(UTC) standard Date string: `Mon Nov 04 2024 14:06:27 GMT+0900`
 
-# JS Math
+## JS Math
 - Most of functions in JavaScript Math object are the same as Java
-## Math 对象属性
+### Math 对象属性
 
 | 属性                                                       | 描述                                                    |
 | :--------------------------------------------------------- | :------------------------------------------------------ |
@@ -287,7 +293,7 @@ var boolValue = bool.valueOf()
 | [SQRT1_2](https://www.runoob.com/jsref/jsref-sqrt1-2.html) | 返回 2 的平方根的倒数（约等于 0.707）。                 |
 | [SQRT2](https://www.runoob.com/jsref/jsref-sqrt2.html)     | 返回 2 的平方根（约等于 1.414）。                       |
 
-## Math 对象方法
+### Math 对象方法
 
 | 方法                                                            | 描述                                                          |
 | :-------------------------------------------------------------- | :------------------------------------------------------------ |
@@ -312,9 +318,9 @@ var boolValue = bool.valueOf()
 | [tanh(x)](https://www.runoob.com/jsref/jsref-tanh.html)         | 返回一个数的双曲正切函数值。                                  |
 | [trunc(x)](https://www.runoob.com/jsref/jsref-trunc.html)       | 将数字的小数部分去掉，只保留整数部分。                        |
 
-# JS Number
+## JS Number
 
-## Number 对象属性
+### Number 对象属性
 
 | 属性                                                                           | 描述                                   |
 | :----------------------------------------------------------------------------- | :------------------------------------- |
@@ -326,7 +332,7 @@ var boolValue = bool.valueOf()
 | [POSITIVE_INFINITY](https://www.runoob.com/jsref/jsref-positive-infinity.html) | 正无穷大，溢出时返回该值。             |
 | [prototype](https://www.runoob.com/jsref/jsref-prototype-num.html)             | 允许您可以向对象添加属性和方法。       |
 
-## Number 对象方法
+### Number 对象方法
 
 | 方法                                                                                              | 描述                                                 |
 | :------------------------------------------------------------------------------------------------ | :--------------------------------------------------- |
@@ -343,5 +349,61 @@ var boolValue = bool.valueOf()
 | parseInt                                                                                          | 将字符串转换为Int                                    |
 | parseFloat                                                                                        | 将字符串转换为Float                                  |
 
-# JS String
+## JS String
 - Most of functions in JavaScript String object are the same as Java
+
+### JS String Template
+- template str must states after all used variable has been stated
+```javascript
+const hello = ()=>{
+    return "str temp"
+}
+var name = "li"
+var age = 0
+
+let str =`
+Name:${name}
+age:${age}
+function:${hello()}
+sanmu: ${age > 30 ? 'over 30': 'under 30'}
+`
+console.log(str)
+```
+# JS Event
+- event of mouse / keyboard / form
+## mouse event
+| 属性                                                         | 描述                                   | DOM  |
+| :----------------------------------------------------------- | :------------------------------------- | :--- |
+| [onclick](https://www.runoob.com/jsref/event-onclick.html)   | 当用户点击某个对象时调用的事件句柄。   | 2    |
+| [oncontextmenu](https://www.runoob.com/jsref/event-oncontextmenu.html) | 在用户点击鼠标右键打开上下文菜单时触发 |      |
+| [ondblclick](https://www.runoob.com/jsref/event-ondblclick.html) | 当用户双击某个对象时调用的事件句柄。   | 2    |
+| [onmousedown](https://www.runoob.com/jsref/event-onmousedown.html) | 鼠标按钮被按下。                       | 2    |
+| [onmouseenter](https://www.runoob.com/jsref/event-onmouseenter.html) | 当鼠标指针移动到元素上时触发。         | 2    |
+| [onmouseleave](https://www.runoob.com/jsref/event-onmouseleave.html) | 当鼠标指针移出元素时触发               | 2    |
+| [onmousemove](https://www.runoob.com/jsref/event-onmousemove.html) | 鼠标被移动。                           | 2    |
+| [onmouseover](https://www.runoob.com/jsref/event-onmouseover.html) | 鼠标移到某元素之上。                   | 2    |
+| [onmouseout](https://www.runoob.com/jsref/event-onmouseout.html) | 鼠标从某元素移开。                     | 2    |
+| [onmouseup](https://www.runoob.com/jsref/event-onmouseup.html) | 鼠标按键被松开。                       | 2    |
+
+## keyboard event
+
+## 键盘事件
+
+| 属性                                                         | 描述                       | DOM  |
+| :----------------------------------------------------------- | :------------------------- | :--- |
+| [onkeydown](https://www.runoob.com/jsref/event-onkeydown.html) | 某个键盘按键被按下。       | 2    |
+| [onkeypress](https://www.runoob.com/jsref/event-onkeypress.html) | 某个键盘按键被按下并松开。 | 2    |
+| [onkeyup](https://www.runoob.com/jsref/event-onkeyup.html)   | 某个键盘按键被松开。       | 2    |
+
+```javascript
+function keydown(event){
+//表示键盘监听所触发的事件，同时传递传递参数event
+    document.write(event.keyCode);//keyCode表示键盘编码
+}
+//键盘监听，注意：在非ie浏览器和非ie内核的浏览器
+//参数1：表示事件，keydown:键盘向下按；参数2：表示要触发的事件
+document.addEventListener("keydown",keydown);
+```
+
+## [Full event api](https://www.runoob.com/jsref/dom-obj-event.html)
+

@@ -206,8 +206,22 @@
     console.log(Number.parseInt("1"))
     console.log(Number.parseFloat("1"))
     
+    console.log("--------- String Template ---------")
+    
+    const hello = ()=>{
+        return "str temp"
+    }
+    var name = "li"
+    var age = 0
 
-
+    let str =`
+    Name:${name}
+    age:${age}
+    function:${hello()}
+    sanmu: ${age >
+    30 ? 'over 30': 'under 30' }
+    `
+    console.log(str)
 
 
 
