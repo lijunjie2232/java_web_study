@@ -134,7 +134,7 @@
 
     console.log(arr.reduce((previousItem, currentItem, currentIndex, array) => { return previousItem + "[:reduce:]" + currentItem }))
 
-    console.log(arr.filter((item) => {return item !== "c++"}))
+    console.log(arr.filter((item) => { return item !== "c++" }))
 
     console.log(arr)
     console.log(arr.splice(1, 1, "py", "c"))
@@ -143,8 +143,78 @@
     console.log(arr)
     console.log(arr.splice(-1, 0, "typescript"))
     console.log(arr)
+
+    console.log("--------- Boolean object ---------")
+    var bool = new Boolean(1)
+    var boolValue = bool.valueOf()
+
+    console.log(bool)
+    console.log(boolValue)
+
+
+    console.log("--------- Date object ---------")
+    var d = new Date()
+    console.log(d)
+    console.log("getDate: ", d.getDate())
+    console.log("getDay: ", d.getDay())
+    console.log("getMonth: ", d.getMonth())
+    console.log("getFullYear: ", d.getFullYear())
+    console.log("getUTCFullYear: ", d.getUTCFullYear())
+
+    console.log("getTime: ", d.getTime())
+    console.log("getHours: ", d.getHours())
+    console.log("getMinutes: ", d.getMinutes())
+    console.log("getSeconds: ", d.getSeconds())
+    console.log("getMilliseconds: ", d.getMilliseconds())
+
+    console.log("getTimezoneOffset: ", d.getTimezoneOffset())
+    console.log("getUTCHours: ", d.getUTCHours())
+    console.log("getUTCMinutes: ", d.getUTCMinutes())
+    console.log("getUTCSeconds: ", d.getUTCSeconds())
+    console.log("getUTCMilliseconds: ", d.getUTCMilliseconds())
+
+    console.log("toDateString: ", d.toDateString())
+    console.log("toISOString: ", d.toISOString())
+    console.log("toJSON: ", d.toJSON())
+    console.log("toLocaleString: ", d.toLocaleString())
+    console.log("toLocaleDateString: ", d.toLocaleDateString())
+    console.log("toLocaleTimeString: ", d.toLocaleTimeString())
+    console.log("toString: ", d.toString())
+    console.log("toTimeString: ", d.toTimeString())
+    console.log("toUTCString: ", d.toUTCString())
+
+    console.log("vlaueOf: ", d.valueOf())
+
+    console.log("parse 01/02/2025: ", new Date(Date.parse("01/02/2025")))
+
+
+    console.log("--------- Math object ---------")
+    console.log("E: ", Math.E)
+    console.log("PI: ", Math.PI)
+    console.log("pow(2, 3): ", Math.pow(2, 3))
+    console.log("pow(3, 2): ", Math.pow(3, 2))
+    console.log("abs(-1): ", Math.abs(-1))
+    console.log("cos(Math.PI / 3): ", Math.cos(Math.PI / 3))
+    console.log("tan(Math.PI / 2): ", Math.tan(Math.PI / 2))
+
+    console.log("round(3.5): ", Math.round(3.5))
+    console.log("round(3.4): ", Math.round(3.4))
+
+    console.log("random: ", Math.random())
     
+    console.log("--------- Number object ---------")
+    console.log(Number.parseInt("1"))
+    console.log(Number.parseFloat("1"))
     
+
+
+
+
+
+
+
+
+
 
 
 
