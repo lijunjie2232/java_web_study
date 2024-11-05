@@ -16,6 +16,7 @@
     - [Number 对象方法](#number-对象方法)
   - [JS String](#js-string)
     - [JS String Template](#js-string-template)
+  - [JS RegExp](#js-regexp)
 - [JS Event](#js-event)
   - [mouse event](#mouse-event)
   - [keyboard event](#keyboard-event)
@@ -379,6 +380,12 @@ sanmu: ${age > 30 ? 'over 30': 'under 30'}
 `
 console.log(str)
 ```
+## JS RegExp
+- create: `var pattern = new RegExp("[0-9]+", "g")` or `var pattern = /[0-9]+/g`
+- test: `pattern.test("123321")`=>`true`, return boolean
+- match: `"123abc321".match(pattern)`=>`["123", "321"]`, return result Array
+- replace: `"abc123abc".replace(pattern, "321")`=>`"abc321abc"`
+
 # JS Event
 - event of mouse / keyboard / form
 ## mouse event

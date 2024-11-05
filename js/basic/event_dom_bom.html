@@ -114,6 +114,18 @@
     container.insertBefore(c3, container.children[1])
     // container.remove()
 
+    // re
+    var pattern = /[0-9]+/g
+    console.log(pattern.test("123321"))
+    var result = "123abc321".match(pattern)
+    for (var i in result) {
+        if (result[i])
+            console.log("[", i, "]: ", result[i])
+    }
+    console.log("abc123abc".replace(pattern, "321"))
+    
+
+
 
 </script>
 
