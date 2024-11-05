@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+
+<head>
+    <meta charset="utf-8">
+    <title>event test</title>
+</head>
+
+<body>
+    <button onclick="f1()" ondblclick="f2()">click->f1</button>
+    <input type="password" name="password" id="password" />
+    <select id="select">
+        <option value="0">0</option>
+        <option value="1">1</option>
+        <option value="2">2</option>
+    </select>
+    <p>123</p>
+    <form>
+        <input type="checkbox" id="v1" name="vehicle1" value="Bike">
+        <label for="vehicle1"> I have a bike </label><br>
+        <input type="checkbox" id="v2" name="vehicle2" value="Car">
+        <label for="vehicle2"> I have a car </label><br>
+        <input type="checkbox" id="v3" name="vehicle3" value="Boat">
+        <label for="vehicle3"> I have a boat </label><br>
+    </form>
+    <button onclick="alertTest()">click->alert</button>
+    <button onclick="promptTest()"">click->prompt</button>
+    <button onclick=" confirmTest()">click->confirm</button>
+    <a href="baidu.com">baidu</a>
+    <div id="container"><input name="username" type="text" id="username" value="" /></div>
+</body>
+<script lang="javascript">
+    const f1 = () => {
+        // alert("f1")
+        console.log("f1")
+    }
+    const f2 = () => {
+        // alert("f1")
+        console.log("f2")
+    }
+    document.getElementById("password").addEventListener("input", () => {
+        console.log("input: ", document.getElementById("password").value)
+    })
+    document.getElementById("password").addEventListener("focusin", () => {
+        console.log("focusin: ", document.getElementById("password").value)
+    })
+    document.getElementById("password").addEventListener("focus", () => {
+        console.log("focus: ", document.getElementById("password").value)
+    })
+    document.getElementById("password").addEventListener("focusout", () => {
+        console.log("focusout: ", document.getElementById("password").value)
+    })
+    document.getElementById("password").addEventListener("blur", () => {
+        console.log("blur: ", document.getElementById("password").value)
+    })
+    document.getElementById("password").addEventListener("change", () => {
+        console.log("change: ", document.getElementById("password").value)
+    })
+    document.getElementById("password").addEventListener("change", () => {
+        console.log("change: ", document.getElementById("password").value)
+    })
+    document.getElementById("v3").addEventListener("change", () => {
+        console.log("change: ", document.getElementById("v3").checked)
+    })
+    document.getElementById("select").addEventListener("change", () => {
+        console.log("change: ", document.getElementById("select").value)
+    })
+    document.addEventListener("copy", (event) => {
+        console.log("copy")
+        event.preventDefault()
+    })
+    document.addEventListener("cut", (event) => {
+        console.log("cut")
+        console.log(event)
+    })
+    document.addEventListener("paste", (event) => {
+        console.log("paste")
+        console.log(event)
+    })
+
+    const alertTest = () => {
+        alert("xxx")
+    }
+    const promptTest = () => {
+        console.log(prompt("xxx"))
+    }
+    const confirmTest = () => {
+        console.log(confirm("xxx"))
+    }
+
+    console.log("before 2 sec")
+    window.setTimeout(
+        () => {
+            console.log("after 2 sec")
+        },
+        2000
+    )
+    let container = document.getElementById("container")
+    let c1 = document.createElement("input")
+    c1.name = "password"
+    c1.value = ""
+    c1.type = "password"
+    c1.id = "password"
+    container.appendChild(c1)
+    let c2 = document.createElement("input")
+    c2.name = "username"
+    c2.value = ""
+    c2.type = "number"
+    c2.id = "username"
+    container.replaceChild(c2, container.children[0])
+    let c3 = document.createElement("input")
+    c3.name = "submet"
+    c3.type = "submit"
+    c3.id = "submit"
+    container.insertBefore(c3, container.children[1])
+    // container.remove()
+
+    // re
+    var pattern = /[0-9]+/g
+    console.log(pattern.test("123321"))
+    var result = "123abc321".match(pattern)
+    for (var i in result) {
+        if (result[i])
+            console.log("[", i, "]: ", result[i])
+    }
+    console.log("abc123abc".replace(pattern, "321"))
+    
+
+
+
+</script>
+
+</html>
