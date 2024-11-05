@@ -20,7 +20,17 @@
   - [mouse event](#mouse-event)
   - [keyboard event](#keyboard-event)
   - [键盘事件](#键盘事件)
-  - [Full event api](#full-event-api)
+  - [Full events api](#full-events-api)
+- [splash information](#splash-information)
+- [BOM](#bom)
+  - [window](#window)
+  - [window API](#window-api)
+    - [history](#history)
+    - [location](#location)
+    - [sessionStorage \&\& localStorage](#sessionstorage--localstorage)
+    - [more attribute of window](#more-attribute-of-window)
+- [DOM](#dom)
+  - [document API](#document-api)
 
 
 # Basic Data Operation
@@ -372,28 +382,28 @@ console.log(str)
 # JS Event
 - event of mouse / keyboard / form
 ## mouse event
-| 属性                                                         | 描述                                   | DOM  |
-| :----------------------------------------------------------- | :------------------------------------- | :--- |
-| [onclick](https://www.runoob.com/jsref/event-onclick.html)   | 当用户点击某个对象时调用的事件句柄。   | 2    |
+| 属性                                                                   | 描述                                   | DOM  |
+| :--------------------------------------------------------------------- | :------------------------------------- | :--- |
+| [onclick](https://www.runoob.com/jsref/event-onclick.html)             | 当用户点击某个对象时调用的事件句柄。   | 2    |
 | [oncontextmenu](https://www.runoob.com/jsref/event-oncontextmenu.html) | 在用户点击鼠标右键打开上下文菜单时触发 |      |
-| [ondblclick](https://www.runoob.com/jsref/event-ondblclick.html) | 当用户双击某个对象时调用的事件句柄。   | 2    |
-| [onmousedown](https://www.runoob.com/jsref/event-onmousedown.html) | 鼠标按钮被按下。                       | 2    |
-| [onmouseenter](https://www.runoob.com/jsref/event-onmouseenter.html) | 当鼠标指针移动到元素上时触发。         | 2    |
-| [onmouseleave](https://www.runoob.com/jsref/event-onmouseleave.html) | 当鼠标指针移出元素时触发               | 2    |
-| [onmousemove](https://www.runoob.com/jsref/event-onmousemove.html) | 鼠标被移动。                           | 2    |
-| [onmouseover](https://www.runoob.com/jsref/event-onmouseover.html) | 鼠标移到某元素之上。                   | 2    |
-| [onmouseout](https://www.runoob.com/jsref/event-onmouseout.html) | 鼠标从某元素移开。                     | 2    |
-| [onmouseup](https://www.runoob.com/jsref/event-onmouseup.html) | 鼠标按键被松开。                       | 2    |
+| [ondblclick](https://www.runoob.com/jsref/event-ondblclick.html)       | 当用户双击某个对象时调用的事件句柄。   | 2    |
+| [onmousedown](https://www.runoob.com/jsref/event-onmousedown.html)     | 鼠标按钮被按下。                       | 2    |
+| [onmouseenter](https://www.runoob.com/jsref/event-onmouseenter.html)   | 当鼠标指针移动到元素上时触发。         | 2    |
+| [onmouseleave](https://www.runoob.com/jsref/event-onmouseleave.html)   | 当鼠标指针移出元素时触发               | 2    |
+| [onmousemove](https://www.runoob.com/jsref/event-onmousemove.html)     | 鼠标被移动。                           | 2    |
+| [onmouseover](https://www.runoob.com/jsref/event-onmouseover.html)     | 鼠标移到某元素之上。                   | 2    |
+| [onmouseout](https://www.runoob.com/jsref/event-onmouseout.html)       | 鼠标从某元素移开。                     | 2    |
+| [onmouseup](https://www.runoob.com/jsref/event-onmouseup.html)         | 鼠标按键被松开。                       | 2    |
 
 ## keyboard event
 
 ## 键盘事件
 
-| 属性                                                         | 描述                       | DOM  |
-| :----------------------------------------------------------- | :------------------------- | :--- |
-| [onkeydown](https://www.runoob.com/jsref/event-onkeydown.html) | 某个键盘按键被按下。       | 2    |
+| 属性                                                             | 描述                       | DOM  |
+| :--------------------------------------------------------------- | :------------------------- | :--- |
+| [onkeydown](https://www.runoob.com/jsref/event-onkeydown.html)   | 某个键盘按键被按下。       | 2    |
 | [onkeypress](https://www.runoob.com/jsref/event-onkeypress.html) | 某个键盘按键被按下并松开。 | 2    |
-| [onkeyup](https://www.runoob.com/jsref/event-onkeyup.html)   | 某个键盘按键被松开。       | 2    |
+| [onkeyup](https://www.runoob.com/jsref/event-onkeyup.html)       | 某个键盘按键被松开。       | 2    |
 
 ```javascript
 function keydown(event){
@@ -405,5 +415,163 @@ function keydown(event){
 document.addEventListener("keydown",keydown);
 ```
 
-## [Full event api](https://www.runoob.com/jsref/dom-obj-event.html)
+## [Full events api](https://www.runoob.com/jsref/dom-obj-event.html)
+
+# splash information
+1. `alert()` no return
+2. `prompt()` input text return, cancle -> return `null`
+3. `confirm()` boolean return
+
+# BOM
+## window
+- history
+- location
+- codument
+- console
+- screen
+- navigator
+- sessionStorage
+- localStorage
+
+## window API
+| 方法                                                                           | 描述                                                                                                    |
+| :----------------------------------------------------------------------------- | :------------------------------------------------------------------------------------------------------ |
+| [alert()](https://www.runoob.com/jsref/met-win-alert.html)                     | 显示带有一段消息和一个确认按钮的警告框。                                                                |
+| [atob()](https://www.runoob.com/jsref/met-win-atob.html)                       | 解码一个 base-64 编码的字符串。                                                                         |
+| [btoa()](https://www.runoob.com/jsref/met-win-btoa.html)                       | 创建一个 base-64 编码的字符串。                                                                         |
+| [blur()](https://www.runoob.com/jsref/met-win-blur.html)                       | 把键盘焦点从顶层窗口移开。                                                                              |
+| [clearInterval()](https://www.runoob.com/jsref/met-win-clearinterval.html)     | 取消由 setInterval() 设置的 timeout。                                                                   |
+| [clearTimeout()](https://www.runoob.com/jsref/met-win-cleartimeout.html)       | 取消由 setTimeout() 方法设置的 timeout。                                                                |
+| [close()](https://www.runoob.com/jsref/met-win-close.html)                     | 关闭浏览器窗口。                                                                                        |
+| [confirm()](https://www.runoob.com/jsref/met-win-confirm.html)                 | 显示带有一段消息以及确认按钮和取消按钮的对话框。                                                        |
+| [createPopup()](https://www.runoob.com/jsref/met-win-createpopup.html)         | 创建一个 pop-up 窗口。                                                                                  |
+| [focus()](https://www.runoob.com/jsref/met-win-focus.html)                     | 把键盘焦点给予一个窗口。                                                                                |
+| [getSelection](https://www.runoob.com/jsref/met-win-getselection.html)()       | 返回一个 Selection 对象，表示用户选择的文本范围或光标的当前位置。                                       |
+| [getComputedStyle()](https://www.runoob.com/jsref/jsref-getcomputedstyle.html) | 获取指定元素的 CSS 样式。                                                                               |
+| [matchMedia()](https://www.runoob.com/jsref/met-win-matchmedia.html)           | 该方法用来检查 media query 语句，它返回一个 MediaQueryList对象。                                        |
+| [moveBy()](https://www.runoob.com/jsref/met-win-moveby.html)                   | 可相对窗口的当前坐标把它移动指定的像素。                                                                |
+| [moveTo()](https://www.runoob.com/jsref/met-win-moveto.html)                   | 把窗口的左上角移动到一个指定的坐标。                                                                    |
+| [open()](https://www.runoob.com/jsref/met-win-open.html)                       | 打开一个新的浏览器窗口或查找一个已命名的窗口。                                                          |
+| [print()](https://www.runoob.com/jsref/met-win-print.html)                     | 打印当前窗口的内容。                                                                                    |
+| [prompt()](https://www.runoob.com/jsref/met-win-prompt.html)                   | 显示可提示用户输入的对话框。                                                                            |
+| [resizeBy()](https://www.runoob.com/jsref/met-win-resizeby.html)               | 按照指定的像素调整窗口的大小。                                                                          |
+| [resizeTo()](https://www.runoob.com/jsref/met-win-resizeto.html)               | 把窗口的大小调整到指定的宽度和高度。                                                                    |
+| scroll()                                                                       | 已废弃。 该方法已经使用了 [scrollTo()](https://www.runoob.com/jsref/met-win-scrollto.html) 方法来替代。 |
+| [scrollBy()](https://www.runoob.com/jsref/met-win-scrollby.html)               | 按照指定的像素值来滚动内容。                                                                            |
+| [scrollTo()](https://www.runoob.com/jsref/met-win-scrollto.html)               | 把内容滚动到指定的坐标。                                                                                |
+| [setInterval()](https://www.runoob.com/jsref/met-win-setinterval.html)         | 按照指定的周期（以毫秒计）来调用函数或计算表达式。                                                      |
+| [setTimeout()](https://www.runoob.com/jsref/met-win-settimeout.html)           | 在指定的毫秒数后调用函数或计算表达式。                                                                  |
+| [stop()](https://www.runoob.com/jsref/met-win-stop.html)                       | 停止页面载入。                                                                                          |
+| [postMessage()](https://www.runoob.com/jsref/met-win-postmessage.html)         | 安全地实现跨源通信。                                                                                    |
+
+### history
+- `back()`
+- `forward()`
+- `go(n)`: forward for n page, `n < 0` is ok
+
+### location
+- `location.href="www.baidu.com"`
+
+### sessionStorage && localStorage
+sessionStorage will cleared after browser closing
+- `setItem("SESSION", "123321")`
+- `getItem("SESSION")`
+- `removeItem("SESSION")`
+
+### more attribute of window
+
+| 属性                                                                        | 描述                                                                                                     |
+| :-------------------------------------------------------------------------- | :------------------------------------------------------------------------------------------------------- |
+| [closed](https://www.runoob.com/jsref/prop-win-closed.html)                 | 返回窗口是否已被关闭。                                                                                   |
+| [defaultStatus](https://www.runoob.com/jsref/prop-win-defaultstatus.html)   | 设置或返回窗口状态栏中的默认文本。                                                                       |
+| [document](https://www.runoob.com/jsref/dom-obj-document.html)              | 对 Document 对象的只读引用。(请参阅[对象](https://www.runoob.com/jsref/dom-obj-document.html))           |
+| [frames](https://www.runoob.com/jsref/prop-win-frames.html)                 | 返回窗口中所有命名的框架。该集合是 Window 对象的数组，每个 Window 对象在窗口中含有一个框架。             |
+| [history](https://www.runoob.com/jsref/obj-history.html)                    | 对 History 对象的只读引用。请参数 [History 对象](https://www.runoob.com/jsref/obj-history.html)。        |
+| [innerHeight](https://www.runoob.com/jsref/prop-win-innerheight.html)       | 返回窗口的文档显示区的高度。                                                                             |
+| [innerWidth](https://www.runoob.com/jsref/prop-win-innerheight.html)        | 返回窗口的文档显示区的宽度。                                                                             |
+| [localStorage](https://www.runoob.com/jsref/prop-win-localstorage.html)     | 在浏览器中存储 key/value 对。没有过期时间。                                                              |
+| [length](https://www.runoob.com/jsref/prop-win-length.html)                 | 设置或返回窗口中的框架数量。                                                                             |
+| [location](https://www.runoob.com/jsref/obj-location.html)                  | 用于窗口或框架的 Location 对象。请参阅 [Location 对象](https://www.runoob.com/jsref/obj-location.html)。 |
+| [name](https://www.runoob.com/jsref/prop-win-name.html)                     | 设置或返回窗口的名称。                                                                                   |
+| [navigator](https://www.runoob.com/jsref/obj-navigator.html)                | 对 Navigator 对象的只读引用。请参数 [Navigator 对象](https://www.runoob.com/jsref/obj-navigator.html)。  |
+| [opener](https://www.runoob.com/jsref/prop-win-opener.html)                 | 返回对创建此窗口的窗口的引用。                                                                           |
+| [outerHeight](https://www.runoob.com/jsref/prop-win-outerheight.html)       | 返回窗口的外部高度，包含工具条与滚动条。                                                                 |
+| [outerWidth](https://www.runoob.com/jsref/prop-win-outerheight.html)        | 返回窗口的外部宽度，包含工具条与滚动条。                                                                 |
+| [pageXOffset](https://www.runoob.com/jsref/prop-win-pagexoffset.html)       | 设置或返回当前页面相对于窗口显示区左上角的 X 位置。                                                      |
+| [pageYOffset](https://www.runoob.com/jsref/prop-win-pagexoffset.html)       | 设置或返回当前页面相对于窗口显示区左上角的 Y 位置。                                                      |
+| [parent](https://www.runoob.com/jsref/prop-win-parent.html)                 | 返回父窗口。                                                                                             |
+| [screen](https://www.runoob.com/jsref/obj-screen.html)                      | 对 Screen 对象的只读引用。请参数 [Screen 对象](https://www.runoob.com/jsref/obj-screen.html)。           |
+| [screenLeft](https://www.runoob.com/jsref/prop-win-screenleft.html)         | 返回相对于屏幕窗口的x坐标                                                                                |
+| [screenTop](https://www.runoob.com/jsref/prop-win-screenleft.html)          | 返回相对于屏幕窗口的y坐标                                                                                |
+| [screenX](https://www.runoob.com/jsref/prop-win-screenx.html)               | 返回相对于屏幕窗口的x坐标                                                                                |
+| [sessionStorage](https://www.runoob.com/jsref/prop-win-sessionstorage.html) | 在浏览器中存储 key/value 对。 在关闭窗口或标签页之后将会删除这些数据。                                   |
+| [screenY](https://www.runoob.com/jsref/prop-win-screenx.html)               | 返回相对于屏幕窗口的y坐标                                                                                |
+| [self](https://www.runoob.com/jsref/prop-win-self.html)                     | 返回对当前窗口的引用。等价于 Window 属性。                                                               |
+| [status](https://www.runoob.com/jsref/prop-win-status.html)                 | 设置窗口状态栏的文本。                                                                                   |
+| [top](https://www.runoob.com/jsref/prop-win-top.html)                       | 返回最顶层的父窗口。                                                                                     |
+
+# DOM
+## document API
+- get element directly
+  - `getElementById("username")`
+  - `getElementByName("username")`
+  - `getElementByTag("body")`
+  - `getElementByClass("btn btn-primary")`
+- get element indirectly
+  - `div.children`: get child nodes
+  - `div.firstElementChild / div.lastElementChild`
+  - `div.parentElement`
+  - `div.previousElementSibling / div.nextElementSibling`
+- create node
+  - `document.createTextNode("text")`
+  - `document.createElement("input")`
+| 属性 / 方法                                                                                                | 描述                                                                                            |
+| :--------------------------------------------------------------------------------------------------------- | :---------------------------------------------------------------------------------------------- |
+| [document.activeElement](https://www.runoob.com/jsref/prop-document-activeelement.html)                    | 返回当前获取焦点元素                                                                            |
+| [document.addEventListener()](https://www.runoob.com/jsref/met-document-addeventlistener.html)             | 向文档添加句柄                                                                                  |
+| [document.adoptNode(node)](https://www.runoob.com/jsref/met-document-adoptnode.html)                       | 从另外一个文档返回 adapded 节点到当前文档。                                                     |
+| [document.anchors](https://www.runoob.com/jsref/coll-doc-anchors.html)                                     | 返回对文档中所有 Anchor 对象的引用。                                                            |
+| document.applets                                                                                           | 返回对文档中所有 Applet 对象的引用。**注意:** HTML5 已不支持 <applet> 元素。                    |
+| [document.baseURI](https://www.runoob.com/jsref/prop-doc-baseuri.html)                                     | 返回文档的绝对基础 URI                                                                          |
+| [document.body](https://www.runoob.com/jsref/prop-doc-body.html)                                           | 返回文档的body元素                                                                              |
+| [document.close()](https://www.runoob.com/jsref/met-doc-close.html)                                        | 关闭用 document.open() 方法打开的输出流，并显示选定的数据。                                     |
+| [document.cookie](https://www.runoob.com/jsref/prop-doc-cookie.html)                                       | 设置或返回与当前文档有关的所有 cookie。                                                         |
+| [document.createAttribute()](https://www.runoob.com/jsref/met-document-createattribute.html)               | 创建一个属性节点                                                                                |
+| [document.createComment()](https://www.runoob.com/jsref/met-document-createcomment.html)                   | createComment() 方法可创建注释节点。                                                            |
+| [document.createDocumentFragment()](https://www.runoob.com/jsref/met-document-createdocumentfragment.html) | 创建空的 DocumentFragment 对象，并返回此对象。                                                  |
+| [document.createElement()](https://www.runoob.com/jsref/met-document-createelement.html)                   | 创建元素节点。                                                                                  |
+| [document.createTextNode()](https://www.runoob.com/jsref/met-document-createtextnode.html)                 | 创建文本节点。                                                                                  |
+| [document.doctype](https://www.runoob.com/jsref/prop-document-doctype.html)                                | 返回与文档相关的文档类型声明 (DTD)。                                                            |
+| [document.documentElement](https://www.runoob.com/jsref/prop-document-documentelement.html)                | 返回文档的根节点                                                                                |
+| [document.documentMode](https://www.runoob.com/jsref/prop-doc-documentmode.html)                           | 返回用于通过浏览器渲染文档的模式                                                                |
+| [document.documentURI](https://www.runoob.com/jsref/prop-document-documenturi.html)                        | 设置或返回文档的位置                                                                            |
+| [document.domain](https://www.runoob.com/jsref/prop-doc-domain.html)                                       | 返回当前文档的域名。                                                                            |
+| document.domConfig                                                                                         | **已废弃**。返回 normalizeDocument() 被调用时所使用的配置。                                     |
+| [document.embeds](https://www.runoob.com/jsref/coll-doc-embeds.html)                                       | 返回文档中所有嵌入的内容（embed）集合                                                           |
+| [document.forms](https://www.runoob.com/jsref/coll-doc-forms.html)                                         | 返回对文档中所有 Form 对象引用。                                                                |
+| [document.getElementsByClassName()](https://www.runoob.com/jsref/met-document-getelementsbyclassname.html) | 返回文档中所有指定类名的元素集合，作为 NodeList 对象。                                          |
+| [document.getElementById()](https://www.runoob.com/jsref/met-document-getelementbyid.html)                 | 返回对拥有指定 id 的第一个对象的引用。                                                          |
+| [document.getElementsByName()](https://www.runoob.com/jsref/met-doc-getelementsbyname.html)                | 返回带有指定名称的对象集合。                                                                    |
+| [document.getElementsByTagName()](https://www.runoob.com/jsref/met-document-getelementsbytagname.html)     | 返回带有指定标签名的对象集合。                                                                  |
+| [document.images](https://www.runoob.com/jsref/coll-doc-images.html)                                       | 返回对文档中所有 Image 对象引用。                                                               |
+| [document.implementation](https://www.runoob.com/jsref/prop-document-implementation.html)                  | 返回处理该文档的 DOMImplementation 对象。                                                       |
+| [document.importNode()](https://www.runoob.com/jsref/met-document-importnode.html)                         | 把一个节点从另一个文档复制到该文档以便应用。                                                    |
+| [document.inputEncoding](https://www.runoob.com/jsref/prop-document-inputencoding.html)                    | 返回用于文档的编码方式（在解析时）。                                                            |
+| [document.lastModified](https://www.runoob.com/jsref/prop-doc-lastmodified.html)                           | 返回文档被最后修改的日期和时间。                                                                |
+| [document.links](https://www.runoob.com/jsref/coll-doc-links.html)                                         | 返回对文档中所有 Area 和 Link 对象引用。                                                        |
+| [document.normalize()](https://www.runoob.com/jsref/met-document-normalize.html)                           | 删除空文本节点，并连接相邻节点                                                                  |
+| [document.normalizeDocument()](https://www.runoob.com/jsref/met-document-normalizedocument.html)           | 删除空文本节点，并连接相邻节点的                                                                |
+| [document.open()](https://www.runoob.com/jsref/met-doc-open.html)                                          | 打开一个流，以收集来自任何 document.write() 或 document.writeln() 方法的输出。                  |
+| [document.querySelector()](https://www.runoob.com/jsref/met-document-queryselector.html)                   | 返回文档中匹配指定的CSS选择器的第一元素                                                         |
+| [document.querySelectorAll()](https://www.runoob.com/jsref/met-document-queryselectorall.html)             | document.querySelectorAll() 是 HTML5中引入的新方法，返回文档中匹配的CSS选择器的所有元素节点列表 |
+| [document.readyState](https://www.runoob.com/jsref/prop-doc-readystate.html)                               | 返回文档状态 (载入中……)                                                                         |
+| [document.referrer](https://www.runoob.com/jsref/prop-doc-referrer.html)                                   | 返回载入当前文档的文档的 URL。                                                                  |
+| [document.removeEventListener()](https://www.runoob.com/jsref/met-document-removeeventlistener.html)       | 移除文档中的事件句柄(由 addEventListener() 方法添加)                                            |
+| [document.renameNode()](https://www.runoob.com/jsref/met-document-renamenode.html)                         | 重命名元素或者属性节点。                                                                        |
+| [document.scripts](https://www.runoob.com/jsref/coll-doc-scripts.html)                                     | 返回页面中所有脚本的集合。                                                                      |
+| [document.strictErrorChecking](https://www.runoob.com/jsref/prop-document-stricterrorchecking.html)        | 设置或返回是否强制进行错误检查。                                                                |
+| [document.title](https://www.runoob.com/jsref/prop-doc-title.html)                                         | 返回当前文档的标题。                                                                            |
+| [document.URL](https://www.runoob.com/jsref/prop-doc-url.html)                                             | 返回文档完整的URL                                                                               |
+| [document.write()](https://www.runoob.com/jsref/met-doc-write.html)                                        | 向文档写 HTML 表达式 或 JavaScript 代码。                                                       |
+| [document.writeln()](https://www.runoob.com/jsref/met-doc-writeln.html)                                    | 等同于 write() 方法，不同的是在每个表达式之后写一个换行符。                                     |
 
