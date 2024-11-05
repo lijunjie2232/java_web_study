@@ -26,6 +26,7 @@
     <button onclick="promptTest()"">click->prompt</button>
     <button onclick=" confirmTest()">click->confirm</button>
     <a href="baidu.com">baidu</a>
+    <div id="container"><input name="username" type="text" id="username" value="" /></div>
 </body>
 <script lang="javascript">
     const f1 = () => {
@@ -90,9 +91,30 @@
     window.setTimeout(
         () => {
             console.log("after 2 sec")
-        }, 
+        },
         2000
     )
+    let container = document.getElementById("container")
+    let c1 = document.createElement("input")
+    c1.name = "password"
+    c1.value = ""
+    c1.type = "password"
+    c1.id = "password"
+    container.appendChild(c1)
+    let c2 = document.createElement("input")
+    c2.name = "username"
+    c2.value = ""
+    c2.type = "number"
+    c2.id = "username"
+    container.replaceChild(c2, container.children[0])
+    let c3 = document.createElement("input")
+    c3.name = "submet"
+    c3.type = "submit"
+    c3.id = "submit"
+    container.insertBefore(c3, container.children[1])
+    // container.remove()
+
+
 </script>
 
 </html>

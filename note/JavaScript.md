@@ -522,9 +522,13 @@ sessionStorage will cleared after browser closing
   - `div.firstElementChild / div.lastElementChild`
   - `div.parentElement`
   - `div.previousElementSibling / div.nextElementSibling`
-- create node
+- modify node
   - `document.createTextNode("text")`
   - `document.createElement("input")`
+  - `div.appendChild(input1)`
+  - `div.insertBefore(input2, div.children[0])`
+  - `div.remove()`: delete div
+
 | 属性 / 方法                                                                                                | 描述                                                                                            |
 | :--------------------------------------------------------------------------------------------------------- | :---------------------------------------------------------------------------------------------- |
 | [document.activeElement](https://www.runoob.com/jsref/prop-document-activeelement.html)                    | 返回当前获取焦点元素                                                                            |
