@@ -198,6 +198,7 @@ console.log(p1.name)// li
 
 ## module
 ### three export / import methods
+- **three methods could use in one js file at the same time**
 1. each members decorated with `export` could be imported by other modules
 ```javascript
 // module.js
@@ -243,4 +244,4 @@ console.log(maximize)
 import maximize from './module.js'
 console.log(maximize)
 ```
-- **three methods could use in one js file at the same time**
+

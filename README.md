@@ -6,3 +6,4 @@
 ## [Java Servlet](note/Servlet.md)
 ## [JavaScript](note/JavaScript.md)
 ## [AJAX](note/Ajax.md)
+## [TypeScript](note/TypeScript.md)
