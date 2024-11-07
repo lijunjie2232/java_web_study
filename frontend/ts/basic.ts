@@ -92,3 +92,29 @@ enum StrSeason {
     fuyu = "fuyu"
 }
 console.log(StrSeason) // {haru: 'haru', natsu: 'natsu', aki: 'aki', fuyu: 'fuyu'}
+
+// type test
+type StatusCode = number | string
+const scode = (code: StatusCode): void => {
+    console.log(code);
+}
+type Area = {area:number}
+type Address = {addr:string}
+type House = Address & Area
+let house:House = {
+    area: 10,
+    addr: "1ban"
+}
+
+// special situation
+type voidFunc = ()=>void
+
+const printTime:voidFunc = ()=>{
+    return 10 // special situation
+}
+
+const src  = [1,2,3]
+const dst = []
+src.forEach(
+    (a) => dst.push(a)
+)

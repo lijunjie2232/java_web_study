@@ -81,3 +81,16 @@ var StrSeason;
     StrSeason["fuyu"] = "fuyu";
 })(StrSeason || (StrSeason = {}));
 console.log(StrSeason); // {haru: 'haru', natsu: 'natsu', aki: 'aki', fuyu: 'fuyu'}
+const scode = (code) => {
+    console.log(code);
+};
+let house = {
+    area: 10,
+    addr: "1ban"
+};
+const printTime = () => {
+    return 10; // special situation
+};
+const src = [1, 2, 3];
+const dst = [];
+src.forEach((a) => dst.push(a));

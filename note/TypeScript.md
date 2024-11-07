@@ -4,6 +4,7 @@
   - [Usage](#usage)
     - [New types](#new-types)
     - [`symbol` and `unique symbol`](#symbol-and-unique-symbol)
+    - [custom type](#custom-type)
       - [string and String](#string-and-string)
       - [`object` and `Object`](#object-and-object)
     - [Declare](#declare)
@@ -96,7 +97,9 @@ enum StrSeason {
 }
 console.log(StrSeason) // {haru: 'haru', natsu: 'natsu', aki: 'aki', fuyu: 'fuyu'}
 ```
-1. `bigint`: not compatiable with number, target >= es2020
+7. `bigint`
+   1. not compatiable with number
+   2. target >= es2020
 ### `symbol` and `unique symbol`
 - each value of `symbol` is not the same as other `symbol`, but type is the same
 - each type of `unique symbol` is not same with other `unique symbol`
@@ -124,9 +127,37 @@ console.log(sobj); // { Symbol(): 'a' }
 const s3 = Symbol.for("a")
 console.log(Symbol.keyFor(s3)) // a
 ```
-- custom type
-  - `type`
-  - `interface`
+### custom type
+1. `type`
+   - in following "special situation", `dst.push(a)` returns new lenght is a number, however `src.forEach` must be given into a void type function, so, **if assign void `type` first and then declare this `type` to a function, this function could return any type, not just undefine**, **however**, this return could not to used for any other operations, for it is from a `void` type return function
+```typescript
+type StatusCode = number | string
+const scode = (code: StatusCode): void => {
+    console.log(code);
+}
+
+type Area = {area:number}
+type Address = {addr:string}
+type House = Address & Area
+let house:House = {
+    area: 10,
+    addr: "1ban"
+}
+
+// special situation
+type voidFunc = ()=>void
+
+const printTime:voidFunc = ()=>{
+    return 10 // special situation
+}
+
+const src  = [1,2,3]
+const dst = []
+src.forEach(
+    (a) => dst.push(a)
+)
+```
+1. `interface`
 
 #### string and String
 ```typescript
