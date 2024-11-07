@@ -49,12 +49,15 @@ class MyHouse extends AbHouse {
 console.log(new MyHouse(0, 0, "li").getPrice())
 
 // interface test
-interface Animal{
-    age:number
+interface Animal {
+    age: number
 }
 // interface extends
 interface IPet extends Animal {
     name: string
+}
+// interface auto conbine
+interface IPet extends Animal {
     play(): void
 }
 
@@ -82,3 +85,16 @@ interface FuncInterface {
     (a: number, b: number): number
 }
 const iSum: FuncInterface = (a, b) => a + b
+
+
+// genericity test
+function asArray<T>(...arr: T[]): T[] {
+    return [...arr]
+}
+console.log(asArray<string>("1", "2", "3"));
+console.log(asArray<number>(1, 2, 3));
+
+function genFunc<T, U, V>(t:T, u:U, v:V):void {
+    console.log(t, u, v)
+}
+genFunc<number, string, number>(1, "1", 1)

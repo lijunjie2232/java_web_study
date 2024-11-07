@@ -11,6 +11,9 @@
     - [Class](#class)
     - [Abstract](#abstract)
     - [Interface](#interface)
+    - [Genericity](#genericity)
+    - [type declare for js](#type-declare-for-js)
+    - [Decorator](#decorator)
 
 
 # JavaScript bugs
@@ -258,6 +261,7 @@ console.log(new MyHouse(0,0,"li").getPrice())
 ```
 
 ### Interface
+- `interface` could conbine and extends while `type` could use `&` and `|`
 ```typescript
 // interface test
 interface Animal{
@@ -266,6 +270,9 @@ interface Animal{
 // interface extends
 interface IPet extends Animal {
     name: string
+}
+// interface auto conbine
+interface IPet extends Animal {
     play(): void
 }
 
@@ -294,3 +301,30 @@ interface FuncInterface {
 }
 const iSum: FuncInterface = (a, b) => a + b
 ```
+
+### Genericity
+```typescript
+// genericity test
+function asArray<T>(...arr: T[]): T[] {
+    return [...arr]
+}
+console.log(asArray<string>("1", "2", "3"))
+console.log(asArray<number>(1, 2, 3))
+
+// multiple generic type
+function genFunc<T, U, V>(t:T, u:U, v:V):void {
+    console.log(t, u, v)
+}
+genFunc<number, string, number>(1, "1", 1)
+```
+
+### type declare for js
+- `.ts` file could not import from `.js` file directly, it need declare type of function in `.js` in an additional `.d.ts` file
+```typescript
+// index.d.ts
+declare function add(a:number, b:number):number;
+declare function sum(a:number, b:number):number;
+
+export {add, sum}
+```
+### Decorator

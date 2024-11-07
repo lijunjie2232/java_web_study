@@ -61,3 +61,13 @@ let mycat = {
 };
 mycat.play();
 const iSum = (a, b) => a + b;
+// genericity test
+function asArray(...arr) {
+    return [...arr];
+}
+console.log(asArray("1", "2", "3"));
+console.log(asArray(1, 2, 3));
+function genFunc(t, u, v) {
+    console.log(t, u, v);
+}
+genFunc(1, "1", 1);
