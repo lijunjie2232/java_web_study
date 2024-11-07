@@ -8,6 +8,9 @@
       - [string and String](#string-and-string)
       - [`object` and `Object`](#object-and-object)
     - [Declare](#declare)
+    - [Class](#class)
+    - [Abstract](#abstract)
+    - [Interface](#interface)
 
 
 # JavaScript bugs
@@ -128,7 +131,7 @@ const s3 = Symbol.for("a")
 console.log(Symbol.keyFor(s3)) // a
 ```
 ### custom type
-1. `type`
+- `type`
    - in following "special situation", `dst.push(a)` returns new lenght is a number, however `src.forEach` must be given into a void type function, so, **if assign void `type` first and then declare this `type` to a function, this function could return any type, not just undefine**, **however**, this return could not to used for any other operations, for it is from a `void` type return function
 ```typescript
 type StatusCode = number | string
@@ -157,7 +160,6 @@ src.forEach(
     (a) => dst.push(a)
 )
 ```
-1. `interface`
 
 #### string and String
 ```typescript
@@ -194,4 +196,101 @@ const sum = (a: number, b: number): number => {
 // declare an array
 let arr1: string[] = []
 let arr2: Array<string> = []
+```
+
+### Class
+- `private` type could be extended, console.log could print out after extending, but could not be visited
+- `readonly` could only be modified on self constructor
+```typescript
+// class test
+class Person {
+    readonly name: string
+    age: number
+    private info: string = ""
+    constructor(n: string, a: number, i?: string) {
+        this.name = n
+        this.age = a
+        if (i)
+            this.info = i
+    }
+    toString(): string {
+        return `[name]: ${this.name}, age: ${this.age}, info: ${this.info}`
+    }
+}
+
+class Student extends Person {
+    score: number|undefined
+
+    constructor(n: string, a: number, i?: string, s?: number) {
+        super(n, a, i)
+        this.score = s
+    }
+    override toString(): string {
+        return super.toString() + `, score: ${this.score}`
+    }
+}
+
+console.log(new Student("li", 0, "123321", 99)) // Student {info: '123321', name: 'li', age: 0, score: 99}
+console.log(new Student("li", 0, "123321", 99).toString()) // [name]: li, age: 0, info: 123321, score: 99
+```
+
+### Abstract
+- define and share general function
+- ensure key function
+```typescript
+// abstract test
+abstract class AbHouse {
+    constructor(public price: number, public area: number) { }
+    abstract getPrice(): number
+}
+
+class MyHouse extends AbHouse {
+    name:string
+    constructor(price: number, area: number, name:string) { 
+        super(price, area)
+        this.name = name
+    }
+    getPrice(): number{
+        return this.area * this.price
+    }
+}
+console.log(new MyHouse(0,0,"li").getPrice())
+```
+
+### Interface
+```typescript
+// interface test
+interface Animal{
+    age:number
+}
+// interface extends
+interface IPet extends Animal {
+    name: string
+    play(): void
+}
+
+//class interface
+class mydog implements IPet {
+    constructor(public name: string, public age: number) { }
+    play = () => {
+        console.log(`play with ${this.name}`);
+    }
+}
+new mydog("mydog", 0).play()
+
+// object interface
+let mycat: IPet = {
+    name: "mycat",
+    age: 0,
+    play: () => {
+        console.log(`play with ${mycat.name}`);
+    }
+}
+mycat.play()
+
+// function interface
+interface FuncInterface {
+    (a: number, b: number): number
+}
+const iSum: FuncInterface = (a, b) => a + b
 ```
