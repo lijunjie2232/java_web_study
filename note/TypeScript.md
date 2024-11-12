@@ -14,6 +14,11 @@
     - [Genericity](#genericity)
     - [type declare for js](#type-declare-for-js)
     - [Decorator](#decorator)
+      - [Interface of different decorator](#interface-of-different-decorator)
+      - [Class decorator](#class-decorator)
+      - [attibute decorator](#attibute-decorator)
+      - [function decorator](#function-decorator)
+    - [Parameter decorator](#parameter-decorator)
 
 
 # JavaScript bugs
@@ -328,3 +333,259 @@ declare function sum(a:number, b:number):number;
 export {add, sum}
 ```
 ### Decorator
+- config `"experimentalDecorators": true` to enable decorator
+- multiple warppers will get the lowest warps first
+#### Interface of different decorator
+```typescript
+declare type ClassDecorator = <TFunction extends Function>(target: TFunction) => TFunction | void;
+declare type PropertyDecorator = (target: Object, propertyKey: string | symbol) => void;
+declare type MethodDecorator = <T>(target: Object, propertyKey: string | symbol, descriptor: TypedPropertyDescriptor<T>) => TypedPropertyDescriptor<T> | void;
+declare type ParameterDecorator = (target: Object, propertyKey: string | symbol | undefined, parameterIndex: number) => void;
+```
+#### Class decorator
+- args
+  - `target:Function`
+- use `type` to restrict on the type being decorated
+```typescript
+// decorate class
+const myToString = (target:Function)=>{
+    target.prototype.toString = ()=>{
+        return JSON.stringify(target)
+    }
+    Object.seal(target.prototype)
+}
+
+@myToString
+class dClass{
+    constructor(public key:string, public value:string){}
+}
+
+var dc = new dClass("key", "value")
+console.log(dc) // dClass {key: 'key', value: 'value'}
+```
+- if decoretor return a class, it will replace the decorated class
+```typescript
+// replace class
+type TimeWrapper = new (...args: any[]) => {}
+const instTimer = <T extends TimeWrapper>(target: T) => {
+    return class extends target {
+        createdTime: Date;
+        constructor(...args: any[]) {
+            super(...args)
+            this.createdTime = new Date()
+        }
+        getCreatedTime = () => this.createdTime
+    }
+}
+
+@myToString
+@instTimer
+class d1Class {
+    constructor(public key: string, public value: string) { }
+}
+// auto combine to class d1Class
+interface d1Class {
+    getCreatedTime: () => Date;
+}
+console.log(new d1Class("key", "value")) // d1Class {key: 'key', value: 'value', getCreatedTime: ƒ, createdTime: Tue Nov 12 2024 15:06:53 GMT+0800 (中国標準時)}
+console.log(new d1Class("key", "value").getCreatedTime()) // Tue Nov 12 2024 15:06:53 GMT+0800
+console.log(new d1Class("key", "value").getCreatedTime().getTime()) // 1731395213964
+console.log(new d1Class("key", "value").getCreatedTime().getTime()) // 1731395213965
+```
+
+- decorator factory
+```typescript
+// decorator factory
+const introWraper = (arg: number) => {
+    return (target: Function) => {
+        target.prototype.toString = function () {
+            return `[key]: ${this.key}, [value]: ${this.value}, [warper arg]: ${arg}`
+        }
+    }
+}
+@introWraper(1)
+class dfClass {
+    constructor(
+        public key: string,
+        public value: string
+    ) { }
+}
+
+console.log(new dfClass("value", "key").toString()) // [key]: value, [value]: key, [warper arg]: 1
+```
+#### attibute decorator
+- args:
+  - `target:object`
+  - `propertyKey:string`
+```typescript
+// attibute decorator
+const aWarpper = (target: object, propertyKey: string) => {
+    console.log(`[aWarpper] [target]: ${target}, [propertyKey]: ${propertyKey}`)
+}
+
+class aClass {
+    @aWarpper // [aWarpper] [target]: [object Object], [propertyKey]: key
+    public key: string
+    @aWarpper/** static attibute will pass class as target
+    [aWarpper] [target]: class aClass {
+        constructor(key) {
+            this.key = key;
+            // this.value = value
+        }
+    }, [propertyKey]: value
+     */
+    public static value: string = "aClass value"
+    constructor(
+        key: string,
+        // value: string
+    ) {
+        this.key = key
+        // this.value = value
+    }
+}
+
+// example
+const state = (target: object, propertyKey: string) => {
+    Object.defineProperty(
+        target,
+        propertyKey,
+        {
+            get() {
+                console.log("get")
+                return this[`__${propertyKey}`]
+            },
+            set(newValue) {
+                console.log(`${propertyKey} set a new value: ${newValue}`)
+                this[`__${propertyKey}`] = newValue
+            },
+            enumerable: true,
+            configurable: true
+        }
+    )
+}
+class sClass {
+    @state public key: string
+    public value: string = "aClass value"
+    constructor(
+        key: string,
+        value: string
+    ) {
+        this.key = key
+        this.value = value
+    }
+}
+
+let sc = new sClass("v", "k") // key set a new value: v
+console.log(sc.key) // get\nv
+sc.key = "value" // key set a new value: value
+```
+
+#### function decorator
+- args:
+  - `target:object`
+  - `propertyKey:string`
+  - `descriptor:PropertyDescriptor`
+```typescript
+// method decorator
+const Timer: MethodDecorator = (target: object, propertyKey: string | symbol, descriptor: PropertyDescriptor) => {
+    const func = descriptor.value
+    descriptor.value = function (...args: any[]) {
+        let start = Date.now()
+        let result = func.call(this, ...args)
+        let end = Date.now()
+        console.log(`use time: ${end - start}ms`)
+        return result
+    }
+}
+
+class AC {
+    @Timer static call(start: number, end: number, step?: number) {
+        if (step == null) step = 1
+        let acc = 1
+        for (let i: number = start; i < end; i++) {
+            acc += i**2
+        }
+        return acc
+    }
+}
+
+AC.call(1, 100000) // use time: 2ms
+```
+```typescript
+// setter / getter decorator
+const numRange = (min?: number, max?: number) => {
+    return (target: Object, propertyKey: string, descriptor: PropertyDescriptor) => {
+        const setter = descriptor.set
+        descriptor.set = function (v: number) {
+            if (min != null && v < min) throw new Error(`${v} must >= ${min}`)
+            if (max != null && v > max) throw new Error(`${v} must <= ${max}`)
+            if (setter)
+                setter.call(this, v)
+
+        }
+    }
+}
+
+class sgClass {
+    private _age: number;
+    constructor(a: number) { this._age = a }
+    @numRange(0, 120)
+    set age(v: number) {
+        this._age = v
+    }
+    get age() { return this._age }
+}
+
+let sg = new sgClass(10)
+new sgClass(100)
+new sgClass(1000)
+
+sg.age = 100
+sg.age = 1000 // Uncaught Error Error: 1000 must <= 120
+```
+
+### Parameter decorator
+
+```typescript
+// parameter decorator
+import "reflect-metadata";
+
+const requiredMetadataKey = Symbol("required");
+
+// pnpm i reflect-metadata --save
+function required(target: Object, propertyKey: string | symbol, parameterIndex: number) {
+    let existingRequiredParameters: number[] = Reflect.getOwnMetadata(requiredMetadataKey, target, propertyKey) || [];
+    existingRequiredParameters.push(parameterIndex);
+    Reflect.defineMetadata(requiredMetadataKey, existingRequiredParameters, target, propertyKey);
+}
+function validate(target: any, propertyName: string, descriptor: PropertyDescriptor) {
+    let method = descriptor.value;
+    descriptor.value = function () {
+        let requiredParameters: number[] = Reflect.getOwnMetadata(requiredMetadataKey, target, propertyName);
+        if (requiredParameters) {
+            for (let parameterIndex of requiredParameters) {
+                if (parameterIndex >= arguments.length || arguments[parameterIndex] === undefined) {
+                    throw new Error("Missing required argument.");
+                }
+            }
+        }
+
+        return method.apply(this, arguments);
+    }
+}
+class Greeter {
+    greeting: string;
+
+    constructor(message: string) {
+        this.greeting = message;
+    }
+
+    @validate
+    greet(@required name: string) {
+        return "Hello " + name + ", " + this.greeting;
+    }
+}
+
+let g = new Greeter("msg")
+console.log(g.greet(""));
+```

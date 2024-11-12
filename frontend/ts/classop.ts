@@ -98,3 +98,4 @@ function genFunc<T, U, V>(t:T, u:U, v:V):void {
     console.log(t, u, v)
 }
 genFunc<number, string, number>(1, "1", 1)
+
