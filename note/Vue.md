@@ -37,4 +37,8 @@
 
 - reactive could only wrap object
 - while using `ref` wrap an object, the type of `ref.value` is `reactive`
+- create:  `const obj = reactive({key:"value"})`
+- modify: 
+  - modify attibute of object: `obj.key = "value1"`
+  - modify object: `Object.assign(obj, newobj)`(change all attributes in `obj` to attributes in `newobj`)
 
