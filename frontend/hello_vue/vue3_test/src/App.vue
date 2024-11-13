@@ -1,6 +1,6 @@
 <template>
     <div>
-        <i v-on:click="clicked">clicked={{ count }}</i>
+        <a v-on:click="clicked" href="#">clicked={{ count }}</a>
     </div>
 </template>
 
