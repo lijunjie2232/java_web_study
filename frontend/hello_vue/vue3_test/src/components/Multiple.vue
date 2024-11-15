@@ -13,18 +13,18 @@ const b = ref(0)
 // })
 const result = computed(
     {
-        get(){
+        get() {
             return a.value * b.value
         },
-        set(val){
+        set(val) {
             result.value = val
         }
     }
 )
-const _ = watch(result, (newValue, oldValue)=>{
+const _ = watch(result, (newValue, oldValue) => {
     console.log("old: ", oldValue);
     console.log("new: ", newValue);
-    
+
 })
 </script>
 <style scoped></style>

@@ -14,7 +14,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, watch, reactive } from 'vue'
+import { ref, watch, reactive, watchEffect } from 'vue'
 
 let person = ref({
     name: "li",
@@ -130,5 +130,14 @@ const mulWatch = watch([
     console.log("old: ", ov);
     console.log("new: ", nv);
 })
+// watchEffect
+const a = ref(0)
+const b = ref(0)
+watchEffect(
+    () => {
+        if (a.value > 10 || b.value > 0)
+            console.log("triggered")
+    }
+)
 </script>
 <style scoped></style>

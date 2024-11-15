@@ -4,12 +4,14 @@
   - [Vite](#vite)
   - [Vue2 to Vue3](#vue2-to-vue3)
   - [Tips](#tips)
+  - [Vue template](#vue-template)
   - [Reactivity Fundamentals](#reactivity-fundamentals)
     - [ref](#ref)
     - [reactive](#reactive)
     - [toRefs](#torefs)
     - [computed](#computed)
     - [watch](#watch)
+    - [watch effect](#watch-effect)
 
 
 ## Vite
@@ -26,7 +28,25 @@
 ## Tips
 
 - use vite extension `vite-plugin-vue-setup-extend` could enable define name of `.vue` file by `<script setup lang="ts" name="xxx">`
-- 
+
+
+## Vue template
+1. text interpolation: `{{ msg }}`
+2. v-html: `<i v-html="htmlStr"></i>`
+3. v-bind:
+   1. `<input v-bind:id="inputId"/>` or `<input :id="inputId"/>`
+   2. `<input :id="id"/>`, `="id"` could be ignore to `<input :id/>`
+   3. use options `const attrs = { id: "username", type: "text"}` and bind: `<input v-bind="attrs"/>`
+4. other attribute:
+   1. v-if: `<p v-if="seen">Now you see me</p>`, the tag will hidden if `seen` not true
+   2. v-on: `<button v-on:click="clickFunc"></button>` or `<button @click="clickFunc"></button>`
+5. dynamic attribute: 
+   1. `v-bind:[attrName]="attValue"` or `:[attrName]="attValue"`
+   2. `v-on:[actionName]="actionValue"` or `@[actionName]="actionValue"`
+   3. if `attValue` is `null`, the `attrName` will unset; if `actionValue` is `null`, the listener will unset
+6. modifiers
+   1. `<form @submit.prevent="onSubmit">...</form>`
+
 
 ## Reactivity Fundamentals
 
@@ -197,4 +217,17 @@ const mulWatch = watch([
     console.log("old: ", ov);
     console.log("new: ", nv);
 })
+```
+### watch effect
+- automatic analyze targets to be watched
+```typescript
+// watchEffect
+const a = ref(0)
+const b = ref(0)
+watchEffect(
+    () => {
+        if (a.value > 10 || b.value > 0)
+            console.log("triggered")
+    }
+)
 ```
