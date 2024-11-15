@@ -154,7 +154,7 @@ let person = ref({
     name: "li",
     langs : {
       k1: v1,
-      k2, v2
+      k2: v2
     }
 })
 // person.value.name is basic type, so a ()=>{} is needed
@@ -186,4 +186,15 @@ const personLangsWatch3 = watch(()=>person.value.langs, (nv, ov) => {
     console.log("new: ", nv);
 }, { deep: true })
 ```
-
+5. watch multiple variable
+- `nv` and `ov` includes all variable watched
+```typescript
+const mulWatch = watch([
+    () => person.value.name,
+    () => person.value.langs,
+], (nv, ov) => {
+    console.log("mulWatch: ")
+    console.log("old: ", ov);
+    console.log("new: ", nv);
+})
+```
