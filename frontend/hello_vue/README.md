@@ -150,9 +150,40 @@ const rpersonWatchDeepIm = watch(rperson, (nv, ov) => {
 ```
 4. watch any attibute in `ref` or `reactive` (watch getter())
 ```typescript
+let person = ref({
+    name: "li",
+    langs : {
+      k1: v1,
+      k2, v2
+    }
+})
+// person.value.name is basic type, so a ()=>{} is needed
 const personNameWatch = watch(()=>person.value.name, (nv, ov) => {
     console.log("personNameWatch: ")
     console.log("old: ", ov);
     console.log("new: ", nv);
 })
+
+// person.value.langs is an object, could directly pass into watch
+// could not called back after whole langs change to a new object, but called back if attibutes in langs changed
+const personLangsWatch1 = watch(person.value.langs, (nv, ov) => {
+    console.log("personLangsWatch1: ")
+    console.log("old: ", ov);
+    console.log("new: ", nv);
+})
+
+// could only called back after whole langs change to a new object, not called back if attibutes in langs changed
+const personLangsWatch2 = watch(()=>person.value.langs, (nv, ov) => {
+    console.log("personLangsWatch2: ")
+    console.log("old: ", ov);
+    console.log("new: ", nv);
+})
+
+// could called back on both whole langs change to a new object or attibutes in langs changed
+const personLangsWatch3 = watch(()=>person.value.langs, (nv, ov) => {
+    console.log("personLangsWatch3: ")
+    console.log("old: ", ov);
+    console.log("new: ", nv);
+}, { deep: true })
 ```
+
