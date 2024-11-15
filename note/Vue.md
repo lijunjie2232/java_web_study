@@ -42,3 +42,19 @@
   - modify attibute of object: `obj.key = "value1"`
   - modify object: `Object.assign(obj, newobj)`(change all attributes in `obj` to attributes in `newobj`)
 
+
+### toRefs
+
+- wraps all attributes or specified attribute in an object to ref
+
+```typescript
+let {msg, code} = toRefs(
+    {
+        msg: "ok",
+        code: 200
+    }
+)
+// single attribute to ref
+let name = toRefs(person, 'age')
+```
+

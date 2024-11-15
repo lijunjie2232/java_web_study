@@ -13,10 +13,14 @@
             <td>{{ item.name }}</td>
         </tr>
     </table>
+    <Multiple></Multiple>
+    <WatchTest></WatchTest>
 </template>
 
 <script setup lang="ts" name="App1">
 import { ref, reactive } from 'vue'
+import Multiple from './components/Multiple.vue'
+import WatchTest from './components/WatchTest.vue'
 const count = ref(0)
 const person = reactive(
     {
