@@ -4,7 +4,8 @@
   - [Vite](#vite)
   - [Vue2 to Vue3](#vue2-to-vue3)
   - [Tips](#tips)
-  - [Vue template](#vue-template)
+  - [css style](#css-style)
+  - [Vue directive](#vue-directive)
   - [Reactivity Fundamentals](#reactivity-fundamentals)
     - [ref](#ref)
     - [reactive](#reactive)
@@ -32,21 +33,78 @@
 - use vite extension `vite-plugin-vue-setup-extend` could enable define name of `.vue` file by `<script setup lang="ts" name="xxx">`
 - use `import { type IMessage } from '../types';` to import ts interface in vue
 
-## Vue template
+## css style
+1. define in tag `<style scoped></style>` in `.vue` file
+2. define in `.css` file and import in `.vue`:
+   1. in `<script>` tag by: `import '../style/main.css'`
+   2. in `<template>` tag by: `@import '../style/main.css'`
+3. import as global style in `main.ts`
+
+## Vue directive
 1. text interpolation: `{{ msg }}`
-2. v-html: `<i v-html="htmlStr"></i>`
-3. v-bind:
+2. **v-html**: `<i v-html="htmlStr"></i>`
+3. **v-text**: `<p v-text="msg.msg"></p>`, `v-text` could not rander html even if `msg.msg` is a valid html string
+4. **v-bind**: bind attributes of html tag to variable
    1. `<input v-bind:id="inputId"/>` or `<input :id="inputId"/>`
    2. `<input :id="id"/>`, `="id"` could be ignore to `<input :id/>`
    3. use options `const attrs = { id: "username", type: "text"}` and bind: `<input v-bind="attrs"/>`
-4. other attribute:
-   1. v-if: `<p v-if="seen">Now you see me</p>`, the tag will hidden if `seen` not true
-   2. v-on: `<button v-on:click="clickFunc"></button>` or `<button @click="clickFunc"></button>`
-5. dynamic attribute: 
+5. other directive:
+   - **v-if**:
+     - `<p v-if="seen">Now you see me</p>`, the tag will hidden if `seen` not true
+     - **v-else**: `v-else` tag after `v-if`
+     - **v-else-if**:
+       ```vue
+        <div v-if="type === 'A'">A</div>
+        <div v-else-if="type === 'B'">B</div>
+        <div v-else-if="type === 'C'">C</div>
+        <div v-else>Not A/B/C</div>
+        ```
+      - while `v-if` is `false`, nothing remains on DOM
+   - **v-show**: set `display` attribute of tag, whole tag stay on DOM even the value is false
+   - **v-for**:
+      ```vue
+      <!-- v-for on Array-->
+      <table>
+          <thead>
+              <tr>
+                  <th>id</th>
+                  <th>name</th>
+              </tr>
+          </thead>
+          <tbody>
+              <tr v-for="(item, idx) in myArray" v-bind:key="idx">
+                  <td>{{ idx }}</td>
+                  <td>{{ item.name }}</td>
+              </tr>
+          </tbody>
+      </table>
+
+      <!-- v-for on Object -->
+      <li v-for="(value, key) in myObject">
+          {{ key }}: {{ value }}
+      </li>
+
+      <!-- v-for on range -->
+      <!-- start with 1 -->
+      <span v-for="n in 10">{{ n }}</span>
+      ```
+      - use `v-bind:key` to re-render single item if changed
+      - v-for could monite following operation of Array:
+        - push()
+        - pop()
+        - shift()
+        - unshift()
+        - splice()
+        - sort()
+        - reverse()
+   - **v-on**:
+     - `<button v-on:click="clickFunc"></button>`
+     - shorten as: `<button @click="clickFunc"></button>`
+6. dynamic attribute: 
    1. `v-bind:[attrName]="attValue"` or `:[attrName]="attValue"`
    2. `v-on:[actionName]="actionValue"` or `@[actionName]="actionValue"`
    3. if `attValue` is `null`, the `attrName` will unset; if `actionValue` is `null`, the listener will unset
-6. modifiers
+7. modifiers
    1. `<form @submit.prevent="onSubmit">...</form>`
 
 

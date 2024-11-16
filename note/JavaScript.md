@@ -129,6 +129,7 @@ console.log(JSON.stringify(j1))
   - `var newLength = arr.unshift("java")`
 - modify: `arr[0] = "java"`
 - delete: `var last = arr.pop()`
+- !!! `reverse` and `sort` could change original array, so do like this:`return [...myArray].reverse()`
 ### api of Array
 - includes: `arr.includes("c++")`
 - indexOf & lastIndexOf: get the first & last index of an item
