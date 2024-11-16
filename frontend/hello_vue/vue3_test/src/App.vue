@@ -22,6 +22,9 @@
     <li v-for="(value, key) in person">
         {{ key }}: {{ value }}
     </li>
+    <input @keyup.ctrl.enter="keyTest1" value="keyTest: ctrl+enter" />
+    <input @click.ctrl="keyTest2" value="keyTest: click+ctrl" />
+    <input @click.prevent.right="rightPrevent" value="keyTest: click.right(mouse)" />
 
     <!-- v-for on range -->
     <!-- start with 1 -->
@@ -72,5 +75,16 @@ const myLangs = ref(
         "ts"
     ]
 )
+
+const keyTest1 = () => {
+    console.log('keyup.ctrl.enter')
+}
+
+const keyTest2 = () => {
+    console.log('click.ctrl')
+}
+const rightPrevent = () => {
+    alert("right prevent")
+}
 </script>
 <style scoped></style>
