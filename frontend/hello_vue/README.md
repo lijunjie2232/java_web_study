@@ -12,6 +12,8 @@
     - [computed](#computed)
     - [watch](#watch)
     - [watch effect](#watch-effect)
+  - [Ref attribute of tag](#ref-attribute-of-tag)
+  - [Components](#components)
 
 
 ## Vite
@@ -28,7 +30,7 @@
 ## Tips
 
 - use vite extension `vite-plugin-vue-setup-extend` could enable define name of `.vue` file by `<script setup lang="ts" name="xxx">`
-
+- use `import { type IMessage } from '../types';` to import ts interface in vue
 
 ## Vue template
 1. text interpolation: `{{ msg }}`
@@ -231,3 +233,34 @@ watchEffect(
     }
 )
 ```
+
+## Ref attribute of tag
+```vue
+<template>
+    <div>
+        <input type="text" ref="p1" />
+        <button @click="() => console.log(p1.value)">
+            output
+        </button>
+    </div>
+</template>
+
+<script setup lang="ts">
+import { ref } from 'vue'
+const p1 = ref()
+</script>
+<style scoped></style>
+```
+
+## Components
+- use `defineProps(['varName'])` to pass info from importing vue to imported vue
+```vue
+<script setup>
+defineProps(['title'])
+</script>
+<template>
+  <h4>{{ title }}</h4>
+</template>
+```
+- use `defineExpose({a:a.value,b:b.value})` or shorten to `defineExpose({a,b})` to pass variable in imported vue to importing vue
+

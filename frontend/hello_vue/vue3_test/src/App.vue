@@ -15,12 +15,16 @@
     </table>
     <Multiple></Multiple>
     <WatchTest></WatchTest>
+    <RefTest></RefTest>
+    <InterfaceTest></InterfaceTest>
 </template>
 
 <script setup lang="ts" name="App1">
 import { ref, reactive } from 'vue'
 import Multiple from './components/Multiple.vue'
 import WatchTest from './components/WatchTest.vue'
+import RefTest from './components/RefTest.vue'
+import InterfaceTest from './components/InterfaceTest.vue'
 const count = ref(0)
 const person = reactive(
     {
