@@ -381,19 +381,37 @@ watchEffect(
 ```
 
 ## Ref attribute of tag
+- method 1
+  ```vue
+  <template>
+      <div>
+          <input type="text" ref="p1" />
+          <button @click="() => console.log(p1.value)">
+              output
+          </button>
+      </div>
+  </template>
+
+  <script setup lang="ts">
+  import { ref } from 'vue'
+  const p1 = ref()
+  </script>
+  <style scoped></style>
+  ```
+- method 2: use `useTemplateRef` (vue3.5+)
 ```vue
 <template>
     <div>
-        <input type="text" ref="p1" />
-        <button @click="() => console.log(p1.value)">
+        <input ref="ref-temp-input" />
+        <button @click="() => console.log(p2.value)">
             output
         </button>
     </div>
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue'
-const p1 = ref()
+import { useTemplateRef } from 'vue'
+const p2 = useTemplateRef('ref-temp-input')
 </script>
 <style scoped></style>
 ```
