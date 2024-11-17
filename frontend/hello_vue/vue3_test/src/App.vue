@@ -34,6 +34,8 @@
     <RefTest></RefTest>
     <InterfaceTest></InterfaceTest>
     <CssTest></CssTest>
+    <VModelTest></VModelTest>
+    <LifecycleTest></LifecycleTest>
 </template>
 
 <script setup lang="ts" name="App1">
@@ -43,6 +45,9 @@ import WatchTest from './components/WatchTest.vue'
 import RefTest from './components/RefTest.vue'
 import InterfaceTest from './components/InterfaceTest.vue'
 import CssTest from './components/CssTest.vue'
+import VModelTest from './components/VModelTest.vue'
+import LifecycleTest from './components/LifecycleTest.vue'
+
 const count = ref(0)
 const person = reactive(
     {

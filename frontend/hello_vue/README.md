@@ -14,6 +14,9 @@
     - [watch](#watch)
     - [watch effect](#watch-effect)
   - [Ref attribute of tag](#ref-attribute-of-tag)
+  - [Lifecycle](#lifecycle)
+    - [options lifecycle hooks api](#options-lifecycle-hooks-api)
+    - [composition lifecycle hooks api](#composition-lifecycle-hooks-api)
   - [Components](#components)
 
 
@@ -163,8 +166,28 @@
           <!-- 仅当没有按下任何系统按键时触发 -->
           <button @click.exact="onClick">A</button>
           ```
-   - **v-model**:
-     - 
+   - **v-model**: bind variable with tag value
+      ```vue
+      <!-- checkedNames is an Array -->
+      <!-- while selected, value of checkbox will add into checkedNames -->
+      <!-- while dis-checked, value will be remove from checkedNames -->
+      <div>Checked names: {{ checkedNames }}</div>
+
+      <input type="checkbox" id="jack" value="Jack" v-model="checkedNames" />
+      <label for="jack">Jack</label>
+
+      <input type="checkbox" id="john" value="John" v-model="checkedNames" />
+      <label for="john">John</label>
+
+      <input type="checkbox" id="mike" value="Mike" v-model="checkedNames" />
+      <label for="mike">Mike</label>
+      ```
+      ```vue
+
+      ```
+   - `v-model.lazy`: will update variable every change instead of every input
+   - `v-model.number`: convert input into number
+   - `v-model.trim`: strip blank
 6. dynamic attribute: 
    1. `v-bind:[attrName]="attValue"` or `:[attrName]="attValue"`
    2. `v-on:[actionName]="actionValue"` or `@[actionName]="actionValue"`
@@ -375,6 +398,60 @@ const p1 = ref()
 <style scoped></style>
 ```
 
+## Lifecycle
+![Lifecycle](https://vuejs.org/assets/lifecycle.MuZLBFAS.png)
+
+### options lifecycle hooks api
+1. beforeCreate
+2. created
+3. beforeMount
+4. mounted
+5. beforeUpdate
+6. updated
+7. beforeUnmount
+8. unmounted
+
+### composition lifecycle hooks api
+1. onBeforeCreate
+2. onCreated
+3. onBeforeMount
+4. onMounted
+5. onBeforeUpdate
+6. onUpdated
+7. onBeforeUnmount
+8. onUnmounted
+
+```vue
+<template>
+    <div>
+        <button @click="countAdd">count: {{ count }}</button>
+    </div>
+</template>
+
+<script setup lang="ts">
+import { ref, onBeforeMount, onMounted, onBeforeUpdate, onUpdated } from 'vue'
+const count = ref(0)
+const countAdd = () => {
+    count.value++
+}
+
+onBeforeMount(() => {
+    console.log("onBeforeMount");
+})
+onMounted(() => {
+    console.log("onMounted");
+})
+onBeforeUpdate(() => {
+    console.log("onBeforeUpdate");
+})
+onUpdated(() => {
+    console.log("onUpdated");
+})
+
+</script>
+<style scoped></style>
+```
+
 ## Components
 - use `defineProps(['varName'])` to pass info from importing vue to imported vue
 ```vue
@@ -386,4 +463,5 @@ defineProps(['title'])
 </template>
 ```
 - use `defineExpose({a:a.value,b:b.value})` or shorten to `defineExpose({a,b})` to pass variable in imported vue to importing vue
+
 
