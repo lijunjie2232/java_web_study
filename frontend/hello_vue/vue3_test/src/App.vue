@@ -36,6 +36,7 @@
     <CssTest></CssTest>
     <VModelTest></VModelTest>
     <LifecycleTest></LifecycleTest>
+    <PropsEmitsTest @sendSelect="selectRec" :langList="langs" :selected="peselected"></PropsEmitsTest>
 </template>
 
 <script setup lang="ts" name="App1">
@@ -47,7 +48,7 @@ import InterfaceTest from './components/InterfaceTest.vue'
 import CssTest from './components/CssTest.vue'
 import VModelTest from './components/VModelTest.vue'
 import LifecycleTest from './components/LifecycleTest.vue'
-
+import PropsEmitsTest from './components/PropsEmitsTest.vue'
 const count = ref(0)
 const person = reactive(
     {
@@ -90,6 +91,13 @@ const keyTest2 = () => {
 }
 const rightPrevent = () => {
     alert("right prevent")
+}
+
+// props emits test
+const peselected = ref()
+const selectRec = (id:number)=>{
+    console.log("app received: ", id);
+    peselected.value = id
 }
 </script>
 <style scoped></style>

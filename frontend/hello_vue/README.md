@@ -18,6 +18,7 @@
     - [options lifecycle hooks api](#options-lifecycle-hooks-api)
     - [composition lifecycle hooks api](#composition-lifecycle-hooks-api)
   - [Components](#components)
+    - [parameters pass](#parameters-pass)
 
 
 ## Vite
@@ -471,15 +472,51 @@ onUpdated(() => {
 ```
 
 ## Components
-- use `defineProps(['varName'])` to pass info from importing vue to imported vue
+### parameters pass
+- use `defineProps(["langList", "selected"])` at imported vue to pass variable to imported vue from importing vue
+- use `const emitSelect = defineEmits(["sendSelect"])` to declare a method at imported vue returing data to importing vue
+- in importing vue at the tag of imported vue, use `@sendSelect="selectRec"` to define a local funtion `selectRec` to receive data from imported vue, `sendSelect` is defined in imported vue by `defineEmits(["sendSelect"])`
+- in importing vue at the tag of imported vue, use `:langList="langs"` to pass local variable `langs` to imported vue, `langList` is defined in imported vue by `defineProps(["langList", "selected"])`
 ```vue
-<script setup>
-defineProps(['title'])
-</script>
+<!-- Test.vue -->
 <template>
-  <h4>{{ title }}</h4>
+    <div>selected: {{ selected }}</div>
+    <div v-for="lang in langList" v-key="lang.id">
+        <li @click="sendSelect(lang.id)">{{ lang.name }}</li>
+    </div>
 </template>
+<script setup lang="ts">
+import { defineProps, defineEmits } from 'vue'
+// from App.vue
+defineProps(["langList", "selected"])
+// to App.vue
+const emitSelect = defineEmits(["sendSelect"])
+const sendSelect = (id: number) => {
+    console.log("clicked: ", id)
+    // emit info to App.vue
+    emitSelect("sendSelect", id)
+}
+</script>
 ```
-- use `defineExpose({a:a.value,b:b.value})` or shorten to `defineExpose({a,b})` to pass variable in imported vue to importing vue
-
-
+```vue
+<!-- App.vue -->
+<template>
+    <Test @sendSelect="selectRec" :langList="langs" :selected="peselected"></Test>
+</template>
+<script setup lang="ts">
+// props emits test
+import { ref, reactive } from 'vue'
+const langs = reactive(
+    [
+        { id: 0, name: 'python' },
+        { id: 1, name: 'java' },
+        { id: 2, name: 'typescript' }
+    ]
+)
+const peselected = ref()
+const selectRec = (id:number)=>{
+    console.log("app received: ", id);
+    peselected.value = id
+}
+</script>
+```
