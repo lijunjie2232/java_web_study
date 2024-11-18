@@ -563,6 +563,7 @@ const selectRec = (id:number)=>{
 - import router in `main.ts` and then sign by `app.use(router)`
 - import `RouterView` to `.vue` file and insert `<RouterView/>` to html code where to display dynamic in page components;
 - import `RouterLink` to `.vue` file and insert RouterLink like: `<RouterLink active-class="router-active" to="r1">r1</RouterLink>` to html code where to choose displayed components, `to="r1"` is the path configure in `/router/index.ts`;
+- it's recommended to put `.vue` of each component in router into `views` directory instead of `components` directory
 
 ```vue
 <!-- RouteTest.vue -->

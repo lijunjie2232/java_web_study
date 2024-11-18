@@ -1,7 +1,7 @@
 import { createRouter, createWebHashHistory } from "vue-router"
-import Route1 from "../components/Route1.vue"
-import Route2 from "../components/Route2.vue"
-import Route3 from "../components/Route3.vue"
+import Route1 from "../views/Route1.vue"
+import Route2 from "../views/Route2.vue"
+import Route3 from "../views/Route3.vue"
 
 export default createRouter(
     {
