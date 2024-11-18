@@ -2,11 +2,11 @@
     <div style="text-align: center;">
         <div style="border:1px solid; border-color: black; border-radius:5px">Route Test</div>
         <div id="router-link">
-            <RouterLink active-class="router-active" to="r1">r1</RouterLink>
-            <RouterLink active-class="router-active" to="r2">r2</RouterLink>
-            <RouterLink active-class="router-active" to="r3">r3</RouterLink>
+            <RouterLink active-class="router-active" to="/r1">r1</RouterLink>
+            <RouterLink active-class="router-active" to="/r2">r2</RouterLink>
+            <RouterLink active-class="router-active" to="/r3">r3</RouterLink>
         </div>
-        <div id="contend">
+        <div id="content">
             <RouterView></RouterView>
         </div>
     </div>
@@ -24,7 +24,7 @@ import { RouterView, RouterLink } from 'vue-router'
     justify-content: space-around;
 }
 
-#contend {
+#content {
     margin-left: 1%;
     width: 98%;
     min-height: 500px;

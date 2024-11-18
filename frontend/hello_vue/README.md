@@ -21,6 +21,11 @@
     - [parameters pass](#parameters-pass)
     - [dynamic component](#dynamic-component)
   - [Router](#router)
+    - [Router work mode](#router-work-mode)
+    - [chill router and parameter pass](#chill-router-and-parameter-pass)
+      - [configure child router:](#configure-child-router)
+      - [query](#query)
+      - [params](#params)
 
 
 ## Vite
@@ -226,6 +231,7 @@
 - wraps all attributes or specified attribute in an object to ref
 
 ```typescript
+// specified attributes {msg, code} convert to ref
 let {msg, code} = toRefs(
     {
         msg: "ok",
@@ -535,24 +541,27 @@ const selectRec = (id:number)=>{
 - add `index.ts` into directory `router`:
   ```typescript
   // @/router/index.ts
-  import { createRouter, createWebHashHistory } from "vue-router"
-  import Route1 from "../components/Route1.vue"
-  import Route2 from "../components/Route2.vue"
-  import Route3 from "../components/Route3.vue"
+  import { createRouter, createWebHistory } from "vue-router"
+  import Route1 from "../views/Route1.vue"
+  import Route2 from "../views/Route2.vue"
+  import Route3 from "../views/Route3.vue"
 
   export default createRouter(
       {
-          history: createWebHashHistory(),
+          history: createWebHistory(),
           routes: [
               {
+                  name: "route1",
                   path: '/r1',
                   component: Route1,
               },
               {
+                  name: "route2",
                   path: '/r2',
                   component: Route2,
               },
               {
+                  name: "route3",
                   path: '/r3',
                   component: Route3,
               }
@@ -562,8 +571,9 @@ const selectRec = (id:number)=>{
   ```
 - import router in `main.ts` and then sign by `app.use(router)`
 - import `RouterView` to `.vue` file and insert `<RouterView/>` to html code where to display dynamic in page components;
-- import `RouterLink` to `.vue` file and insert RouterLink like: `<RouterLink active-class="router-active" to="r1">r1</RouterLink>` to html code where to choose displayed components, `to="r1"` is the path configure in `/router/index.ts`;
+- import `RouterLink` to `.vue` file and insert RouterLink like: `<RouterLink active-class="router-active" to="/r1">r1</RouterLink>` to html code where to choose displayed components, `to="r1"` is the path configure in `/router/index.ts`;
 - it's recommended to put `.vue` of each component in router into `views` directory instead of `components` directory
+- use `:to="{path: '/r1'}"` or `:to="{name: '/route1'}"` in `<RouterLink>` tag is recommended
 
 ```vue
 <!-- RouteTest.vue -->
@@ -615,3 +625,56 @@ import { RouterView, RouterLink } from 'vue-router'
 }
 </style>
 ```
+### Router work mode
+1. history mode
+   - configure as :`createRouter({history: createWebHistory(),...})`
+   - without `#` in url
+   - need nginx to handle url path
+2. hash mode
+   - configure as :`createRouter({history: createWebHashHistory(),...})`
+   - good compatibility with url path handle
+   - with `#` in url, bad `SEO` optimization
+
+### chill router and parameter pass
+#### configure child router:
+```typescript
+{
+    name: "route1",
+    path: '/r1',
+    component: Route1,
+    children:[
+        {
+            path:"r1-1",
+            component: Route1_1
+        },
+        {
+            name: "r1_2",
+            // params placeholder, "?" means could be empty
+            path:"r1-2/:username?/:password?",
+            component: Route1_2,
+            
+        }
+    ]
+},
+```
+#### query
+- use `<RouterLink :to="{ path: '/r1/r1-1', query: r1_data[1] }">r1-1-1</RouterLink>` to send query to child router
+- at child vue, receive query as following:
+  ```typescript
+  import { toRefs } from 'vue'
+  import { useRoute } from 'vue-router'
+  let route = useRoute()
+  let {query} = toRefs(route)
+  ```
+#### params
+- use `<RouterLink :to="{ name: 'r1_2', params: r1_data[2] }">r1-2</RouterLink>`
+- target route in `:to` should use name instead of path
+- key in `r1_data[2]` should follow params placeholder in configured router
+- at child vue, receive params as following:
+  ```typescript
+  import { toRefs } from 'vue'
+  import { useRoute } from 'vue-router'
+  let route = useRoute()
+  let { params } = toRefs(route)
+  ```
+
