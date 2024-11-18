@@ -19,6 +19,8 @@
     - [composition lifecycle hooks api](#composition-lifecycle-hooks-api)
   - [Components](#components)
     - [parameters pass](#parameters-pass)
+    - [dynamic component](#dynamic-component)
+  - [Router](#router)
 
 
 ## Vite
@@ -427,18 +429,17 @@ const p2 = useTemplateRef('ref-temp-input')
 4. mounted
 5. beforeUpdate
 6. updated
-7. beforeUnmount
-8. unmounted
+7. beforeDestroy
+8. destroyed
 
 ### composition lifecycle hooks api
-1. onBeforeCreate
-2. onCreated
-3. onBeforeMount
-4. onMounted
-5. onBeforeUpdate
-6. onUpdated
-7. onBeforeUnmount
-8. onUnmounted
+1. setup
+2. onBeforeMount
+3. onMounted
+4. onBeforeUpdate
+5. onUpdated
+6. onBeforeUnmount
+7. onUnmounted
 
 ```vue
 <template>
@@ -486,7 +487,8 @@ onUpdated(() => {
     </div>
 </template>
 <script setup lang="ts">
-import { defineProps, defineEmits } from 'vue'
+// defineProps and defineEmits could ignore import
+// import { defineProps, defineEmits } from 'vue'
 // from App.vue
 defineProps(["langList", "selected"])
 // to App.vue
@@ -519,4 +521,96 @@ const selectRec = (id:number)=>{
     peselected.value = id
 }
 </script>
+```
+
+### dynamic component
+```vue
+<!-- currentTab 改变时组件也改变 -->
+<!--tabs[currentTab] could be an object of imported component or string name of imported component-->
+<component :is="tabs[currentTab]"></component>
+```
+
+## Router
+- `pnpm i vue-router` to install route module
+- add `index.ts` into directory `router`:
+  ```typescript
+  // @/router/index.ts
+  import { createRouter, createWebHashHistory } from "vue-router"
+  import Route1 from "../components/Route1.vue"
+  import Route2 from "../components/Route2.vue"
+  import Route3 from "../components/Route3.vue"
+
+  export default createRouter(
+      {
+          history: createWebHashHistory(),
+          routes: [
+              {
+                  path: '/r1',
+                  component: Route1,
+              },
+              {
+                  path: '/r2',
+                  component: Route2,
+              },
+              {
+                  path: '/r3',
+                  component: Route3,
+              }
+          ],
+      }
+  )
+  ```
+- import router in `main.ts` and then sign by `app.use(router)`
+- import `RouterView` to `.vue` file and insert `<RouterView/>` to html code where to display dynamic in page components;
+- import `RouterLink` to `.vue` file and insert RouterLink like: `<RouterLink active-class="router-active" to="r1">r1</RouterLink>` to html code where to choose displayed components, `to="r1"` is the path configure in `/router/index.ts`;
+
+```vue
+<!-- RouteTest.vue -->
+<template>
+    <div style="text-align: center;">
+        <div style="border:1px solid; border-color: black; border-radius:5px">Route Test</div>
+        <div id="router-link">
+            <RouterLink active-class="router-active" to="r1">r1</RouterLink>
+            <RouterLink active-class="router-active" to="r2">r2</RouterLink>
+            <RouterLink active-class="router-active" to="r3">r3</RouterLink>
+        </div>
+        <div id="contend">
+            <RouterView></RouterView>
+        </div>
+    </div>
+</template>
+
+<script setup lang="ts">
+import { RouterView, RouterLink } from 'vue-router'
+</script>
+<style scoped>
+#router-link {
+    width: 200px;
+    margin: 0 auto;
+    text-align: center;
+    display: flex;
+    justify-content: space-around;
+}
+
+#contend {
+    margin-left: 1%;
+    width: 98%;
+    min-height: 500px;
+    border: 1px solid;
+    border-radius: 10px;
+    margin: 0 auto;
+}
+
+#router-link a {
+    width: 100px;
+    height: 20px;
+    border: 2px solid;
+    border-radius: 5px;
+    margin: 5px;
+}
+
+.router-active {
+    color: #fd79a8;
+}
+</style>
 ```

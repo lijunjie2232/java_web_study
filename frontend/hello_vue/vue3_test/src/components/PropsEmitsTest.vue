@@ -6,8 +6,8 @@
 </template>
 
 <script setup lang="ts">
-import { defineProps, defineEmits } from 'vue';
-defineProps(["langList", "selected"])
+// import { defineProps, defineEmits } from 'vue'
+const {langList, selected} = defineProps(["langList", "selected"])
 const emitSelect = defineEmits(["sendSelect"])
 
 const sendSelect = (id: number) => {
