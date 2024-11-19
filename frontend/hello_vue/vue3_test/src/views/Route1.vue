@@ -4,6 +4,7 @@
         <RouterLink :to="{ path: '/r1/r1-1', query: r1_data[0] }">r1-1-0</RouterLink>
         <RouterLink :to="{ path: '/r1/r1-1', query: r1_data[1] }">r1-1-1</RouterLink>
         <RouterLink :to="{ name: 'r1_2', params: r1_data[2] }">r1-2</RouterLink>
+        <button @click="clickFunc('r1_2', r1_data[3])">r1-2-1</button>
     </div>
     <div id="content">
         <RouterView />
@@ -13,7 +14,8 @@
 
 <script setup lang="ts">
 import { onMounted, onUnmounted, reactive } from 'vue';
-import { RouterView, RouterLink } from 'vue-router';
+import { RouterView, RouterLink, useRouter } from 'vue-router';
+const router = useRouter()
 onMounted(() => {
     console.log("route1 mounted");
 })
@@ -33,10 +35,16 @@ const r1_data = reactive(
         {
             username: 'root',
             password: 'root'
+        },
+        {
+            username: 'user',
+            password: 'user'
         }
     ]
 )
-
+const clickFunc = (route: string, data: {}) => {
+    router.push({ name: route, params: data })
+}
 
 </script>
 <style scoped>

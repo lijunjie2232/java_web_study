@@ -27,6 +27,8 @@
       - [query](#query)
       - [params](#params)
     - [route props](#route-props)
+    - [route replace](#route-replace)
+    - [programming navigator](#programming-navigator)
 
 
 ## Vite
@@ -691,3 +693,33 @@ import { RouterView, RouterLink } from 'vue-router'
 3. object
    - set `props:{}`, but value in `{}` could not changed
 
+### route replace
+- replace mode could not backward to last page
+- add replace to `RouterLink` as `<RouterLink replace .../>`
+
+### programming navigator
+- `RouterLink` will be the `<a>` tag in HTML source code
+- `useRouter().push("/xxx")` could forward to xxx
+```vue
+<template>
+    <button @click="clickFunc('r1_2', r1_data)">r1-2-1</button>
+    <RouterView />
+</template>
+
+<script setup lang="ts">
+import { reactive } from 'vue';
+import { RouterView, useRouter } from 'vue-router';
+const router = useRouter()
+const r1_data = reactive(
+    {
+        username: 'user',
+        password: 'user'
+    }
+)
+const clickFunc = (route: string, data: {}) => {
+    router.push({ name: route, params: data })
+}
+
+</script>
+<style scoped></style>
+```
