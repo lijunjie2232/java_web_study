@@ -30,6 +30,11 @@
     - [route replace](#route-replace)
     - [programming navigator](#programming-navigator)
     - [redirect](#redirect)
+  - [Pinia](#pinia)
+    - [store data in pinia](#store-data-in-pinia)
+    - [get data from pinia](#get-data-from-pinia)
+    - [modify data in pinia](#modify-data-in-pinia)
+    - [storeToRefs](#storetorefs)
 
 
 ## Vite
@@ -733,3 +738,77 @@ const clickFunc = (route: string, data: {}) => {
       redirect: "/r3"
   }
   ```
+
+## Pinia
+1. `pnpm i pinia`
+2. import and use pinia in main.ts:
+    ```typescript
+    import {createPinia} from 'pinia'
+    // ......
+    const pinia = createPinia()
+    app.use(pinia)
+    ```
+### store data in pinia
+```typescript
+import {defineStore} from 'pinia'
+
+export const useMulStore = defineStore("mul", {
+    state(){
+        return {
+            mul: 0
+        }
+    }
+})
+```
+### get data from pinia
+```vue
+<template>
+    <div>
+        <input type="number" v-model="num" />
+        <p>{{ MulStore.mul }}</p>
+    </div>
+</template>
+
+<script setup lang="ts">
+import { ref, watchEffect } from 'vue'
+import { useMulStore } from "../store/piniatest1.ts"
+const num = ref(0)
+const mulStore = useMulStore()
+</script>
+<style scoped></style>
+```
+### modify data in pinia
+1. direct assignment
+```typescript
+mulStore.mul = num.value
+```
+2. batch assignment
+```typescript
+mulStore.$patch(
+    {
+        num: 10,
+        mul: 100
+    }
+)
+```
+3. use actions:
+```typescript
+export const useMulStore = defineStore("mulstore", {
+    actions:{
+        multiple(num:number){
+            this.mul = num ** 2
+        }
+    },
+    state(){
+        return {
+            mul: 0
+        }
+    }
+})
+```
+- then call the action like a method: `mulStore.multiple(num.value)`
+
+### storeToRefs
+compareing with `toRefs`, `storeToRefs` only wrap data in a pinia object
+- import: `import { storeToRefs } from 'pinia';`
+- usage: `const { mul } = storeToRefs(mulStore)`

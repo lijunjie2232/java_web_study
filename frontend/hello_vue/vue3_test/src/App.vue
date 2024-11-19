@@ -38,6 +38,8 @@
     <LifecycleTest></LifecycleTest>
     <PropsEmitsTest @send-select="selectRec" :lang-list="langs" :selected="peselected"></PropsEmitsTest>
     <RouteTest></RouteTest>
+    <PiniaTest1></PiniaTest1>
+    <PiniaTest2></PiniaTest2>
 </template>
 
 <script setup lang="ts" name="App1">
@@ -52,6 +54,8 @@ import LifecycleTest from './components/LifecycleTest.vue'
 import PropsEmitsTest from './components/PropsEmitsTest.vue'
 import { type ILang } from './types'
 import RouteTest from './components/RouteTest.vue'
+import PiniaTest1 from './components/PiniaTest1.vue'
+import PiniaTest2 from './components/PiniaTest2.vue'
 const count = ref(0)
 const person = reactive(
     {
