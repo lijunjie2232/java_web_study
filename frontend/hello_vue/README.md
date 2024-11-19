@@ -26,6 +26,7 @@
       - [configure child router:](#configure-child-router)
       - [query](#query)
       - [params](#params)
+    - [route props](#route-props)
 
 
 ## Vite
@@ -677,4 +678,16 @@ import { RouterView, RouterLink } from 'vue-router'
   let route = useRoute()
   let { params } = toRefs(route)
   ```
+
+### route props
+1. configuration (only params)
+   - set `props:true` in router:
+   - `defineProps(["username", "password"])` in vue, then derectly use `username` and `password` as variable
+2. function
+   - set `props(route){return route.query}`, return could be `route.query` or any else
+   - `defineProps(["username", "password"])` in vue, then derectly use `username` and `password` as variable
+    ```typescript
+    ```
+3. object
+   - set `props:{}`, but value in `{}` could not changed
 

@@ -13,16 +13,16 @@ export default createRouter(
                 name: "route1",
                 path: '/r1',
                 component: Route1,
-                children:[
+                children: [
                     {
-                        path:"r1-1",
+                        path: "r1-1",
                         component: Route1_1
                     },
                     {
                         name: "r1_2",
-                        path:"r1-2/:username?/:password?",
+                        path: "r1-2/:username?/:password?",
                         component: Route1_2,
-                        
+                        props: true
                     }
                 ]
             },
