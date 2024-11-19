@@ -35,6 +35,9 @@
     - [get data from pinia](#get-data-from-pinia)
     - [modify data in pinia](#modify-data-in-pinia)
     - [storeToRefs](#storetorefs)
+    - [getters](#getters)
+    - [subscript](#subscript)
+    - [composed format of pinia](#composed-format-of-pinia)
 
 
 ## Vite
@@ -812,3 +815,52 @@ export const useMulStore = defineStore("mulstore", {
 compareing with `toRefs`, `storeToRefs` only wrap data in a pinia object
 - import: `import { storeToRefs } from 'pinia';`
 - usage: `const { mul } = storeToRefs(mulStore)`
+
+### getters
+```typescript
+export const useMulStore = defineStore("mulstore", {
+    actions:{
+        multiple(num:number){
+            this.mul = num ** 2
+        }
+    },
+    state(){
+        return {
+            mul: 0
+        }
+    },
+    getters:{
+        log2():number{
+            return Math.log2(this.mul)
+        }
+    }
+})
+```
+- use as attribute in state: `const { mul, log2 } = storeToRefs(mulStore)`
+
+### subscript
+- call function if value in store changed
+```typescript
+// piniatest1.ts
+mulStore.$subscribe((mutate, state) => {
+    console.log("changed mulStore: ", mutate)
+    localStorage.setItem("mul", JSON.stringify(state.mul))
+})
+```
+```typescript
+// xx.vue@<script>
+const mul = ref(JSON.parse(localStorage.getItem("mul") as string) || 0)
+```
+
+### composed format of pinia
+```typescript
+import { defineStore } from 'pinia'
+import { ref, computed } from 'vue'
+
+export const useMulStore = defineStore("mulstore", () => {
+    const mul = ref(JSON.parse(localStorage.getItem("mul") as string) || 0)
+    const log2 = computed(() => Math.log2(mul.value))
+    const multiple = (num: number) => { mul.value = num ** 2 }
+    return { mul, log2, multiple }
+})
+```
