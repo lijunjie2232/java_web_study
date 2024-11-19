@@ -29,6 +29,7 @@
     - [route props](#route-props)
     - [route replace](#route-replace)
     - [programming navigator](#programming-navigator)
+    - [redirect](#redirect)
 
 
 ## Vite
@@ -723,3 +724,12 @@ const clickFunc = (route: string, data: {}) => {
 </script>
 <style scoped></style>
 ```
+
+### redirect
+- add new route to routes and redirect to exists route:
+  ```typescript
+  {
+      path: '/',
+      redirect: "/r3"
+  }
+  ```

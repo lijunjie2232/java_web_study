@@ -35,6 +35,10 @@ export default createRouter(
                 name: "route3",
                 path: '/r3',
                 component: Route3,
+            },
+            {
+                path: '/',
+                redirect: "/r3"
             }
         ],
     }
