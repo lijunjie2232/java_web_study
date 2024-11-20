@@ -45,7 +45,8 @@
     - [v-modle on components](#v-modle-on-components)
       - [bind variable to components by `v-model`:](#bind-variable-to-components-by-v-model)
       - [bind variable to components by custom name](#bind-variable-to-components-by-custom-name)
-    - [](#)
+    - [$attrs](#attrs)
+    - [$refs / $parent](#refs--parent)
 
 
 ## Vite
@@ -1020,4 +1021,24 @@ const inputUpFunc = (value: string) => {
 }
 </script>
 ```
-###
+### $attrs
+- `v-bind="$attrs"` will pass attrs to child components
+
+### $refs / $parent
+- visit variables in child components:
+  - `defineExpose({childData})` in child to expose variable to parent component
+  - use ref to visit child node:
+    ```vue
+    <Child ref="c1" .../>
+    ...
+    const c1 = ref()
+    const c1Func = () => {
+        console.log(c1.value.childData)
+    }
+    ```
+  - `$refs` is a `ref(object)` including all children components
+  - `{{ $refs }}` -> `{ "c1": { "childData": "childData..." } }`
+- visit variables in parent component:
+  - `defineExpose({childData})` in `child.vue`
+  - visit `childData` in `mago.vue` by `$parent.childData`
+

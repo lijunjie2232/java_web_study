@@ -1,9 +1,10 @@
 <template>
     <div>
         <p>me: {{ childData }}</p>
+        <!-- <p>fatherData: {{ $parent }}</p> -->
         <button @click="clickFunc">click me</button><br />
         <!-- <input type="text" :value="modelValue" @input="inputUpFunc((<HTMLInputElement>$event.target).value)" /> -->
-            <input type="text" :value="intext" @input="inputUpFunc((<HTMLInputElement>$event.target).value)" />
+        <input type="text" :value="intext" @input="inputUpFunc((<HTMLInputElement>$event.target).value)" />
     </div>
 </template>
 

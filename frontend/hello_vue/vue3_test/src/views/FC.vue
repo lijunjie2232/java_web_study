@@ -4,10 +4,19 @@
             <p>fatherData: {{ fatherData }}</p>
             <p>childData: {{ childData }}</p>
             <p>cinput: {{ cinput }}</p>
+            <p>a: {{ a }}</p>
+            <p>b: {{ b }}</p>
+            <p>c: {{ c }}</p>
+            <p>d: {{ d }}</p>
+
         </div>
-        <Child :father-data="fatherData" :send-data="getData" @custom-event="custFunc"></Child>
+        <Child ref="c1" :father-data="fatherData" :send-data="getData" @custom-event="custFunc" :a="a" :b="b"
+            :aadd="aadd">
+        </Child>
         <!-- <AnotherChild v-model="cinput"></AnotherChild> -->
         <AnotherChild v-model:intext="cinput"></AnotherChild>
+        <button @click="c1Func">c1Func</button>
+        <button @click="console.log($refs.c1.childData)">$refs</button>
     </div>
 </template>
 
@@ -24,6 +33,21 @@ const getData = (data: string) => {
 const custFunc = (s: string) => {
     console.log(s);
 }
+const a = ref(0)
+const b = ref(0)
+const c = ref(0)
+const d = ref(0)
+
+const aadd = () => {
+    a.value++
+}
+
+const c1 = ref()
+const c1Func = () => {
+    console.log(c1.value)
+    console.log(c1.value.childData)
+}
+
 </script>
 <style scoped>
 div {

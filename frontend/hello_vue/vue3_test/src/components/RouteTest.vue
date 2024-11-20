@@ -28,7 +28,7 @@ import { RouterView, RouterLink } from 'vue-router'
 #content {
     margin-left: 1%;
     width: 98%;
-    min-height: 500px;
+    min-height: 650px;
     border: 1px solid;
     border-radius: 10px;
     margin: 0 auto;

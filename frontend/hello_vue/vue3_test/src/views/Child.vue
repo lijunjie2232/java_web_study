@@ -4,12 +4,14 @@
         <p>anotherChildData: {{ ChildData1 }}</p>
         <p>fatherData: {{ fatherData }}</p>
         <button @click="emit('customEvent', childData)">click me</button>
+        <Mago v-bind="$attrs"></Mago>
     </div>
 </template>
 
 <script setup lang="ts">
 import { onUnmounted, ref } from 'vue'
 import emitter from '../utils/emitter'
+import Mago from './mago.vue';
 const childData = ref("childData...")
 const props = defineProps(["fatherData", "sendData"])
 props.sendData(childData.value)
@@ -23,6 +25,8 @@ emitter.on("ChildData", (data) => {
 onUnmounted(()=>{
     emitter.off("ChildData")
 })
+
+defineExpose({childData})
 </script>
 
 <style scoped></style>
