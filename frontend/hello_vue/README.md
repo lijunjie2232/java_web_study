@@ -39,6 +39,10 @@
     - [subscript](#subscript)
     - [composed format of pinia](#composed-format-of-pinia)
   - [Components message pass](#components-message-pass)
+    - [defineProps in Father-child structure](#defineprops-in-father-child-structure)
+    - [custom event](#custom-event)
+    - [mitt](#mitt)
+    - [v-modle on components](#v-modle-on-components)
 
 
 ## Vite
@@ -867,7 +871,7 @@ export const useMulStore = defineStore("mulstore", () => {
 ```
 
 ## Components message pass
-1. defineProps in Father-child structure
+### defineProps in Father-child structure
 ```vue
 <!-- Father.vue -->
 <template>
@@ -907,7 +911,7 @@ const { fatherData, sendData } = defineProps(["fatherData", "send-data"])
 sendData(childData.value)
 </script>
 ```
-2. custom event
+### custom event
 ```vue
 <!-- Father.vue -->
 <Child @custom-event="custFunc"></Child>
@@ -923,9 +927,11 @@ const emit = defineEmits(["customEvent"])
 emit("customEvent", args)
 </script>
 ```
-3. mitt
+
+### mitt
 - bind event in advance
 - `pnpm i mitt` to install mitt
+
 ```typescript
 // utils/emitter.ts
 import mitt from 'mitt'
@@ -954,11 +960,34 @@ onUnmounted(()=>{
     emitter.off("ChildData")
 })
 
-
 // 2.vue@script
 import emitter from '../utils/emitter'
 watchEffect(() => {
     emitter.emit("ChildData", childData.value)
 })
 ```
-4. v-modle
+
+### v-modle on components
+- bind variable to components :
+  - method1: `<MyCmp v-model="cinput"></MyCmp>`
+  - mehtod2: `<MyCmp :modelValue="cinput" @update:modelValue="cinput=$event"></MyCmp>`
+- components:
+```vue
+<!-- MyCmp.vue -->
+<template>
+    <div>
+        <input type="text" :value="modelValue" @input="inputUpFunc((<HTMLInputElement>$event.target).value)" />
+    </div>
+</template>
+
+<script setup lang="ts">
+defineProps(["modelValue"])
+const emit = defineEmits(["update:modelValue"])
+const inputUpFunc = (value: string) => {
+    emit("update:modelValue", value)
+}
+</script>
+
+<style scoped></style>
+```
+

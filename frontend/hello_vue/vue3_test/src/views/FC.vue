@@ -3,9 +3,10 @@
         <div>
             <p>fatherData: {{ fatherData }}</p>
             <p>childData: {{ childData }}</p>
+            <p>cinput: {{ cinput }}</p>
         </div>
         <Child :father-data="fatherData" :send-data="getData" @custom-event="custFunc"></Child>
-        <AnotherChild></AnotherChild>
+        <AnotherChild v-model="cinput"></AnotherChild>
     </div>
 </template>
 
@@ -13,8 +14,9 @@
 import AnotherChild from './AnotherChild.vue';
 import Child from './Child.vue';
 import { ref } from 'vue'
-let fatherData = ref("fatherData...")
-let childData = ref("")
+const fatherData = ref("fatherData...")
+const childData = ref("")
+const cinput = ref()
 const getData = (data: string) => {
     childData.value = data
 }
