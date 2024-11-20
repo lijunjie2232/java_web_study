@@ -11,7 +11,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue'
+import { inject, ref } from 'vue'
 const magoData = ref("magoData...")
 defineProps(["a", "b", "aadd"])
 const fFunc = (p) => {
@@ -19,6 +19,15 @@ const fFunc = (p) => {
     console.log(p.childData)
 
 }
+console.log("inject fatherData in Child.vue: ", inject('fatherData', ref("defaultValue")).value)
 </script>
 
-<style scoped></style>
+<style scoped>
+div {
+    width: 98%;
+    margin: 1%;
+    padding: 2px;
+    border: 1px solid;
+    border-radius: 5px;
+}
+</style>

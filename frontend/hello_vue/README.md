@@ -47,6 +47,7 @@
       - [bind variable to components by custom name](#bind-variable-to-components-by-custom-name)
     - [$attrs](#attrs)
     - [$refs / $parent](#refs--parent)
+    - [provide inject](#provide-inject)
 
 
 ## Vite
@@ -64,6 +65,7 @@
 
 - use vite extension `vite-plugin-vue-setup-extend` could enable define name of `.vue` file by `<script setup lang="ts" name="xxx">`
 - use `import { type IMessage } from '../types';` to import ts interface in vue
+- ref wraped in reactive should visited without `.value`
 
 ## css style
 1. define in tag `<style scoped></style>` in `.vue` file
@@ -1042,3 +1044,15 @@ const inputUpFunc = (value: string) => {
   - `defineExpose({childData})` in `child.vue`
   - visit `childData` in `mago.vue` by `$parent.childData`
 
+### provide inject
+- in father component: `provide('key', value)`, value should pass ref or reactive
+  ```typescript
+  import { provide, ref } from 'vue'
+  const fatherData = ref("fatherData...")
+  provide('fatherData', fatherData)
+  ```
+- in child and grandchild and ... component: inject('key', 'default')
+  ```typescript
+  import { inject } from 'vue'
+  console.log("inject fatherData in Child.vue: ", inject('fatherData', ref("defaultValue")).value)
+  ```

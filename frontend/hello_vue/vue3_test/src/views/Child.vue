@@ -9,7 +9,7 @@
 </template>
 
 <script setup lang="ts">
-import { onUnmounted, ref } from 'vue'
+import { inject, onUnmounted, ref } from 'vue'
 import emitter from '../utils/emitter'
 import Mago from './mago.vue';
 const childData = ref("childData...")
@@ -22,11 +22,13 @@ const ChildData1 = ref("")
 emitter.on("ChildData", (data) => {
     ChildData1.value = data as string
 })
-onUnmounted(()=>{
+onUnmounted(() => {
     emitter.off("ChildData")
 })
 
-defineExpose({childData})
+defineExpose({ childData })
+
+console.log("inject fatherData in Child.vue: ", inject('fatherData', ref("defaultValue")).value)
 </script>
 
 <style scoped></style>

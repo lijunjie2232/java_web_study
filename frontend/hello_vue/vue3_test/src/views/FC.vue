@@ -23,7 +23,7 @@
 <script setup lang="ts">
 import AnotherChild from './AnotherChild.vue';
 import Child from './Child.vue';
-import { ref } from 'vue'
+import { provide, ref } from 'vue'
 const fatherData = ref("fatherData...")
 const childData = ref("")
 const cinput = ref()
@@ -47,6 +47,8 @@ const c1Func = () => {
     console.log(c1.value)
     console.log(c1.value.childData)
 }
+
+provide('fatherData', fatherData)
 
 </script>
 <style scoped>
