@@ -908,3 +908,19 @@ sendData(childData.value)
 </script>
 ```
 2. custom event
+```vue
+<!-- Father.vue -->
+<Child @custom-event="custFunc"></Child>
+<script>
+const custFunc = ()=>{
+  ...
+}
+</script>
+
+<!-- Chile.vue -->
+<script>
+const emit = defineEmits(["customEvent"])
+emit("customEvent", args)F
+</>
+```
+3. 123
