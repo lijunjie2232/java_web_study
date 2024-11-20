@@ -6,7 +6,8 @@
             <p>cinput: {{ cinput }}</p>
         </div>
         <Child :father-data="fatherData" :send-data="getData" @custom-event="custFunc"></Child>
-        <AnotherChild v-model="cinput"></AnotherChild>
+        <!-- <AnotherChild v-model="cinput"></AnotherChild> -->
+        <AnotherChild v-model:intext="cinput"></AnotherChild>
     </div>
 </template>
 

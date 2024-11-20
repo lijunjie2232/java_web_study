@@ -43,6 +43,8 @@
     - [custom event](#custom-event)
     - [mitt](#mitt)
     - [v-modle on components](#v-modle-on-components)
+      - [bind variable to components by `v-model`:](#bind-variable-to-components-by-v-model)
+      - [bind variable to components by custom name](#bind-variable-to-components-by-custom-name)
 
 
 ## Vite
@@ -968,7 +970,7 @@ watchEffect(() => {
 ```
 
 ### v-modle on components
-- bind variable to components :
+#### bind variable to components by `v-model`:
   - method1: `<MyCmp v-model="cinput"></MyCmp>`
   - mehtod2: `<MyCmp :modelValue="cinput" @update:modelValue="cinput=$event"></MyCmp>`
 - components:
@@ -991,3 +993,27 @@ const inputUpFunc = (value: string) => {
 <style scoped></style>
 ```
 
+#### bind variable to components by custom name
+- custom name by "intext"
+- change `v-model=` to `v-model:intext=` as : `<MyCmp v-model:intext="cinput"></MyCmp>`
+- change props and emits name:
+  - `:value="intext"`
+  - `defineProps(["intext"])`
+  - `defineEmits(["update:intext"])`
+  - `emit("update:intext", value)`
+```vue
+<!-- MyCmp.vue -->
+<template>
+    <div>
+        <input type="text" :value="intext" @input="inputUpFunc((<HTMLInputElement>$event.target).value)" />
+    </div>
+</template>
+
+<script setup lang="ts">
+defineProps(["intext"])
+const emit = defineEmits(["update:intext"])
+const inputUpFunc = (value: string) => {
+    emit("update:intext", value)
+}
+</script>
+```

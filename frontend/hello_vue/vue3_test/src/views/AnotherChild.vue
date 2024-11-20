@@ -2,7 +2,8 @@
     <div>
         <p>me: {{ childData }}</p>
         <button @click="clickFunc">click me</button><br />
-        <input type="text" :value="modelValue" @input="inputUpFunc((<HTMLInputElement>$event.target).value)" />
+        <!-- <input type="text" :value="modelValue" @input="inputUpFunc((<HTMLInputElement>$event.target).value)" /> -->
+            <input type="text" :value="intext" @input="inputUpFunc((<HTMLInputElement>$event.target).value)" />
     </div>
 </template>
 
@@ -17,11 +18,16 @@ const clickFunc = () => {
 watchEffect(() => {
     emitter.emit("ChildData", childData.value)
 })
-defineProps(["modelValue"])
-const emit = defineEmits(["update:modelValue"])
+
+// defineProps(["modelValue"])
+// const emit = defineEmits(["update:modelValue"])
+// const inputUpFunc = (value: string) => {
+//     emit("update:modelValue", value)
+// }
+defineProps(["intext"])
+const emit = defineEmits(["update:intext"])
 const inputUpFunc = (value: string) => {
-    console.log(value);
-    emit("update:modelValue", value)
+    emit("update:intext", value)
 }
 </script>
 
