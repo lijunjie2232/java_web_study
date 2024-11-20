@@ -45,6 +45,7 @@
     - [v-modle on components](#v-modle-on-components)
       - [bind variable to components by `v-model`:](#bind-variable-to-components-by-v-model)
       - [bind variable to components by custom name](#bind-variable-to-components-by-custom-name)
+    - [](#)
 
 
 ## Vite
@@ -897,6 +898,7 @@ const getData = (data: string) => {
 </script>
 <style scoped>
 ```
+
 ```vue
 <!-- Child.vue -->
 <template>
@@ -913,6 +915,7 @@ const { fatherData, sendData } = defineProps(["fatherData", "send-data"])
 sendData(childData.value)
 </script>
 ```
+
 ### custom event
 ```vue
 <!-- Father.vue -->
@@ -1017,3 +1020,4 @@ const inputUpFunc = (value: string) => {
 }
 </script>
 ```
+###
