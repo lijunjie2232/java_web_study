@@ -14,7 +14,7 @@
 <style scoped>
 #nav {
     width: 22%;
-    height: 350px;
+    min-height: 350px;
     margin-left: 10px;
     float: left;
     border: 1px solid;
@@ -23,7 +23,7 @@
 
 #content {
     width: 75%;
-    height: 350px;
+    min-height: 350px;
     margin-right: 10px;
     float: right;
     border: 1px solid;

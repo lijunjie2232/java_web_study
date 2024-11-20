@@ -5,10 +5,12 @@
             <p>childData: {{ childData }}</p>
         </div>
         <Child :father-data="fatherData" :send-data="getData" @custom-event="custFunc"></Child>
+        <AnotherChild></AnotherChild>
     </div>
 </template>
 
 <script setup lang="ts">
+import AnotherChild from './AnotherChild.vue';
 import Child from './Child.vue';
 import { ref } from 'vue'
 let fatherData = ref("fatherData...")
@@ -16,7 +18,7 @@ let childData = ref("")
 const getData = (data: string) => {
     childData.value = data
 }
-const custFunc = (s:string)=>{
+const custFunc = (s: string) => {
     console.log(s);
 }
 </script>

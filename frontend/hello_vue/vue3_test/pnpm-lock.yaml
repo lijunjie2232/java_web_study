@@ -8,6 +8,9 @@ importers:
 
   .:
     dependencies:
+      mitt:
+        specifier: ^3.0.1
+        version: 3.0.1
       pinia:
         specifier: ^2.2.6
         version: 2.2.6(typescript@5.6.3)(vue@3.5.12(typescript@5.6.3))
@@ -403,6 +406,9 @@ packages:
   minimatch@9.0.5:
     resolution: {integrity: sha512-G6T0ZX48xgozx7587koeX9Ys2NYy6Gmv//P89sEte9V9whIapMNF4idKxnW2QtCcLiTWlb/wfCabAtAFWhhBow==}
     engines: {node: '>=16 || 14 >=14.17'}
+
+  mitt@3.0.1:
+    resolution: {integrity: sha512-vKivATfr97l2/QBCYAkXYDbrIWPM2IIKEl7YPhjCvKlG3kE2gm+uBo6nEXK3M5/Ffh/FLpKExzOQ3JJoJGFKBw==}
 
   muggle-string@0.4.1:
     resolution: {integrity: sha512-VNTrAak/KhO2i8dqqnqnAHOa3cYBwXEZe9h+D5h/1ZqFSTEFHdM65lR7RoIqq3tBBYavsOXV84NoHXZ0AkPyqQ==}
@@ -821,6 +827,8 @@ snapshots:
     dependencies:
       brace-expansion: 2.0.1
 
+  mitt@3.0.1: {}
+
   muggle-string@0.4.1: {}
 
   nanoid@3.3.7: {}
@@ -909,9 +917,11 @@ snapshots:
 
   vue3_test@file:(typescript@5.6.3):
     dependencies:
+      pinia: 2.2.6(typescript@5.6.3)(vue@3.5.12(typescript@5.6.3))
       vue: 3.5.12(typescript@5.6.3)
       vue-router: 4.4.5(vue@3.5.12(typescript@5.6.3))
     transitivePeerDependencies:
+      - '@vue/composition-api'
       - typescript
 
   vue@3.5.12(typescript@5.6.3):

@@ -920,7 +920,45 @@ const custFunc = ()=>{
 <!-- Chile.vue -->
 <script>
 const emit = defineEmits(["customEvent"])
-emit("customEvent", args)F
-</>
+emit("customEvent", args)
+</script>
 ```
-3. 123
+3. mitt
+- bind event in advance
+- `pnpm i mitt` to install mitt
+```typescript
+// utils/emitter.ts
+import mitt from 'mitt'
+
+const emitter = mitt()
+
+emitter.on('test1', (data) => {
+    console.log("emitter test1");
+    console.log(data);
+}) // bind test1
+emitter.emit("test1", "emiiting data") // emit data
+emitter.off("test1") // unbind test1
+emitter.all.clear() // unbind all
+
+export default emitter
+```
+```typescript
+// 1.vue@script
+import emitter from '../utils/emitter'
+const emit = defineEmits(["customEvent"])
+const ChildData1 = ref("")
+emitter.on("ChildData", (data) => {
+    ChildData1.value = data as string
+})
+onUnmounted(()=>{
+    emitter.off("ChildData")
+})
+
+
+// 2.vue@script
+import emitter from '../utils/emitter'
+watchEffect(() => {
+    emitter.emit("ChildData", childData.value)
+})
+```
+4. v-modle
