@@ -38,6 +38,7 @@
     - [getters](#getters)
     - [subscript](#subscript)
     - [composed format of pinia](#composed-format-of-pinia)
+  - [Components message pass](#components-message-pass)
 
 
 ## Vite
@@ -864,3 +865,46 @@ export const useMulStore = defineStore("mulstore", () => {
     return { mul, log2, multiple }
 })
 ```
+
+## Components message pass
+1. defineProps in Father-child structure
+```vue
+<!-- Father.vue -->
+<template>
+    <div>
+        <div>
+            <p>fatherData: {{ fatherData }}</p>
+            <p>childData: {{ childData }}</p>
+        </div>
+        <Child :father-data="fatherData" :send-data="getData"></Child>
+    </div>
+</template>
+
+<script setup lang="ts">
+import Child from './Child.vue';
+import { ref } from 'vue'
+let fatherData = ref("fatherData...")
+let childData = ref("")
+const getData = (data: string) => {
+    childData.value = data
+}
+</script>
+<style scoped>
+```
+```vue
+<!-- Child.vue -->
+<template>
+    <div>
+        <p>childData: {{ childData }}</p>
+        <p>fatherData: {{ fatherData }}</p>
+    </div>
+</template>
+
+<script setup lang="ts">
+import { ref } from 'vue'
+let childData = ref("childData...")
+const { fatherData, sendData } = defineProps(["fatherData", "send-data"])
+sendData(childData.value)
+</script>
+```
+2. custom event

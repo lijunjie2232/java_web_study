@@ -29,17 +29,17 @@
     <!-- v-for on range -->
     <!-- start with 1 -->
     <li v-for="n in 7">{{ n }}</li>
-    <Multiple></Multiple>
+    <!-- <Multiple></Multiple>
     <WatchTest></WatchTest>
     <RefTest></RefTest>
     <InterfaceTest></InterfaceTest>
     <CssTest></CssTest>
     <VModelTest></VModelTest>
     <LifecycleTest></LifecycleTest>
-    <PropsEmitsTest @send-select="selectRec" :lang-list="langs" :selected="peselected"></PropsEmitsTest>
+    <PropsEmitsTest @send-select="selectRec" :lang-list="langs" :selected="peselected"></PropsEmitsTest> -->
     <RouteTest></RouteTest>
-    <PiniaTest1></PiniaTest1>
-    <PiniaTest2></PiniaTest2>
+    <!-- <PiniaTest1></PiniaTest1>
+    <PiniaTest2></PiniaTest2> -->
 </template>
 
 <script setup lang="ts" name="App1">

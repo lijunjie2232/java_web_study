@@ -4,6 +4,8 @@ import Route2 from "../views/Route2.vue"
 import Route3 from "../views/Route3.vue"
 import Route1_1 from "../views/Route1-1.vue"
 import Route1_2 from "../views/Route1-2.vue"
+import CompMsgPass from "../views/CompMsgPass.vue"
+import FC from "../views/FC.vue"
 
 export default createRouter(
     {
@@ -30,6 +32,14 @@ export default createRouter(
                 name: "route2",
                 path: '/r2',
                 component: Route2,
+            },
+            {
+                name: "cmp",
+                path: '/cmp',
+                component: CompMsgPass,
+                children:[
+                    {path:'fc', component: FC},
+                ]
             },
             {
                 name: "route3",

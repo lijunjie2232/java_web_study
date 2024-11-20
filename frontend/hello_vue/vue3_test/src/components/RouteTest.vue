@@ -4,6 +4,7 @@
         <div id="router-link">
             <RouterLink active-class="router-active" to="/r1">r1</RouterLink>
             <RouterLink active-class="router-active" to="/r2">r2</RouterLink>
+            <RouterLink active-class="router-active" to="/cmp">cmp</RouterLink>
             <RouterLink active-class="router-active" to="/r3">r3</RouterLink>
         </div>
         <div id="content">
