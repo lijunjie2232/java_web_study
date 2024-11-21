@@ -54,6 +54,11 @@
       - [named slot](#named-slot)
       - [scope slot](#scope-slot)
     - [sumary](#sumary)
+  - [apis](#apis)
+    - [shallowRef / shallowReactive](#shallowref--shallowreactive)
+    - [readonly / shallowReadonly](#readonly--shallowreadonly)
+    - [toRaw / markRaw](#toraw--markraw)
+    - [customRef](#customref)
 
 
 ## Vite
@@ -1142,4 +1147,45 @@ const scopedSlotData = ref(
 ```
 
 ### sumary
-![sumary](../../note/components_message_pass.png)
+![sumary](https://raw.githubusercontent.com/lijunjie2232/java_web_study/refs/heads/master/note/components_message_pass.png)
+
+## apis
+### shallowRef / shallowReactive
+  - shallow wrap and monitor reaction of variable
+### readonly / shallowReadonly
+  - create a readonly variable from existing variable(ref or reactive)
+### toRaw / markRaw
+  - toRaw unwrap ref or reactive to original variable, not recommonded unless pass to outer part of system
+  - markRaw warp an object which could not be warpped into ref or reactive
+### customRef
+```typescript
+// hooks/useDelayMsg.ts
+import { customRef } from 'vue'
+
+export default function (initValue?: string, latency?: number) {
+    let msgValue = initValue === null ? "" : initValue
+    if (latency === null) latency = 1000
+    let timer: number
+    const msg = customRef(
+        (track, trigger) => {
+            return {
+                get() {
+                    track()// vue will monite change of msg
+                    return msgValue
+                },
+                set(value:string) {
+                    msgValue = value
+                    clearTimeout(timer)
+                    timer = setTimeout(
+                        () => {
+                            trigger()// notice vue the change of msg
+                        },
+                        latency
+                    )
+                },
+            }
+        }
+    )
+    return { msg }
+}
+```

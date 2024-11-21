@@ -29,6 +29,7 @@
     <!-- v-for on range -->
     <!-- start with 1 -->
     <li v-for="n in 7">{{ n }}</li>
+    <!-- components -->
     <!-- <Multiple></Multiple>
     <WatchTest></WatchTest>
     <RefTest></RefTest>
@@ -36,10 +37,11 @@
     <CssTest></CssTest>
     <VModelTest></VModelTest>
     <LifecycleTest></LifecycleTest>
-    <PropsEmitsTest @send-select="selectRec" :lang-list="langs" :selected="peselected"></PropsEmitsTest> -->
+    <PropsEmitsTest @send-select="selectRec" :lang-list="langs" :selected="peselected"></PropsEmitsTest>
     <RouteTest></RouteTest>
-    <!-- <PiniaTest1></PiniaTest1>
+    <PiniaTest1></PiniaTest1>
     <PiniaTest2></PiniaTest2> -->
+    <ShallowTest></ShallowTest>
 </template>
 
 <script setup lang="ts" name="App1">
@@ -56,6 +58,7 @@ import { type ILang } from './types'
 import RouteTest from './components/RouteTest.vue'
 import PiniaTest1 from './components/PiniaTest1.vue'
 import PiniaTest2 from './components/PiniaTest2.vue'
+import ShallowTest from './components/shallowTest.vue'
 const count = ref(0)
 const person = reactive(
     {
