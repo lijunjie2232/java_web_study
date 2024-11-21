@@ -18,26 +18,47 @@
         <button @click="c1Func">c1Func</button>
         <button @click="console.log($refs.c1.childData)">$refs</button>
         <SlotTest>
-            <table>
-                <thead>
-                    <tr>
-                        <th>id</th>
-                        <th>name</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr v-for="i in slotData" :key="i.id">
-                        <td>{{ i.id }}</td>
-                        <td>{{ i.name }}</td>
-                    </tr>
-                </tbody>
-            </table>
+            <template #test1>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>id</th>
+                            <th>name</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr v-for="i in slotData" :key="i.id">
+                            <td>{{ i.id }}</td>
+                            <td>{{ i.name }}</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </template>
         </SlotTest>
+        <SSlotTest>
+            <template v-slot="scopedSlot">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>id</th>
+                            <th>name</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr v-for="i in scopedSlot.data" :key="i.id">
+                            <td>{{ i.id }}</td>
+                            <td>{{ i.name }}</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </template>
+        </SSlotTest>
     </div>
 </template>
 
 <script setup lang="ts">
 import SlotTest from '../components/SlotTest.vue';
+import SSlotTest from '../components/SSlotTest.vue';
 import AnotherChild from './AnotherChild.vue';
 import Child from './Child.vue';
 import { provide, ref } from 'vue'

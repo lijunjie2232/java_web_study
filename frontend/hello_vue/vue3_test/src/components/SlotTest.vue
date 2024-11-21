@@ -1,11 +1,10 @@
 <template>
     <div>
-        <slot></slot>
+        <slot name="test1"></slot>
     </div>
 </template>
 
 <script setup lang="ts">
-
 </script>
 <style scoped>
 div {

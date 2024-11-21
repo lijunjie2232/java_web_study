@@ -52,6 +52,7 @@
     - [slot](#slot)
       - [default slot](#default-slot)
       - [named slot](#named-slot)
+      - [scope slot](#scope-slot)
 
 
 ## Vite
@@ -1068,4 +1069,73 @@ const inputUpFunc = (value: string) => {
 
 #### named slot
 - `<slot name="xxx"></slot>`
-- place content into xxx by `v-slot:xxx` for example: `<div v-slot:xxx></div>`
+- method 1 (not recommended): place content into xxx by `v-slot:xxx` or `#xxx` for example: `<SlotTest v-slot:xxx>content</SlotTest>`
+- method 2: wrap content in `<template>` and set `v-slot:xxx` in template as :`<template v-slot:xxx>content</template>` or `<template #xxx>content</template>
+```vue
+<SlotTest>
+    <template #test1>
+        <table>
+            <thead>
+                <tr>
+                    <th>id</th>
+                    <th>name</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr v-for="i in slotData" :key="i.id">
+                    <td>{{ i.id }}</td>
+                    <td>{{ i.name }}</td>
+                </tr>
+            </tbody>
+        </table>
+    </template>
+</SlotTest>
+```
+```vue
+<!-- SlotTest.vue -->
+<template>
+    <div>
+        <slot name="test1"></slot>
+    </div>
+</template>
+```
+
+#### scope slot
+```vue
+<SSlotTest>
+    <template v-slot="scopedSlot">
+        <table>
+            <thead>
+                <tr>
+                    <th>id</th>
+                    <th>name</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr v-for="i in scopedSlot.data" :key="i.id">
+                    <td>{{ i.id }}</td>
+                    <td>{{ i.name }}</td>
+                </tr>
+            </tbody>
+        </table>
+    </template>
+</SSlotTest>
+```
+
+```vue
+<template>
+    <div>
+        <slot :data="scopedSlotData"></slot>
+    </div>
+</template>
+<script setup lang="ts">
+import {ref} from 'vue'
+const scopedSlotData = ref(
+    [
+        { id: 0, name: 'java' },
+        { id: 1, name: 'py' }
+    ]
+)
+</script>
+<style scoped>
+```
