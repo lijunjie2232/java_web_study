@@ -17,10 +17,27 @@
         <AnotherChild v-model:intext="cinput"></AnotherChild>
         <button @click="c1Func">c1Func</button>
         <button @click="console.log($refs.c1.childData)">$refs</button>
+        <SlotTest>
+            <table>
+                <thead>
+                    <tr>
+                        <th>id</th>
+                        <th>name</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr v-for="i in slotData" :key="i.id">
+                        <td>{{ i.id }}</td>
+                        <td>{{ i.name }}</td>
+                    </tr>
+                </tbody>
+            </table>
+        </SlotTest>
     </div>
 </template>
 
 <script setup lang="ts">
+import SlotTest from '../components/SlotTest.vue';
 import AnotherChild from './AnotherChild.vue';
 import Child from './Child.vue';
 import { provide, ref } from 'vue'
@@ -50,6 +67,12 @@ const c1Func = () => {
 
 provide('fatherData', fatherData)
 
+const slotData = ref(
+    [
+        { id: 0, name: 'py' },
+        { id: 1, name: 'ts' }
+    ]
+)
 </script>
 <style scoped>
 div {
@@ -57,5 +80,6 @@ div {
     margin: 1%;
     border: 1px solid;
     border-radius: 5px;
+    text-align: center;
 }
 </style>

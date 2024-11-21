@@ -48,6 +48,10 @@
     - [$attrs](#attrs)
     - [$refs / $parent](#refs--parent)
     - [provide inject](#provide-inject)
+    - [Pinia](#pinia-1)
+    - [slot](#slot)
+      - [default slot](#default-slot)
+      - [named slot](#named-slot)
 
 
 ## Vite
@@ -1056,3 +1060,12 @@ const inputUpFunc = (value: string) => {
   import { inject } from 'vue'
   console.log("inject fatherData in Child.vue: ", inject('fatherData', ref("defaultValue")).value)
   ```
+### [Pinia](#pinia)
+
+### slot
+#### default slot
+- add `<slot></slot>` to vue and add content between tag while using as components:`<SlotTest>content</SlotTest>`, content will display in slot
+
+#### named slot
+- `<slot name="xxx"></slot>`
+- place content into xxx by `v-slot:xxx` for example: `<div v-slot:xxx></div>`
