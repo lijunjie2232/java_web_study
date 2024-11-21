@@ -1,6 +1,6 @@
 <template>
     <div>
-        <slot :data="scopedSlotData"></slot>
+        <slot name="xxx" :data="scopedSlotData"></slot>
     </div>
 </template>
 

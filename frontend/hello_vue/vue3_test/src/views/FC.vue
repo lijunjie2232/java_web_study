@@ -36,7 +36,7 @@
             </template>
         </SlotTest>
         <SSlotTest>
-            <template v-slot="scopedSlot">
+            <template v-slot:xxx="scopedSlot">
                 <table>
                     <thead>
                         <tr>

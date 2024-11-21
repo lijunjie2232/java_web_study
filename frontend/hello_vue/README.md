@@ -1103,7 +1103,7 @@ const inputUpFunc = (value: string) => {
 #### scope slot
 ```vue
 <SSlotTest>
-    <template v-slot="scopedSlot">
+    <template v-slot:xxx="scopedSlot">
         <table>
             <thead>
                 <tr>
@@ -1125,7 +1125,7 @@ const inputUpFunc = (value: string) => {
 ```vue
 <template>
     <div>
-        <slot :data="scopedSlotData"></slot>
+        <slot name="xxx" :data="scopedSlotData"></slot>
     </div>
 </template>
 <script setup lang="ts">
