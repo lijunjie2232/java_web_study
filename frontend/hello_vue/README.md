@@ -53,6 +53,7 @@
       - [default slot](#default-slot)
       - [named slot](#named-slot)
       - [scope slot](#scope-slot)
+    - [sumary](#sumary)
 
 
 ## Vite
@@ -1139,3 +1140,6 @@ const scopedSlotData = ref(
 </script>
 <style scoped>
 ```
+
+### sumary
+![sumary](../../note/components_message_pass.png)
