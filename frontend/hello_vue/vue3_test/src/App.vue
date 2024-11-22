@@ -42,10 +42,20 @@
     <PiniaTest1></PiniaTest1>
     <PiniaTest2></PiniaTest2> -->
     <!-- <ShallowTest></ShallowTest> -->
-    <div id="testdiv"></div>
+    <!-- <div id="testdiv"></div>
     <div>
         <SplashWindow></SplashWindow>
-    </div>
+    </div> -->
+    <!-- <Suspense>
+        <template v-slot:default>
+            <SuspenseTest></SuspenseTest>
+        </template>
+<template v-slot:fallback>
+            <h2>Loading ...</h2>
+        </template>
+</Suspense> -->
+    <VueApiTest></VueApiTest>
+    {{ appVersion }}
 </template>
 
 <script setup lang="ts" name="App1">
@@ -64,6 +74,7 @@ import PiniaTest1 from './components/PiniaTest1.vue'
 import PiniaTest2 from './components/PiniaTest2.vue'
 import ShallowTest from './components/shallowTest.vue'
 import SplashWindow from './components/SplashWindow.vue'
+import SuspenseTest from './components/SuspenseTest.vue'
 const count = ref(0)
 const person = reactive(
     {
@@ -116,7 +127,7 @@ const selectRec = (id: number) => {
 }
 </script>
 <style scoped>
-#testdiv{
+#testdiv {
     color: red;
 }
 </style>

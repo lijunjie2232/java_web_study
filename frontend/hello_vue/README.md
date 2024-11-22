@@ -60,6 +60,8 @@
     - [toRaw / markRaw](#toraw--markraw)
     - [customRef](#customref)
     - [Teleport](#teleport)
+    - [Suspense](#suspense)
+    - [App api](#app-api)
 
 
 ## Vite
@@ -1203,3 +1205,35 @@ export default function (initValue?: string, latency?: number) {
 </Teleport>
 ```
 
+### Suspense
+```vue
+<Suspense>
+    <template v-slot:default>
+        <SuspenseTest></SuspenseTest>
+    </template>
+    <template v-slot:fallback>
+        <h2>Loading ...</h2>
+    </template>
+</Suspense>
+```
+- there is async test like axios in `SuspenseTest` in common vue will not show without `Suspense`
+
+### App api
+- config app in `main.ts`
+1. `app.component('cname', Component)`
+2. `app.config.globalProperties.appVersion = "0.0.1"`
+3. app.directive: custom vue commond
+- declare in `main.ts`:
+```typescript
+app.directive('testcmd', (elem, { value }) => {
+    elem.style.color = 'blue'
+    elem.value = value
+})
+```
+- then use in `.vue`:
+```vue
+<input v-testcmd="text"/>
+```
+4. app.mount
+5. app.umount
+6. app.use
