@@ -5,9 +5,10 @@ import Route3 from "../views/Route3.vue"
 import Route1_1 from "../views/Route1-1.vue"
 import Route1_2 from "../views/Route1-2.vue"
 import CompMsgPass from "../views/CompMsgPass.vue"
+import RouterGuardTest from '../views/RouterGuardTest.vue'
 import FC from "../views/FC.vue"
 
-export default createRouter(
+const router = createRouter(
     {
         history: createWebHistory(),
         routes: [
@@ -37,8 +38,8 @@ export default createRouter(
                 name: "cmp",
                 path: '/cmp',
                 component: CompMsgPass,
-                children:[
-                    {path:'fc', component: FC},
+                children: [
+                    { path: 'fc', component: FC },
                 ]
             },
             {
@@ -49,7 +50,33 @@ export default createRouter(
             {
                 path: '/',
                 redirect: "/r3"
+            },
+            {
+                path: '/login',
+                component: RouterGuardTest
             }
         ],
     }
 )
+
+router.beforeEach(
+    (to, from, next) => {
+        console.log(to)
+        console.log(from)
+        console.log(next)
+        let username = window.sessionStorage.getItem("username")
+        if (to.path != "/login" && username == null) {
+            next("/login")
+        } else {
+            next()
+        }
+    }
+)
+
+router.afterEach(
+    () => [
+
+    ]
+)
+
+export default router

@@ -30,6 +30,7 @@
     - [route replace](#route-replace)
     - [programming navigator](#programming-navigator)
     - [redirect](#redirect)
+    - [Router Guard](#router-guard)
   - [Pinia](#pinia)
     - [store data in pinia](#store-data-in-pinia)
     - [get data from pinia](#get-data-from-pinia)
@@ -227,9 +228,7 @@
       <input type="checkbox" id="mike" value="Mike" v-model="checkedNames" />
       <label for="mike">Mike</label>
       ```
-      ```vue
 
-      ```
    - `v-model.lazy`: will update variable every change instead of every input
    - `v-model.number`: convert input into number
    - `v-model.trim`: strip blank
@@ -722,8 +721,7 @@ import { RouterView, RouterLink } from 'vue-router'
 2. function
    - set `props(route){return route.query}`, return could be `route.query` or any else
    - `defineProps(["username", "password"])` in vue, then derectly use `username` and `password` as variable
-    ```typescript
-    ```
+
 3. object
    - set `props:{}`, but value in `{}` could not changed
 
@@ -766,6 +764,22 @@ const clickFunc = (route: string, data: {}) => {
       redirect: "/r3"
   }
   ```
+### Router Guard
+```typescript
+const router = createRouter(
+  ...
+)
+router.beforeEach(
+    (to, from, next) => {
+        let username = window.sessionStorage.getItem("username")
+        if (to.path != "/login" && username == null) {
+            next("/login")
+        } else {
+            next()
+        }
+    }
+)
+```
 
 ## Pinia
 1. `pnpm i pinia`

@@ -30,7 +30,7 @@
     <!-- start with 1 -->
     <li v-for="n in 7">{{ n }}</li>
     <!-- components -->
-    <!-- <Multiple></Multiple>
+    <Multiple></Multiple>
     <WatchTest></WatchTest>
     <RefTest></RefTest>
     <InterfaceTest></InterfaceTest>
@@ -40,22 +40,22 @@
     <PropsEmitsTest @send-select="selectRec" :lang-list="langs" :selected="peselected"></PropsEmitsTest>
     <RouteTest></RouteTest>
     <PiniaTest1></PiniaTest1>
-    <PiniaTest2></PiniaTest2> -->
+    <PiniaTest2></PiniaTest2>
     <!-- <ShallowTest></ShallowTest> -->
-    <!-- <div id="testdiv"></div>
-    <div>
+    <!-- <div id="testdiv"></div>-->
+    <!-- <div>
         <SplashWindow></SplashWindow>
-    </div> -->
-    <!-- <Suspense>
+    </div>
+    <Suspense>
         <template v-slot:default>
             <SuspenseTest></SuspenseTest>
         </template>
-<template v-slot:fallback>
+        <template v-slot:fallback>
             <h2>Loading ...</h2>
         </template>
-</Suspense> -->
+    </Suspense>
     <VueApiTest></VueApiTest>
-    {{ appVersion }}
+    {{ appVersion }} -->
 </template>
 
 <script setup lang="ts" name="App1">

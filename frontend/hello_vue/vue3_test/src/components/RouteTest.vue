@@ -6,6 +6,7 @@
             <RouterLink active-class="router-active" to="/r2">r2</RouterLink>
             <RouterLink active-class="router-active" to="/cmp">cmp</RouterLink>
             <RouterLink active-class="router-active" to="/r3">r3</RouterLink>
+            <RouterLink active-class="router-active" to="/login">login</RouterLink>
         </div>
         <div id="content">
             <RouterView></RouterView>
