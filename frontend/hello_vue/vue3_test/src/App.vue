@@ -41,7 +41,11 @@
     <RouteTest></RouteTest>
     <PiniaTest1></PiniaTest1>
     <PiniaTest2></PiniaTest2> -->
-    <ShallowTest></ShallowTest>
+    <!-- <ShallowTest></ShallowTest> -->
+    <div id="testdiv"></div>
+    <div>
+        <SplashWindow></SplashWindow>
+    </div>
 </template>
 
 <script setup lang="ts" name="App1">
@@ -59,6 +63,7 @@ import RouteTest from './components/RouteTest.vue'
 import PiniaTest1 from './components/PiniaTest1.vue'
 import PiniaTest2 from './components/PiniaTest2.vue'
 import ShallowTest from './components/shallowTest.vue'
+import SplashWindow from './components/SplashWindow.vue'
 const count = ref(0)
 const person = reactive(
     {
@@ -111,4 +116,7 @@ const selectRec = (id: number) => {
 }
 </script>
 <style scoped>
+#testdiv{
+    color: red;
+}
 </style>

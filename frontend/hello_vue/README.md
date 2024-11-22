@@ -59,6 +59,7 @@
     - [readonly / shallowReadonly](#readonly--shallowreadonly)
     - [toRaw / markRaw](#toraw--markraw)
     - [customRef](#customref)
+    - [Teleport](#teleport)
 
 
 ## Vite
@@ -1189,3 +1190,16 @@ export default function (initValue?: string, latency?: number) {
     return { msg }
 }
 ```
+
+### Teleport
+- put elements in `<Teleport>` into target tag, even if the target tag is in another component
+```vue
+<Teleport to="#testdiv"><!-- put into element which id is #testdiv -->
+    <div class="splash-bg" v-show="isSplash"></div>
+    <div class="splash" v-show="isSplash">
+        <h3>Splash Window</h3>
+        <button @click="isSplash = !isSplash">close</button>
+    </div>
+</Teleport>
+```
+
