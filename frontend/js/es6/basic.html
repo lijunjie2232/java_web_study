@@ -27,6 +27,7 @@
     <button onclick=" confirmTest()">click->confirm</button>
     <a href="baidu.com">baidu</a>
     <div id="container"><input name="username" type="text" id="username" value="" /></div> -->
+    <div>seconds: <span id="sec"></span></div>
 </body>
 <script lang="javascript">
     let arr = [1, 2, 3, 4]
@@ -147,7 +148,35 @@
     console.log(p1.name)// li
     p.name = "LI"
     console.log(p1.name)// li
-    
+
+    // promise test
+    let count = 10
+    const sleep = (delay) =>
+        new Promise(
+            (resolve, reject) =>
+                setTimeout(resolve, delay)
+        )
+
+    async function counter() {
+        while (count-- > 0) {
+            document
+                .getElementById("sec")
+                .innerText = count
+            await sleep(1000).then(
+                // if resolve called
+                () => {
+                    console.log("delay 1000ms, count is ", count)
+                }
+            ).catch(
+                // if reject called
+                () => {
+                    console.log("something wrong")
+                }
+            )
+        }
+    }
+
+    counter()
 
 </script>
 
