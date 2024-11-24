@@ -1,30 +1,38 @@
-<script setup lang="ts">
-import HelloWorld from './components/HelloWorld.vue'
-</script>
-
 <template>
   <div>
-    <a href="https://vite.dev" target="_blank">
-      <img src="/vite.svg" class="logo" alt="Vite logo" />
-    </a>
-    <a href="https://vuejs.org/" target="_blank">
-      <img src="./assets/vue.svg" class="logo vue" alt="Vue logo" />
-    </a>
+    <div v-show="article.userId">
+      <p>userId: {{ article.userId }}</p>
+      <p>id: {{ article.id }}</p>
+      <p>title: {{ article.title }}</p>
+      <p>body: {{ article.body }}</p>
+    </div>
+    <button @click="getArticle">click me</button>
   </div>
-  <HelloWorld msg="Vite + Vue" />
 </template>
 
-<style scoped>
-.logo {
-  height: 6em;
-  padding: 1.5em;
-  will-change: filter;
-  transition: filter 300ms;
+<script setup lang="ts">
+import { ref } from 'vue'
+import Axios from 'axios'
+
+const article = ref({
+  body: null,
+  id: null,
+  title: null,
+  userId: null
+})
+
+const getArticle = async () => {
+  Axios({
+    method: "get",
+    url: `http://jsonplaceholder.typicode.com/posts/${Math.round(Math.random() * 10)}`,
+  }).then(
+    ({ data }) => {
+      // console.log(data)
+      // article.value = data
+      Object.assign(article.value, data)
+    }
+  )
 }
-.logo:hover {
-  filter: drop-shadow(0 0 2em #646cffaa);
-}
-.logo.vue:hover {
-  filter: drop-shadow(0 0 2em #42b883aa);
-}
-</style>
+
+</script>
+<style scoped></style>
