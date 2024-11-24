@@ -32,7 +32,7 @@
     - [more attribute of window](#more-attribute-of-window)
 - [DOM](#dom)
   - [document API](#document-api)
-  - [Promise](#promise)
+  - [Promise / async / await](#promise--async--await)
 
 
 # Basic Data Operation
@@ -588,7 +588,7 @@ sessionStorage will cleared after browser closing
 | [document.write()](https://www.runoob.com/jsref/met-doc-write.html)                                        | 向文档写 HTML 表达式 或 JavaScript 代码。                                                       |
 | [document.writeln()](https://www.runoob.com/jsref/met-doc-writeln.html)                                    | 等同于 write() 方法，不同的是在每个表达式之后写一个换行符。                                     |
 
-## Promise
+## Promise / async / await
 - basic declare of Promise: `new Promise((resolve, reject)=>{})`, if success, call `resolve` otherwise call `reject`, if throw error, Promise automaticly calls `reject`
 - usage:
   ```javascript
@@ -620,5 +620,19 @@ sessionStorage will cleared after browser closing
   }
 
   counter()
+  ```
+- `await` must be used in `async` function
+- `awite` will throw error if waiting function is faild
+  ```javascript
+  const counter2 = async ()=>{
+      return 0
+  }
+  counter2().then(
+      (data)=>{
+          console.log(data)
+      }
+  ).catch(
+      ()=>{}
+  )
   ```
 
