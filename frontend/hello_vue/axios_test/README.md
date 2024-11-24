@@ -3,6 +3,7 @@
   - [Axios](#axios-1)
     - [a simple request](#a-simple-request)
     - [axios result](#axios-result)
+    - [axios get / post](#axios-get--post)
 
 
 ## Axios
@@ -28,3 +29,34 @@ const getArticle = async () => {
 4. request: XMLHttpRequest
 5. status: number (`200`)
 6. statusTesxt: string (`"OK"`)
+
+### axios get / post
+```javascript
+    Axios.get(
+        `http://jsonplaceholder.typicode.com/posts/${Math.round(Math.random() * 10)}`,
+    {
+        headers: {},
+        params: {},
+        data: {}
+    }
+    ).then(
+    ({ data }) => {
+        console.log(data)
+        article.value = data
+    }
+)
+
+Axios.post(
+    `http://jsonplaceholder.typicode.com/posts/${Math.round(Math.random() * 10)}`,
+    {},// data
+    {
+        headers: {},
+        params: {},
+    }
+).then(
+    ({ data }) => {
+        console.log(data)
+        article.value = data
+    }
+)
+```
