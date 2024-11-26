@@ -4,6 +4,8 @@
   - [JavaScript AJAX](#javascript-ajax)
     - [GET via XHR](#get-via-xhr)
     - [POST via XHR](#post-via-xhr)
+    - [timeout](#timeout)
+    - [catch error](#catch-error)
 
 
 ## JavaScript AJAX
@@ -109,5 +111,16 @@ const xhrPost = () => {
 
     xhr.open("POST", "/ajax/api", true);
     xhr.send(data);
+}
+```
+
+### timeout
+- `xhr.timeout = 3000`
+- if timeout, request will be cancled in client
+
+### catch error
+```javascript
+xhr.onerror = (err)=>{
+    console.error(err)
 }
 ```
