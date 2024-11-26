@@ -13,6 +13,7 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 import Axios from 'axios'
+import request from './utils/axios'
 
 const article = ref({
   body: null,
@@ -32,8 +33,21 @@ const getArticle = async () => {
   //     Object.assign(article.value, data)
   //   }
   // )
-  Axios.get(
-    `http://jsonplaceholder.typicode.com/posts/${Math.round(Math.random() * 10)}`,
+  // Axios.get(
+  //   `http://jsonplaceholder.typicode.com/posts/${Math.round(Math.random() * 10)}`,
+  //   {
+  //     headers: {},
+  //     params: {},
+  //     data: {}
+  //   }
+  // ).then(
+  //   ({ data }) => {
+  //     console.log(data)
+  //     article.value = data
+  //   }
+  // )
+  request.get(
+    `/posts/${Math.round(Math.random() * 10)}`,
     {
       headers: {},
       params: {},
