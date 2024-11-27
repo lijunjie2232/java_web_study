@@ -1,0 +1,149 @@
+- [pnpm](#pnpm)
+  - [manage cmd](#manage-cmd)
+  - [patch](#patch)
+  - [dependency](#dependency)
+  - [run](#run)
+  - [inspect the store](#inspect-the-store)
+  - [cache](#cache)
+  - [other](#other)
+
+# pnpm
+## manage cmd
+- `pnpm add <pkg_name>` = `npm i <pkg_name>`
+  - -D: devDependencies
+  - -O: optionalDependencies
+  - -g: global pkg
+  - pkg_name@tag
+  - pkg_name@tag:pkg_alias_for_import
+- `pnpm install` = `npm install`
+  - alias: `i`
+- `pnpm update`: updates packages to latest version
+  - alias: `up` / `upgrade`
+- `pnpm remove` = `npm uninstal`
+  - alias: `rm` / `uninstall` / `un`
+  - -D: Only remove the dependency from devDependencies
+  - -O: Only remove the dependency from optionalDependencies
+  - -P: Only remove the dependency from dependencies
+  - -g: remove a global pkg
+- `pnpm link <dir>`: link current pkg to a dir
+  - --global: link to global
+- `pnpm unlink`: only removes the links in current directory, use uninstall to remove global linked pkg
+- `pnpm import`: generates a pnpm-lock.yaml from another package manager's lockfile
+  - support:
+    - package-lock.json
+    - npm-shrinkwrap.json
+    - yarn.lock
+- `pnpm rebuild`: rebuild pkg
+  - alias: `rb`
+- `pnpm prune`: remove useless pkg
+- `pnpm fetch`: download packages in lockfile into cache
+- `pnpm install-test`: Runs pnpm install followed immediately by pnpm test
+  - alias: `it`
+- `pnpm dedupe`: remove old dependencies from lockfile
+  - --check: check without modify
+## patch
+- `pnpm patch <pkg_name>`: extract pkg into a temp directory
+  - `<pkg name>@<version>`
+  - `--edit-dir <path>`: specify path of temp directory
+- `pnpm patch-commit <path>`: generate a patch file from `<path>` and add an entry to patchesDependencies
+  - --patches-dir: generated patch file will be saved to this directory
+- `pnpm patch-remove foo@1.0.0 bar@1.0.1`: remove path from patchesDependencies
+## dependency
+- `pnpm audit`: chech known issus of installed pkg
+- `pnpm list`: list installed pkg and dependencies
+- `pnpm outdated`: check outdated pkg
+- `pnpm why <pkg_name>`: show dependencies tree which needs <pkg_name>
+- `pnpm licenses`: list licenses of installed pkg
+## run
+- `pnpm <cmd>`: run cmd in scripts
+- `pnpm test`
+  - alias `run test` / `t` / `tst`
+- `pnpm exec <cmd>`: run cmd in node_modules/.bin
+- `pnpm dlx`: fetch and run a binary of a pkg without add it
+  - alias: `pnpx`
+- `pnpm create`
+- `pnpm start`
+  - alias `run start`
+- `pnpm env`
+  - use
+    - use --global lts
+    - use --global 20
+    - use --global nightly
+    - use --global latest
+    - use --global argon: Install an LTS version of Node.js using its codename
+      - Argon (4.x 2015)
+      - Boron (6.x 2016)
+      - Carbon (8.x 2017)
+      - Dubnium (10.x 2018)
+      - Erbium (12.x 2019)
+      - Fermium (14.x 2020)
+      - Gallium (16.x 2021)
+      - Hydrogen (18.x 2022)
+      - Iron (20.x 2023)
+      - Jod (22.x 2024)
+      - Krypton (24.x 2025)
+      - Lithium (26.x 2026)
+      - Magnesium (28.x 2027)
+      - Neon (30.x 2028)
+      - Oxygen (32.x 2029)
+      - Platinum (34.x 2030)
+  - add --global lts 18 20.0.1: install without activation
+  - remove --global 14.0.0
+  - list: list local available version
+    - --remote: list remote available version
+    - --remote 16
+## inspect the store
+- `pnpm cat-file <sha>`: print file by its hash
+- `pnpm cat-index <pkg name>@<pkg version>`
+- `pnpm find-hash <sha>`
+## cache
+- `pnpm cache list`
+- `pnpm cache list-registries`
+- `pnpm cache view <pkg_name>`
+- `pnpm cache delete <pkg_name>`
+## other
+- `pnpm self-update`
+- `pnpm publish`
+- `pnpm pack`
+  - --pack-gzip-leve
+  - `--pack-destination <path>`
+- `pnpm <cmd> --recursive`
+  - alias: `pnpm <cmd> -r`
+  - exec following cmd in every project:
+    - install
+    - list
+    - outdated
+    - publish
+    - rebuild
+    - remove
+    - unlink
+    - update
+    - why
+  - exec following cmd in every project but exclude root project:
+    - exec
+    - run
+    - test
+    - add
+- `pnpm server`
+  - start
+  - stop
+  - status
+- `pnpm store`: manage dependencies storage
+  - status
+  - add
+  - prune
+- `pnpm root`: print node_module path
+  - -g
+- `pnpm bin`: print executable binary path
+  - -g
+- `pnpm setup`: install additional pnpm
+- `pnpm init`
+- `pnpm deploy`
+- `pnpm doctor`: check problem of pnpm configuration
+- `pnpm config`
+  - alias: `c`
+  - `set <key> <value>`
+  - `get <key>`
+  - `delete <key>`
+  - `list`
+    - --json
