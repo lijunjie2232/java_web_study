@@ -93,9 +93,13 @@ public class FileHandlerServlet extends HttpServlet {
         }
         try {
             File targetPath = new File(this.tmpDir, path);
+            System.out.println(targetPath.getAbsolutePath());
             if (!targetPath.exists()) {
                 resp.getWriter().write("{\"file\": [], \"path\": \"" + path + "\"}");
-            } else if (targetPath.isFile()) {
+            }else if(! targetPath.getAbsolutePath().startsWith(tmpDir.getAbsolutePath())){
+                resp.setStatus(403);
+                resp.getWriter().write("{\"file\": [], \"path\": \"" + path + "\"}");
+            }else if (targetPath.isFile()) {
                 // file download
                 // set mime type for response
                 String mimeType = req.getServletContext().getMimeType(targetPath.getName());
