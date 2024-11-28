@@ -14,6 +14,14 @@
       - [x-www-form-urlencoded data in body](#x-www-form-urlencoded-data-in-body)
       - [json raw data in body](#json-raw-data-in-body)
       - [form-data data in body (including file sending)](#form-data-data-in-body-including-file-sending)
+  - [Axios](#axios)
+    - [get](#get-1)
+    - [post](#post-1)
+    - [request](#request)
+      - [get](#get-2)
+      - [x-www-form-urlencoded data in body](#x-www-form-urlencoded-data-in-body-1)
+      - [json raw data in body](#json-raw-data-in-body-1)
+      - [form-data data in body (including file sending)](#form-data-data-in-body-including-file-sending-1)
 
 
 ## JavaScript AJAX
@@ -237,4 +245,75 @@ $.ajax(
         }
     }
 )
+```
+
+## Axios
+### get
+### post
+### request
+#### get
+```javascript
+let config = {
+  method: 'get',
+  maxBodyLength: Infinity,
+  url: '127.0.0.1:10037/api/test?k=123321',
+  headers: { }
+}
+axios.request(config)
+.then((resp) => {
+  console.log(resp);
+})
+.catch((err) => {
+  console.log(err);
+})
+```
+#### x-www-form-urlencoded data in body 
+```javascript
+let data = qs.stringify({
+  'k': '123321' 
+})
+
+let config = {
+  method: 'post',
+  maxBodyLength: Infinity,
+  url: '127.0.0.1:10037/api/test',
+  headers: { 
+    'Content-Type': 'application/x-www-form-urlencoded'
+  },
+  data : data
+}
+axios.request(config).then(...)
+```
+#### json raw data in body
+```javascript
+let data = JSON.stringify({
+  "k": "133321"
+})
+
+let config = {
+  method: 'post',
+  maxBodyLength: Infinity,
+  url: '127.0.0.1:10037/api/test',
+  headers: { 
+    'Content-Type': 'application/json'
+  },
+  data : data
+}
+axios.request(config).then(...)
+```
+#### form-data data in body (including file sending)
+```javascript
+let data = new FormData()
+data.append('v', '123321')
+
+let config = {
+  method: 'post',
+  maxBodyLength: Infinity,
+  url: '127.0.0.1:10037/api/test',
+  headers: { 
+    ...data.getHeaders()
+  },
+  data : data
+}
+axios.request(config).then(...)
 ```
