@@ -22,6 +22,12 @@
       - [x-www-form-urlencoded data in body](#x-www-form-urlencoded-data-in-body-1)
       - [json raw data in body](#json-raw-data-in-body-1)
       - [form-data data in body (including file sending)](#form-data-data-in-body-including-file-sending-1)
+  - [Fetch](#fetch)
+    - [get](#get-3)
+    - [post](#post-2)
+      - [x-www-form-urlencoded data in body](#x-www-form-urlencoded-data-in-body-2)
+      - [json raw data in body](#json-raw-data-in-body-2)
+      - [form-data data in body (including file sending)](#form-data-data-in-body-including-file-sending-2)
 
 
 ## JavaScript AJAX
@@ -316,4 +322,78 @@ let config = {
   data : data
 }
 axios.request(config).then(...)
+```
+
+## Fetch
+### get
+```javascript
+const requestOptions = {
+  method: "GET",
+  redirect: "follow"
+};
+
+fetch("127.0.0.1:10037/api/test?k=123321", requestOptions)
+  .then((response) => response.text())
+  .then((result) => console.log(result))
+  .catch((error) => console.error(error));
+```
+
+### post
+
+#### x-www-form-urlencoded data in body 
+```javascript
+const myHeaders = new Headers();
+myHeaders.append("Content-Type", "application/x-www-form-urlencoded");
+
+const urlencoded = new URLSearchParams();
+urlencoded.append("k", "123321");
+
+const requestOptions = {
+  method: "POST",
+  headers: myHeaders,
+  body: urlencoded,
+  redirect: "follow"
+};
+
+fetch("127.0.0.1:10037/api/test", requestOptions)
+  .then((response) => response.text())
+  .then((result) => console.log(result))
+  .catch((error) => console.error(error));
+```
+#### json raw data in body
+```javascript
+const myHeaders = new Headers();
+myHeaders.append("Content-Type", "application/json");
+
+const raw = JSON.stringify({
+  "k": "133321"
+});
+
+const requestOptions = {
+  method: "POST",
+  headers: myHeaders,
+  body: raw,
+  redirect: "follow"
+};
+
+fetch("127.0.0.1:10037/api/test", requestOptions)
+  .then((response) => response.text())
+  .then((result) => console.log(result))
+  .catch((error) => console.error(error));
+```
+#### form-data data in body (including file sending)
+```javascript
+const formdata = new FormData();
+formdata.append("v", "123321");
+
+const requestOptions = {
+  method: "POST",
+  body: formdata,
+  redirect: "follow"
+};
+
+fetch("127.0.0.1:10037/api/test", requestOptions)
+  .then((response) => response.text())
+  .then((result) => console.log(result))
+  .catch((error) => console.error(error));
 ```
