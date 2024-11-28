@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="Access-Control-Allow-Origin" content="*">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script crossorigin="anonymous" src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+</head>
+
+<body>
+
+    <button onclick="jget()">click me</button>
+    <button onclick="jpost()">click me</button>
+    <button onclick="jajax()">click me</button>
+</body>
+<script>
+    function jget() {
+        $.get(
+            'http://127.0.0.1:10037/api/random',
+            {
+                a: 123,
+                b: "321"
+            },// request body parameters
+            (resp) => {
+                console.log(resp)
+            },
+            "json"//response body is json
+        )
+    }
+    function jpost() {
+        $.post(
+            'http://127.0.0.1:10037/api/test',
+            {
+                a: 123,
+                b: "321"
+            },// request body form urlencoded
+            (resp) => {
+                console.log(resp)
+            },
+            "json"//response body is json
+        )
+    }
+    const jajax = () => {
+        const formdata = new FormData()
+        formdata.append("a", "123")
+        formdata.append("b", "321")
+        // send file
+        // formdata.append("file", event.currentTarget.files[0])
+
+        /*$.ajax(
+            {
+                url: "http://127.0.0.1:10037/api/test",
+                type: "POST",
+                // data: JSON.stringify({
+                //     a: 123,
+                //     b: "321"
+                // }),
+                data: formdata,
+                processData: false, // disable for formdata sending
+                contentType: false, // disable for formdata sending
+                crossDomain: true,
+                dataType: "json",
+                success: (resp) => {
+                    console.log(resp)
+                },
+                error: (err) => {
+                    console.log(err)
+                }
+            }
+        )*/
+        
+        $.ajax(
+            {
+                url: "http://127.0.0.1:10037/api/test",
+                type: "POST",
+                data: JSON.stringify({
+                    a: 123,
+                    b: "321"
+                }),
+                contentType: false, // disable for json sending
+                crossDomain: true,
+                dataType: "json",
+                success: (resp) => {
+                    console.log(resp)
+                },
+                error: (err) => {
+                    console.log(err)
+                }
+            }
+        )
+    }
+</script>
+
+</html>

@@ -7,9 +7,8 @@ app.post(
     (req, resp) => {
         console.log(req)
         console.log(resp)
-        resp.setHeader(
-            "Content-Type", "application/json"
-        )
+        resp.setHeader("Content-Type", "application/json")
+        resp.setHeader("Access-Control-Allow-Origin", "*")
         resp.send(
             JSON.stringify({ msg: "ok" })
         )
@@ -21,9 +20,8 @@ app.get(
     (req, resp) => {
         console.log(req)
         console.log(resp)
-        resp.setHeader(
-            "Content-Type", "application/json"
-        )
+        resp.setHeader("Content-Type", "application/json")
+        resp.setHeader("Access-Control-Allow-Origin", "*")
         resp.send(
             JSON.stringify({ num: `${Math.random()}` })
         )
@@ -31,7 +29,7 @@ app.get(
 )
 
 app.listen(
-    8001, () => {
+    10037, () => {
         console.log("express start")
 
     }

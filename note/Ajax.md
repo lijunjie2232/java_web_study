@@ -6,6 +6,14 @@
     - [POST via XHR](#post-via-xhr)
     - [timeout](#timeout)
     - [catch error](#catch-error)
+    - [cancel request](#cancel-request)
+  - [jQuery AJAX](#jquery-ajax)
+    - [$.get](#get)
+    - [$.post](#post)
+    - [$.ajax](#ajax)
+      - [x-www-form-urlencoded data in body](#x-www-form-urlencoded-data-in-body)
+      - [json raw data in body](#json-raw-data-in-body)
+      - [form-data data in body (including file sending)](#form-data-data-in-body-including-file-sending)
 
 
 ## JavaScript AJAX
@@ -123,4 +131,110 @@ const xhrPost = () => {
 xhr.onerror = (err)=>{
     console.error(err)
 }
+```
+### cancel request
+`xhr.abort()`
+
+## jQuery AJAX
+### $.get
+```javascript
+function jpost() {
+    $.get(
+        'http://127.0.0.1:10037/api/test',
+        {
+            a: 123,
+            b: "321"
+        },// request body form urlencoded
+        (resp) => {
+            console.log(resp)
+        },
+        "json"//response body is json
+    )
+}
+```
+### $.post
+```javascript
+function jpost() {
+    $.post(
+        'http://127.0.0.1:10037/api/test',
+        {
+            a: 123,
+            b: "321"
+        },// request body form urlencoded
+        (resp) => {
+            console.log(resp)
+        },
+        "json"//response body is json
+    )
+}
+```
+
+### $.ajax
+#### x-www-form-urlencoded data in body 
+```javascript
+$.ajax(
+    {
+        url: "http://127.0.0.1:10037/api/test",
+        type: "POST",
+        data: {
+            a: 123,
+            b: "321"
+        },
+        dataType: "json",
+        success: (resp) => {
+            console.log(resp)
+        },
+        error: (err) => {
+            console.log(err)
+        }
+    }
+)
+```
+#### json raw data in body
+```javascript
+$.ajax(
+    {
+        url: "http://127.0.0.1:10037/api/test",
+        type: "POST",
+        data: JSON.stringify({
+            a: 123,
+            b: "321"
+        }),
+        contentType: false, // disable for json sending
+        crossDomain: true,
+        dataType: "json",
+        success: (resp) => {
+            console.log(resp)
+        },
+        error: (err) => {
+            console.log(err)
+        }
+    }
+)
+```
+#### form-data data in body (including file sending)
+```javascript
+const formdata = new FormData()
+formdata.append("a", "123")
+formdata.append("b", "321")
+// send file
+// formdata.append("file", event.currentTarget.files[0])
+
+$.ajax(
+    {
+        url: "http://127.0.0.1:10037/api/test",
+        type: "POST",
+        data: formdata,
+        processData: false, // disable for formdata sending
+        contentType: false, // disable for formdata sending
+        crossDomain: true,
+        dataType: "json",
+        success: (resp) => {
+            console.log(resp)
+        },
+        error: (err) => {
+            console.log(err)
+        }
+    }
+)
 ```
