@@ -28,6 +28,8 @@
       - [x-www-form-urlencoded data in body](#x-www-form-urlencoded-data-in-body-2)
       - [json raw data in body](#json-raw-data-in-body-2)
       - [form-data data in body (including file sending)](#form-data-data-in-body-including-file-sending-2)
+- [JSONP](#jsonp)
+  - [JQuery jsonp](#jquery-jsonp)
 
 
 ## JavaScript AJAX
@@ -396,4 +398,55 @@ fetch("127.0.0.1:10037/api/test", requestOptions)
   .then((response) => response.text())
   .then((result) => console.log(result))
   .catch((error) => console.error(error));
+```
+
+# JSONP
+- jsonp could only work with get method
+- backend return a javascript function code piece in string as response body, frontend request by `<script src="...">` and excute the code piece after received response
+
+```javascript
+// jsonp
+const script = document.createElement('script')
+script.src = "request url"
+document.body.appendChild(script)
+// handle function
+const handle = (data)=>{...}
+```
+```javascript
+// express backend
+let data = ......
+
+app.get(
+    "/xxx/xx",
+    (req, resp) => {
+        resp.send(
+            `handle(${JSON.stringify(data)})`
+        )
+    }
+)
+```
+## JQuery jsonp
+- add parameter: `callback=?` in url, `?` will automaticly replaced
+- get `request.query.callback` and call it in response body
+```javascript
+// jsonp
+const script = document.createElement('script')
+script.src = "request url"
+document.body.appendChild(script)
+// handle function
+const handle = (data)=>{...}
+```
+```javascript
+// express backend
+let data = ......
+
+app.get(
+    "/xxx/xx",
+    (req, resp) => {
+        let callback = req.query.callback
+        resp.send(
+            `${callback}(${JSON.stringify(data)})`
+        )
+    }
+)
 ```
