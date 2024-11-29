@@ -30,6 +30,7 @@
       - [form-data data in body (including file sending)](#form-data-data-in-body-including-file-sending-2)
 - [JSONP](#jsonp)
   - [JQuery jsonp](#jquery-jsonp)
+- [CORS](#cors)
 
 
 ## JavaScript AJAX
@@ -450,3 +451,16 @@ app.get(
     }
 )
 ```
+
+# CORS
+- `Access-Control-Allow-Methods`: cors work with all request method by default
+- `resp.setHeader("Access-Control-Allow-Origin", "*")`
+- `Access-Control-Allow-Headers`
+  - following headers is allowed by default:
+    - Accept
+    - Accept-Language
+    - Content-Language
+    - Content-Type
+    - Range
+  - headers' name should not longer than 128 and only contains `[0-9|A-Z|a-z]` and `[\x20|*|,|-|.|;|=]`, `\x20` is `' '`
+  - 
