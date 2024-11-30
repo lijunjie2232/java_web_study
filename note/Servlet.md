@@ -43,7 +43,7 @@
     - [Backend](#backend)
   - [Servlet async](#servlet-async)
   - [MVC](#mvc)
-    - [POJO:](#pojo)
+    - [POJO](#pojo)
     - [lombok plugin](#lombok-plugin)
     - [DAO (Data access Object)](#dao-data-access-object)
     - [Service](#service)
@@ -1013,7 +1013,7 @@ public class AsyncServlet extends HttpServlet {
   - DAO
   - POJO / beans / entities
 
-### POJO:
+### POJO
 - class name <--> sql table name
 - member properties <--> sql table column
 - properties should:
