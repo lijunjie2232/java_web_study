@@ -1,12 +1,16 @@
 package com.li.hellospring2.config;
 
 import com.li.hellospring2.bean.Person;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
+import com.li.hellospring2.condition.PersonConditin;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnResource;
+import org.springframework.context.annotation.*;
 
 @Configuration
 public class PersonConfig {
 
+//    @Scope()
+    @Lazy
     @Bean("personli")
     public Person person1() {
         Person person = new Person();
@@ -16,10 +20,13 @@ public class PersonConfig {
     }
 
 
+//    @Conditional(PersonConditin.class)
+    @ConditionalOnMissingBean(name="personli2", value={Person.class})
+    @ConditionalOnResource(resources="classpath:db.properties")
     @Bean("personli2")
     public Person person2() {
         Person person = new Person();
-        person.setAge(0);
+        person.setAge(1);
         person.setName("li");
         return person;
     }

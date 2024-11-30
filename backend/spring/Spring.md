@@ -10,8 +10,10 @@
 # Spring Container
 ## ConfigurableApplicationContext
 - bean constructed on container construction
-- all beans is singleton instantiation
+- all beans is singleton instantiation (exclude prototype scope bean)
 ```java
+package com.li.hellospring2;
+
 import com.li.hellospring2.bean.Person;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -72,11 +74,15 @@ public class HelloSpring2Application {
 
 ## @Configuration
 - configuration class is also a bean in ioc container
+
 ```java
 import com.li.hellospring2.bean.Person;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Import;
 
+@Import(Person.class)
+@ComponentScan(basePackages = "com.li")
 @Configuration
 public class PersonConfig {
 
@@ -96,5 +102,80 @@ public class PersonConfig {
         person.setName("li");
         return person;
     }
+}
+```
+
+## Spring MVC Annotation
+- `@Controller` for controller
+- `@Repository` for dao
+- `@Service` for service
+- `@Controller` / `@Repository` / `@Service` all could replaced with `@Component`
+- !!! **all these annotation should be the same path with ioc container's path, or at the child path**
+- use `@ComponentScan(basePackages = "com.li")` to scan components not in ioc path or child path
+
+## @Import
+- `@Import(Person.class)` to regist an components into ioc container
+
+## @Scope
+- `prototype`
+- `singleton`
+- `request`
+- `session`
+
+## @Lazy
+- only work on singleton
+- construct while get instance
+
+## FactoryBean
+```java
+import com.li.hellospring2.bean.Person;
+import org.springframework.beans.factory.FactoryBean;
+import org.springframework.stereotype.Component;
+
+@Component
+public class PFactory implements FactoryBean<Person> {
+    @Override
+    public Person getObject() throws Exception {
+        return new Person("li", 0);
+    }
+
+    @Override
+    public Class<?> getObjectType() {
+        return Person.class;
+    }
+
+    @Override
+    public boolean isSingleton() {
+        return true;
+    }
+
+}
+```
+- **name: "PFactory"**
+- get bean: `ioc.getBeansOfType(Person.class)`
+
+## Condition
+```java
+import com.li.hellospring2.bean.Person;
+import org.springframework.context.annotation.Condition;
+import org.springframework.context.annotation.ConditionContext;
+import org.springframework.core.type.AnnotatedTypeMetadata;
+
+public class PersonConditin implements Condition {
+    public boolean matches(ConditionContext context, AnnotatedTypeMetadata metadata) {
+        return context.getBeanFactory().getBeanNamesForType(Person.class).length <= 2;
+    }
+}
+```
+```java
+@Conditional(PersonConditin.class)
+@ConditionalOnMissingBean(name="personli2", value={Person.class})
+@ConditionalOnResource(resources="classpath:db.properties")
+@Bean("personli2")
+public Person person2() {
+    Person person = new Person();
+    person.setAge(1);
+    person.setName("li");
+    return person;
 }
 ```

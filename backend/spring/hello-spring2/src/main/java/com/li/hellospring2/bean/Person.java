@@ -7,8 +7,11 @@ import lombok.NoArgsConstructor;
 
 @Data
 @AllArgsConstructor
-@NoArgsConstructor
+//@NoArgsConstructor
 public class Person {
     private String name;
     private int age;
+    public Person(){
+        System.out.println("person constructor");
+    }
 }
