@@ -9,7 +9,8 @@ import org.springframework.context.annotation.*;
 @Configuration
 public class PersonConfig {
 
-//    @Scope()
+    //    @Scope()
+    @Primary
     @Lazy
     @Bean("personli")
     public Person person1() {
@@ -20,9 +21,9 @@ public class PersonConfig {
     }
 
 
-//    @Conditional(PersonConditin.class)
-    @ConditionalOnMissingBean(name="personli2", value={Person.class})
-    @ConditionalOnResource(resources="classpath:db.properties")
+    //    @Conditional(PersonConditin.class)
+    @ConditionalOnMissingBean(name = "personli2", value = {Person.class})
+    @ConditionalOnResource(resources = "classpath:db.properties")
     @Bean("personli2")
     public Person person2() {
         Person person = new Person();

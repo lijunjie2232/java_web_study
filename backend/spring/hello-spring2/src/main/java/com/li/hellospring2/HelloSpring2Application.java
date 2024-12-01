@@ -1,6 +1,7 @@
 package com.li.hellospring2;
 
 import com.li.hellospring2.bean.Person;
+import com.li.hellospring2.controller.UserController;
 import com.li.hellospring2.factory.PFactory;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -35,5 +36,6 @@ public class HelloSpring2Application {
         System.out.println(((Person) ioc.getBean("PFactory")).getName());
 
 
+        System.out.println(ioc.getBean(UserController.class));
     }
 }

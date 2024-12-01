@@ -4,6 +4,19 @@
     * [@Bean](#bean)
     * [getBean](#getbean)
   * [@Configuration](#configuration)
+  * [Spring MVC Annotation](#spring-mvc-annotation)
+  * [@Import](#import)
+  * [@Scope](#scope)
+  * [@Lazy](#lazy)
+  * [FactoryBean](#factorybean)
+  * [Condition](#condition)
+* [Inject](#inject)
+  * [@Autowired](#autowired)
+  * [@Qualifier("personli")](#qualifierpersonli)
+  * [@Primary](#primary)
+  * [@Resource](#resource)
+  * [component constructor inject](#component-constructor-inject)
+  * [setter inject](#setter-inject)
 <!-- TOC -->
 
 
@@ -177,5 +190,65 @@ public Person person2() {
     person.setAge(1);
     person.setName("li");
     return person;
+}
+```
+
+# Inject
+## @Autowired
+1. first find component or bean by class
+2. second find specified by name
+3. `@Autowired(required = false)` allow wire as `null`
+```java
+package com.li.hellospring2.controller;
+
+import com.li.hellospring2.bean.Person;
+import com.li.hellospring2.service.UserService;
+import lombok.ToString;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+
+@ToString
+@Controller
+public class UserController {
+
+    @Autowired
+    UserService userService;
+
+    @Autowired
+    Person PFactory;
+
+    @Autowired
+    Person personli;
+}
+```
+## @Qualifier("personli")
+- specify a bean by name
+
+## @Primary
+- **declare** a bean is primary bean for Autowired
+
+## @Resource
+- same function as @Autowired, but is a general interface of java
+- `@Autowired(required = false)` allow do not has a bean bue `@Resource` will throw error 
+
+## component constructor inject
+- a component `@Component` only has constructor needs param, then auto find params while constructing
+```java
+public UserController(UserService userService) {
+    System.out.println("UserController constructor");
+    System.out.println(userService);
+}
+```
+
+## setter inject
+```java
+Person person2;
+
+@Autowired
+@Qualifier("personli")
+public void SetPerson2(Person personli){
+    System.out.println("SetPerson2");
+    System.out.println(personli);
+    this.person2 = personli;
 }
 ```
