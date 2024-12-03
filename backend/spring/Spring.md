@@ -17,7 +17,12 @@
   * [@Resource](#resource)
   * [component constructor inject](#component-constructor-inject)
   * [setter inject](#setter-inject)
-  <!-- TOC -->
+  * [Aware](#aware)
+  * [@Value](#value)
+  * [@PropertySource](#propertysource)
+  * [ResourceUtils](#resourceutils)
+  * [Profile](#profile)
+<!-- TOC -->
 
 
 # Spring Container
@@ -342,3 +347,51 @@ public class Dog {
 
 ## @PropertySource
 - specified properties file: `@PropertySource("classpath:dog.properties")`
+- `classpath*`: classpath of all projects
+
+## ResourceUtils
+```java
+File file = ResourceUtils.getFile("classpath:application.properties");
+System.out.println(file.length());
+
+Properties properties = new Properties();
+properties.load(new InputStreamReader(new FileInputStream(file)));
+System.out.println(properties);
+```
+
+## Profile
+- specify activate env in properties `spring.profiles.active=dev`
+- decorate beans or components with `@Profile({"dev", "default"})`
+```java
+package com.li.hellospring2.config;
+
+import com.li.hellospring2.util.DataSource;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Profile;
+
+@Configuration
+public class SourceConfig {
+
+    @Profile({"dev", "default"})
+    @Bean
+    public DataSource dev() {
+        return new DataSource(
+                "jdbc:mysql://localhost:3306/dev",
+                "dev",
+                "dev"
+        );
+    }
+
+    @Profile("test")
+    @Bean
+    public DataSource test() {
+        return new DataSource(
+                "jdbc:mysql://localhost:3306/test",
+                "test",
+                "test"
+        );
+    }
+
+}
+```
