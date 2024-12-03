@@ -5,6 +5,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.PropertySource;
 import org.springframework.stereotype.Component;
 
 @Data
@@ -12,10 +13,11 @@ import org.springframework.stereotype.Component;
 @AllArgsConstructor
 @NoArgsConstructor
 @Component
+@PropertySource("classpath:dog.properties")
 public class Dog {
     @Value("dog name")
     private String name;
-    @Value("${dog.age}")
+    @Value("${dog.age:0}")
     private int age;
     @Value("#{'Hello World!'.substring(0,5)}")
     private String hello;

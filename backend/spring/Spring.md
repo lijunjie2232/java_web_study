@@ -308,7 +308,7 @@ public class EnvUtil implements EnvironmentAware, BeanNameAware, BeanFactoryAwar
 
 ## @Value
 - `@Value("value")` directly pass value (all type in string)
-- `@Value("${properties_key}")` get value by key from `application.properties` 
+- `@Value("${properties_key:default_value}")` get value by key from `xxx.properties`, if not found, use `default_value`
 - `@Value("#{SpEL}")` write java script
 
 ```java
@@ -329,7 +329,7 @@ import org.springframework.stereotype.Component;
 public class Dog {
     @Value("dog name")
     private String name;
-    @Value("${dog.age}")
+    @Value("${dog.age:0}")
     private int age;
     @Value("#{'Hello World!'.substring(0,5)}")
     private String hello;
@@ -339,3 +339,6 @@ public class Dog {
 
 // Dog(name=dog name, age=1, hello=Hello, uuid=181cb078-10e1-4ba0-94ef-015c66cc1506)
 ```
+
+## @PropertySource
+- specified properties file: `@PropertySource("classpath:dog.properties")`
