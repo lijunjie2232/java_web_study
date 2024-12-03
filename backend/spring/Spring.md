@@ -17,7 +17,7 @@
   * [@Resource](#resource)
   * [component constructor inject](#component-constructor-inject)
   * [setter inject](#setter-inject)
-<!-- TOC -->
+  <!-- TOC -->
 
 
 # Spring Container
@@ -251,4 +251,91 @@ public void SetPerson2(Person personli){
     System.out.println(personli);
     this.person2 = personli;
 }
+```
+
+## Aware
+
+| **名称**                       | **用途**                                            | **所属容器**       | **回调点**                                 |
+| ------------------------------ | --------------------------------------------------- | ------------------ | ------------------------------------------ |
+| BeanNameAware                  | 获取bean名称                                        | BeanFactory        | Bean后处理器的BeforeInitialization方法之前 |
+| BeanClassLoaderAware           | 获取bean的类加载器                                  | BeanFactory        | Bean后处理器的BeforeInitialization方法之前 |
+| BeanFactoryAware               | 获取bean工厂（建议用下面的ApplicationContextAware） | BeanFactory        | Bean后处理器的BeforeInitialization方法之前 |
+| EnvironmentAware               | 获取环境相关信息，如属性、配置信息等                | ApplicationContext | Bean后处理器的BeforeInitialization方法中   |
+| EmbeddedValueResolverAware     | 获取值解析器                                        | ApplicationContext | Bean后处理器的BeforeInitialization方法中   |
+| ResourceLoaderAware            | 获取资源加载器                                      | ApplicationContext | Bean后处理器的BeforeInitialization方法中   |
+| ApplicationEventPublisherAware | 获取事件广播器，发布事件使用                        | ApplicationContext | Bean后处理器的BeforeInitialization方法中   |
+| MessageSourceAware             | 获取消息资源                                        | ApplicationContext | Bean后处理器的BeforeInitialization方法中   |
+| ApplicationContextAware        | 获取ApplicationContext                              | ApplicationContext | Bean后处理器的BeforeInitialization方法中   |
+
+```java
+package com.li.hellospring2.util;
+
+import lombok.Getter;
+import lombok.ToString;
+import org.springframework.beans.BeansException;
+import org.springframework.beans.factory.BeanFactory;
+import org.springframework.beans.factory.BeanFactoryAware;
+import org.springframework.beans.factory.BeanNameAware;
+import org.springframework.context.EnvironmentAware;
+import org.springframework.core.env.Environment;
+import org.springframework.stereotype.Component;
+
+@ToString
+@Component
+public class EnvUtil implements EnvironmentAware, BeanNameAware, BeanFactoryAware {
+    private Environment environment;
+    private BeanFactory beanFactory;
+    private String beanName;
+
+    public void setEnvironment(Environment environment) {
+        this.environment = environment;
+    }
+    public Environment getEnvironment() {
+        return environment;
+    }
+
+    @Override
+    public void setBeanFactory(BeanFactory beanFactory) throws BeansException {
+        this.beanFactory = beanFactory;
+    }
+
+    @Override
+    public void setBeanName(String name) {
+        this.beanName = name;
+    }
+}
+```
+
+## @Value
+- `@Value("value")` directly pass value (all type in string)
+- `@Value("${properties_key}")` get value by key from `application.properties` 
+- `@Value("#{SpEL}")` write java script
+
+```java
+package com.li.hellospring2.bean;
+
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import lombok.ToString;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Component;
+
+@Data
+@ToString
+@AllArgsConstructor
+@NoArgsConstructor
+@Component
+public class Dog {
+    @Value("dog name")
+    private String name;
+    @Value("${dog.age}")
+    private int age;
+    @Value("#{'Hello World!'.substring(0,5)}")
+    private String hello;
+    @Value("#{T(java.util.UUID).randomUUID().toString()}")
+    private String uuid;
+}
+
+// Dog(name=dog name, age=1, hello=Hello, uuid=181cb078-10e1-4ba0-94ef-015c66cc1506)
 ```
