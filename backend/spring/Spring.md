@@ -395,3 +395,17 @@ public class SourceConfig {
 
 }
 ```
+
+# Spring LifeCycle
+## InitializingBean interface
+- method: `afterPropertiesSet`
+## DisposableBean interface
+- method: `destroy`
+## @Bean
+1. constructor
+2. @Autowired
+3. InitializingBean:`afterPropertiesSet`
+3. @Bean `init`
+4. DisposableBean: `destroy`
+4. @Bean `destroy`
+5. ioc container destroy
