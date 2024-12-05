@@ -1,34 +1,38 @@
 <!-- TOC -->
+
 * [Spring Container](#spring-container)
-  * [ConfigurableApplicationContext](#configurableapplicationcontext)
-    * [@Bean](#bean)
-    * [getBean](#getbean)
-  * [@Configuration](#configuration)
-  * [Spring MVC Annotation](#spring-mvc-annotation)
-  * [@Import](#import)
-  * [@Scope](#scope)
-  * [@Lazy](#lazy)
-  * [FactoryBean](#factorybean)
-  * [Condition](#condition)
+    * [ConfigurableApplicationContext](#configurableapplicationcontext)
+        * [@Bean](#bean)
+        * [getBean](#getbean)
+    * [@Configuration](#configuration)
+    * [Spring MVC Annotation](#spring-mvc-annotation)
+    * [@Import](#import)
+    * [@Scope](#scope)
+    * [@Lazy](#lazy)
+    * [FactoryBean](#factorybean)
+    * [Condition](#condition)
 * [Inject](#inject)
-  * [@Autowired](#autowired)
-  * [@Qualifier("personli")](#qualifierpersonli)
-  * [@Primary](#primary)
-  * [@Resource](#resource)
-  * [component constructor inject](#component-constructor-inject)
-  * [setter inject](#setter-inject)
-  * [Aware](#aware)
-  * [@Value](#value)
-  * [@PropertySource](#propertysource)
-  * [ResourceUtils](#resourceutils)
-  * [Profile](#profile)
+    * [@Autowired](#autowired)
+    * [@Qualifier("personli")](#qualifierpersonli)
+    * [@Primary](#primary)
+    * [@Resource](#resource)
+    * [component constructor inject](#component-constructor-inject)
+    * [setter inject](#setter-inject)
+    * [Aware](#aware)
+    * [@Value](#value)
+    * [@PropertySource](#propertysource)
+    * [ResourceUtils](#resourceutils)
+    * [Profile](#profile)
+
 <!-- TOC -->
 
-
 # Spring Container
+
 ## ConfigurableApplicationContext
+
 - bean constructed on container construction
 - all beans is singleton instantiation (exclude prototype scope bean)
+
 ```java
 package com.li.hellospring2;
 
@@ -79,18 +83,22 @@ public class HelloSpring2Application {
     }
 }
 ```
+
 ### @Bean
+
 - regist bean into ioc container
 
 ### getBean
-  1. use class of bean: `ioc.getBean(Person.class)` / `ioc.getBeansOfType(Person.class)`
-      - throw `NoSuchBeanDefinitionException` if not found
-      - throw `NoUniqueBeanDefinitionException` if more than one beans in class but get only one
-  2. use name of bean: `(Person) ioc.getBean("personli")`
-     - throw `NoSuchBeanDefinitionException` if not found
-  3. use name and class at the same time: `System.out.println(ioc.getBean("personli", Person.class).getName());`
+
+1. use class of bean: `ioc.getBean(Person.class)` / `ioc.getBeansOfType(Person.class)`
+    - throw `NoSuchBeanDefinitionException` if not found
+    - throw `NoUniqueBeanDefinitionException` if more than one beans in class but get only one
+2. use name of bean: `(Person) ioc.getBean("personli")`
+    - throw `NoSuchBeanDefinitionException` if not found
+3. use name and class at the same time: `System.out.println(ioc.getBean("personli", Person.class).getName());`
 
 ## @Configuration
+
 - configuration class is also a bean in ioc container
 
 ```java
@@ -124,6 +132,7 @@ public class PersonConfig {
 ```
 
 ## Spring MVC Annotation
+
 - `@Controller` for controller
 - `@Repository` for dao
 - `@Service` for service
@@ -132,19 +141,23 @@ public class PersonConfig {
 - use `@ComponentScan(basePackages = "com.li")` to scan components not in ioc path or child path
 
 ## @Import
+
 - `@Import(Person.class)` to regist an components into ioc container
 
 ## @Scope
+
 - `prototype`
 - `singleton`
 - `request`
 - `session`
 
 ## @Lazy
+
 - only work on singleton
 - construct while get instance
 
 ## FactoryBean
+
 ```java
 import com.li.hellospring2.bean.Person;
 import org.springframework.beans.factory.FactoryBean;
@@ -169,10 +182,12 @@ public class PFactory implements FactoryBean<Person> {
 
 }
 ```
+
 - **name: "PFactory"**
 - get bean: `ioc.getBeansOfType(Person.class)`
 
 ## Condition
+
 ```java
 import com.li.hellospring2.bean.Person;
 import org.springframework.context.annotation.Condition;
@@ -185,10 +200,12 @@ public class PersonConditin implements Condition {
     }
 }
 ```
+
 ```java
+
 @Conditional(PersonConditin.class)
-@ConditionalOnMissingBean(name="personli2", value={Person.class})
-@ConditionalOnResource(resources="classpath:db.properties")
+@ConditionalOnMissingBean(name = "personli2", value = {Person.class})
+@ConditionalOnResource(resources = "classpath:db.properties")
 @Bean("personli2")
 public Person person2() {
     Person person = new Person();
@@ -199,10 +216,13 @@ public Person person2() {
 ```
 
 # Inject
+
 ## @Autowired
+
 1. first find component or bean by class
 2. second find specified by name
 3. `@Autowired(required = false)` allow wire as `null`
+
 ```java
 package com.li.hellospring2.controller;
 
@@ -226,18 +246,24 @@ public class UserController {
     Person personli;
 }
 ```
+
 ## @Qualifier("personli")
+
 - specify a bean by name
 
 ## @Primary
+
 - **declare** a bean is primary bean for Autowired
 
 ## @Resource
+
 - same function as @Autowired, but is a general interface of java
-- `@Autowired(required = false)` allow do not has a bean bue `@Resource` will throw error 
+- `@Autowired(required = false)` allow do not has a bean bue `@Resource` will throw error
 
 ## component constructor inject
+
 - a component `@Component` only has constructor needs param, then auto find params while constructing
+
 ```java
 public UserController(UserService userService) {
     System.out.println("UserController constructor");
@@ -246,12 +272,13 @@ public UserController(UserService userService) {
 ```
 
 ## setter inject
+
 ```java
 Person person2;
 
 @Autowired
 @Qualifier("personli")
-public void SetPerson2(Person personli){
+public void SetPerson2(Person personli) {
     System.out.println("SetPerson2");
     System.out.println(personli);
     this.person2 = personli;
@@ -260,17 +287,17 @@ public void SetPerson2(Person personli){
 
 ## Aware
 
-| **名称**                       | **用途**                                            | **所属容器**       | **回调点**                                 |
-| ------------------------------ | --------------------------------------------------- | ------------------ | ------------------------------------------ |
-| BeanNameAware                  | 获取bean名称                                        | BeanFactory        | Bean后处理器的BeforeInitialization方法之前 |
-| BeanClassLoaderAware           | 获取bean的类加载器                                  | BeanFactory        | Bean后处理器的BeforeInitialization方法之前 |
+| **名称**                         | **用途**                                  | **所属容器**           | **回调点**                           |
+|--------------------------------|-----------------------------------------|--------------------|-----------------------------------|
+| BeanNameAware                  | 获取bean名称                                | BeanFactory        | Bean后处理器的BeforeInitialization方法之前 |
+| BeanClassLoaderAware           | 获取bean的类加载器                             | BeanFactory        | Bean后处理器的BeforeInitialization方法之前 |
 | BeanFactoryAware               | 获取bean工厂（建议用下面的ApplicationContextAware） | BeanFactory        | Bean后处理器的BeforeInitialization方法之前 |
-| EnvironmentAware               | 获取环境相关信息，如属性、配置信息等                | ApplicationContext | Bean后处理器的BeforeInitialization方法中   |
-| EmbeddedValueResolverAware     | 获取值解析器                                        | ApplicationContext | Bean后处理器的BeforeInitialization方法中   |
-| ResourceLoaderAware            | 获取资源加载器                                      | ApplicationContext | Bean后处理器的BeforeInitialization方法中   |
-| ApplicationEventPublisherAware | 获取事件广播器，发布事件使用                        | ApplicationContext | Bean后处理器的BeforeInitialization方法中   |
-| MessageSourceAware             | 获取消息资源                                        | ApplicationContext | Bean后处理器的BeforeInitialization方法中   |
-| ApplicationContextAware        | 获取ApplicationContext                              | ApplicationContext | Bean后处理器的BeforeInitialization方法中   |
+| EnvironmentAware               | 获取环境相关信息，如属性、配置信息等                      | ApplicationContext | Bean后处理器的BeforeInitialization方法中  |
+| EmbeddedValueResolverAware     | 获取值解析器                                  | ApplicationContext | Bean后处理器的BeforeInitialization方法中  |
+| ResourceLoaderAware            | 获取资源加载器                                 | ApplicationContext | Bean后处理器的BeforeInitialization方法中  |
+| ApplicationEventPublisherAware | 获取事件广播器，发布事件使用                          | ApplicationContext | Bean后处理器的BeforeInitialization方法中  |
+| MessageSourceAware             | 获取消息资源                                  | ApplicationContext | Bean后处理器的BeforeInitialization方法中  |
+| ApplicationContextAware        | 获取ApplicationContext                    | ApplicationContext | Bean后处理器的BeforeInitialization方法中  |
 
 ```java
 package com.li.hellospring2.util;
@@ -295,6 +322,7 @@ public class EnvUtil implements EnvironmentAware, BeanNameAware, BeanFactoryAwar
     public void setEnvironment(Environment environment) {
         this.environment = environment;
     }
+
     public Environment getEnvironment() {
         return environment;
     }
@@ -312,6 +340,7 @@ public class EnvUtil implements EnvironmentAware, BeanNameAware, BeanFactoryAwar
 ```
 
 ## @Value
+
 - `@Value("value")` directly pass value (all type in string)
 - `@Value("${properties_key:default_value}")` get value by key from `xxx.properties`, if not found, use `default_value`
 - `@Value("#{SpEL}")` write java script
@@ -346,22 +375,32 @@ public class Dog {
 ```
 
 ## @PropertySource
+
 - specified properties file: `@PropertySource("classpath:dog.properties")`
 - `classpath*`: classpath of all projects
 
 ## ResourceUtils
+
 ```java
 File file = ResourceUtils.getFile("classpath:application.properties");
-System.out.println(file.length());
+System.out.
+
+println(file.length());
 
 Properties properties = new Properties();
-properties.load(new InputStreamReader(new FileInputStream(file)));
-System.out.println(properties);
+properties.
+
+load(new InputStreamReader(new FileInputStream(file)));
+        System.out.
+
+println(properties);
 ```
 
 ## Profile
+
 - specify activate env in properties `spring.profiles.active=dev`
 - decorate beans or components with `@Profile({"dev", "default"})`
+
 ```java
 package com.li.hellospring2.config;
 
@@ -397,15 +436,27 @@ public class SourceConfig {
 ```
 
 # Spring LifeCycle
+
 ## InitializingBean interface
+
 - method: `afterPropertiesSet`
+
 ## DisposableBean interface
+
 - method: `destroy`
-## @Bean
+
+## BeanPostProcessor
+
+## lefe cycle of bean
+
 1. constructor
 2. @Autowired
-3. InitializingBean:`afterPropertiesSet`
-3. @Bean `init`
-4. DisposableBean: `destroy`
-4. @Bean `destroy`
-5. ioc container destroy
+3. BeanPostProcessor:`postProcessBeforeInitialization`
+4. @PostConstruct
+5. InitializingBean:`afterPropertiesSet`
+6. @Bean `init`
+7. BeanPostProcessor:`postProcessAfterInitialization`
+8. @PreDestroy
+9. DisposableBean: `destroy`
+10. @Bean `destroy`
+11. ioc container destroy
