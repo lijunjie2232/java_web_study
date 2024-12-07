@@ -446,6 +446,7 @@ public class SourceConfig {
 - method: `destroy`
 
 ## BeanPostProcessor
+
 ```java
 package com.li.hellospring2.config;
 
@@ -485,6 +486,7 @@ public class BeanPostProcessorComponent implements BeanPostProcessor {
 11. ioc container destroy
 
 # SpringBootTest
+
 ```java
 package com.li.hellospring2;
 
@@ -500,15 +502,18 @@ public class IocTest {
     User user;
 
     @Test
-    public void userTest(){
+    public void userTest() {
         System.out.println(user);
     }
 }
 ```
 
 # AOP
+
 ## java dynamic proxy
+
 - instance being proxyed must implement interface
+
 ```java
 // DynamicProxy.java
 package com.li.hellospring2.proxy.dynamic;
@@ -531,6 +536,80 @@ public class DynamicProxy {
 
 ```java
 CService proxy2 = (CService) DynamicProxy.newProxyInstance(cService);
-System.out.println(proxy2.mul(2, 3));
+System.out.
+
+println(proxy2.mul(2, 3));
 ```
+
+## Spring AOP
+
+- add dependency
+
+```xml
+
+<dependency>
+    <groupId>org.springframework.boot</groupId>
+    <artifactId>spring-boot-starter-aop</artifactId>
+</dependency>
+```
+
+- use `@Aspect` to decorate component
+
+```java
+package com.li.hellospring2.aspect;
+
+import org.aspectj.lang.annotation.*;
+import org.springframework.stereotype.Component;
+
+@Component
+@Aspect
+public class LogAspect {
+
+    @Before("execution(int *(int , int))")
+    public void before() {
+        System.out.println("before");
+    }
+
+    @After("execution(int *(int , int))")
+    public void after() {
+        System.out.println("after");
+    }
+
+    @AfterReturning("execution(int *(int , int))")
+    public void afterReturning() {
+        System.out.println("afterReturning");
+    }
+
+    @AfterThrowing("execution(int *(int , int))")
+    public void afterThrowing() {
+        System.out.println("afterThrowing");
+    }
+}
+```
+
+1. `execution`: 匹配方法、类、包
+    - execution(modifier? ret-type declaring-type?name-pattern(param-pattern) throws-pattern?)
+    - `execution(* com.xyz.service..*(..))`
+2. `within`: 匹配指定类的任意方法，不能匹配接口
+    - within(declaring-type)
+    - `within(com.xyz.service.*)`
+3. `this`: 匹配代理对象实例的类型
+    - this(declaring-type)
+    - `this(com.xyz.service..*)`
+4. `target`: 匹配被AOP代理对象的目标对象实例类型
+    - target(declaring-type)
+    - `target(com.xyz.service.*)`
+5. `args`: 匹配方法参数类型和数量，参数类型可以为指定类型及其子类(execution不匹配子类),也可以包括注解
+    - args(param-pattern)
+    - `args(java.io.Serializable)`
+6. `bean`: 通过 bean 的 id 或名称匹配
+    - bean(bean-name)
+    - `bean(*Service)`
+7. `@annotation`: 匹配方法是否含有注解
+
+| 表达式匹配范围 | 	within | 	this | 	target |
+|---------|---------|-------|---------|
+| 接口	     | ✘	      | ✔	    | ✔       |
+| 实现接口的类	 | ✔	      | 〇	    | ✔       |
+| 不实现接口的类 | ✔	      | ✔	    | ✔       |
 
