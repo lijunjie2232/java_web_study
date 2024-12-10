@@ -18,6 +18,7 @@ public class CServiceTest {
     @Test
     void calcTest() {
         System.out.println(cService.add(1, 2));
+//        System.out.println(cService.div(1, 0));
 
 //        CService proxy = (CService) Proxy.newProxyInstance(
 //                cService.getClass().getClassLoader(),
