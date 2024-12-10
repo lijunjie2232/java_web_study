@@ -613,3 +613,24 @@ public class LogAspect {
 | 实现接口的类	 | ✔	      | 〇	    | ✔       |
 | 不实现接口的类 | ✔	      | ✔	    | ✔       |
 
+- execute order: `Before` -> `Target` -> `AfterReturning / AfterThrowing` -> `After`
+- get target info:
+```java
+@AfterReturning(value = "execution(int *(int , int))", returning = "result")
+public void afterReturning(JoinPoint joinPoint, Object result) {
+    // method 1
+    MethodSignature methodSignature = (MethodSignature) joinPoint.getSignature();
+    System.out.println("Method class:" + methodSignature.getDeclaringTypeName());
+    System.out.println("Method class:" + methodSignature.getDeclaringType());
+    System.out.println("Method name: " + methodSignature.getName());
+    System.out.println("method args: " + joinPoint.getArgs());
+    System.out.println("result: " + result);
+    
+    // method 2
+    System.out.println("method class: " + joinPoint.getTarget().getClass().getName());
+    System.out.println("method name: " + joinPoint.getSignature().getName());
+    System.out.println("method args: " + joinPoint.getArgs());
+    
+    System.out.println("afterReturning");
+}
+```

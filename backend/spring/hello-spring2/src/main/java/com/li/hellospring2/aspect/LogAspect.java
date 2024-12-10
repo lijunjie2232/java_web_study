@@ -1,6 +1,8 @@
 package com.li.hellospring2.aspect;
 
+import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.*;
+import org.aspectj.lang.reflect.MethodSignature;
 import org.springframework.stereotype.Component;
 
 @Component
@@ -12,13 +14,14 @@ public class LogAspect {
         System.out.println("before");
     }
 
-    @After("execution(int *(int , int))")
-    public void after() {
-        System.out.println("after");
-    }
-
-    @AfterReturning("execution(int *(int , int))")
-    public void afterReturning() {
+    @AfterReturning(value = "execution(int *(int , int))", returning = "result")
+    public void afterReturning(JoinPoint joinPoint, Object result) {
+        MethodSignature methodSignature = (MethodSignature) joinPoint.getSignature();
+        System.out.println("Method class:" + methodSignature.getDeclaringTypeName());
+        System.out.println("Method class:" + methodSignature.getDeclaringType());
+        System.out.println("Method name: " + methodSignature.getName());
+        System.out.println("method args: " + joinPoint.getArgs());
+        System.out.println("result: " + result);
         System.out.println("afterReturning");
     }
 
@@ -26,4 +29,13 @@ public class LogAspect {
     public void afterThrowing() {
         System.out.println("afterThrowing");
     }
+
+    @After("execution(int *(int , int))")
+    public void after(JoinPoint joinPoint) {
+        System.out.println("method class: " + joinPoint.getTarget().getClass().getName());
+        System.out.println("method name: " + joinPoint.getSignature().getName());
+        System.out.println("method args: " + joinPoint.getArgs());
+        System.out.println("after");
+    }
+
 }
