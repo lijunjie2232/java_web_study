@@ -1,41 +1,47 @@
 <!-- TOC -->
-
 * [Spring Container](#spring-container)
-    * [ConfigurableApplicationContext](#configurableapplicationcontext)
-        * [@Bean](#bean)
-        * [getBean](#getbean)
-    * [@Configuration](#configuration)
-    * [Spring MVC Annotation](#spring-mvc-annotation)
-    * [@Import](#import)
-    * [@Scope](#scope)
-    * [@Lazy](#lazy)
-    * [FactoryBean](#factorybean)
-    * [Condition](#condition)
+  * [ConfigurableApplicationContext](#configurableapplicationcontext)
+    * [@Bean](#bean)
+    * [getBean](#getbean)
+  * [@Configuration](#configuration)
+  * [Spring MVC Annotation](#spring-mvc-annotation)
+  * [@Import](#import)
+  * [@Scope](#scope)
+  * [@Lazy](#lazy)
+  * [FactoryBean](#factorybean)
+  * [Condition](#condition)
 * [Inject](#inject)
-    * [@Autowired](#autowired)
-    * [@Qualifier("personli")](#qualifierpersonli)
-    * [@Primary](#primary)
-    * [@Resource](#resource)
-    * [component constructor inject](#component-constructor-inject)
-    * [setter inject](#setter-inject)
-    * [Aware](#aware)
-    * [@Value](#value)
-    * [@PropertySource](#propertysource)
-    * [ResourceUtils](#resourceutils)
-    * [Profile](#profile)
+  * [@Autowired](#autowired)
+  * [@Qualifier("personli")](#qualifierpersonli)
+  * [@Primary](#primary)
+  * [@Resource](#resource)
+  * [component constructor inject](#component-constructor-inject)
+  * [setter inject](#setter-inject)
+  * [Aware](#aware)
+  * [@Value](#value)
+  * [@PropertySource](#propertysource)
+  * [ResourceUtils](#resourceutils)
+  * [Profile](#profile)
 * [Spring LifeCycle](#spring-lifecycle)
-    * [InitializingBean interface](#initializingbean-interface)
-    * [DisposableBean interface](#disposablebean-interface)
-    * [BeanPostProcessor](#beanpostprocessor)
-    * [lefe cycle of bean](#lefe-cycle-of-bean)
+  * [InitializingBean interface](#initializingbean-interface)
+  * [DisposableBean interface](#disposablebean-interface)
+  * [BeanPostProcessor](#beanpostprocessor)
+  * [lefe cycle of bean](#lefe-cycle-of-bean)
 * [SpringBootTest](#springboottest)
 * [AOP](#aop)
-    * [java dynamic proxy](#java-dynamic-proxy)
-    * [Spring AOP](#spring-aop)
-        * [@Aspect](#aspect)
-        * [@PointCut](#pointcut)
-        * [@Order(n)](#ordern)
-
+  * [java dynamic proxy](#java-dynamic-proxy)
+  * [Spring AOP](#spring-aop)
+    * [@Aspect](#aspect)
+    * [@PointCut](#pointcut)
+    * [@Order(n)](#ordern)
+* [Spring Utils](#spring-utils)
+  * [AnnotationUtils](#annotationutils)
+  * [ClassUtils](#classutils)
+  * [TypeUtils](#typeutils)
+  * [ReflectionUtils](#reflectionutils)
+  * [Base64Utils](#base64utils)
+  * [SerializationUtils](#serializationutils)
+  * [BeanUtils](#beanutils)
 <!-- TOC -->
 
 # Spring Container
@@ -732,12 +738,16 @@ public class LogAspect {
     ```java
     System.out.println(ClassUtils.isCglibProxy(new User()));
     ```
+
 ## TypeUtils
+
 - `isAssignable`: 依照 Java 泛型規則檢查右側類型是否能转换为左側類型
     ```java
     ClassUtils.isAssignable(List.class, ArrayList.class)
     ```
+
 ## ReflectionUtils
+
 - `findMethod`: 获取方法
     ```java
     Method method = ReflectionUtils.findMethod(User.class, "getId");
@@ -766,4 +776,62 @@ public class LogAspect {
     ```java
     Method method = ReflectionUtils.findMethod(User.class, "getId");
     System.out.println(ReflectionUtils.isEqualsMethod(method));
+    ```
+
+## Base64Utils
+
+- 包含encode和decode方法，用于对数据进行编码和解码
+    ```java
+    String str = "abc";
+    String encode = new String(Base64Utils.encode(str.getBytes()));
+    System.out.println("编码后：" + encode);
+    try {
+        String decode = new String(Base64Utils.decode(encode.getBytes()), "utf8");
+        System.out.println("解码：" + decode);
+    } catch (UnsupportedEncodingException e) {
+        e.printStackTrace();
+    }
+    ```
+
+## SerializationUtils
+
+- 序列化和反序列化功能
+    ```java
+    Map<String, String> map = Maps.newHashMap();
+    map.put("a", "1");
+    map.put("b", "2");
+    map.put("c", "3");
+    byte[] serialize = SerializationUtils.serialize(map);
+    Object deserialize = SerializationUtils.deserialize(serialize);
+    System.out.println(deserialize);
+    ```
+
+## BeanUtils
+
+- `copyProperties`: 拷贝对象的属性
+    ```java
+    User user1 = new User();
+    user1.setId(1L);
+    user1.setName("苏三说技术");
+    user1.setAddress("成都");
+    
+    User user2 = new User();
+    BeanUtils.copyProperties(user1, user2);
+    System.out.println(user2);
+    ```
+- `instantiateClass`: 实例化某个类
+    ```java
+    User user = BeanUtils.instantiateClass(User.class);
+    System.out.println(user);
+    ```
+- `findDeclaredMethod`: 获取指定类的指定方法
+    ```java
+    Method declaredMethod = BeanUtils.findDeclaredMethod(User.class, "getId");
+    System.out.println(declaredMethod.getName());
+    ```
+- `findPropertyForMethod`: 获取指定方法的参数
+    ```java
+    Method declaredMethod = BeanUtils.findDeclaredMethod(User.class, "getId");
+    PropertyDescriptor propertyForMethod = BeanUtils.findPropertyForMethod(declaredMethod);
+    System.out.println(propertyForMethod.getName());
     ```
