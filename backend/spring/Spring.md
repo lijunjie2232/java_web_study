@@ -671,4 +671,39 @@ public class LogAspect {
 - set order to **_Proxy class_** by decorator `@Order(n)`
 - the **_smaller_** `n` is, the **_outer_** this proxy will be, the **_earlier_** its `@Before` will be called
 - default `n`: `MAX_VALUE = 0x7fffffff`
-- 
+
+
+# Spring Utils
+## AnnotationUtils
+- `findAnnotation`: 获取Class/Method上面标注的注解
+    ```java
+    // 获取Class上面的注解
+    RequestMapping requestMapping = AnnotationUtils.findAnnotation(MainController.class, RequestMapping.class);
+    System.out.println(requestMapping);
+    System.out.println(Arrays.toString(requestMapping.value()));
+    
+    // 获取Method上面的注解
+    Method carMethod = ReflectionUtils.findMethod(MainController.class, "car");
+    Bean bean = AnnotationUtils.findAnnotation(carMethod, Bean.class);
+    System.out.println(Arrays.toString(bean.name()));
+    ```
+- `getAnnotationAttributes`: 获取annotation的所有属性
+    ```java
+    RequestMapping requestMapping = AnnotationUtils.findAnnotation(MainController.class, RequestMapping.class);
+    // 获取 RequestMapping注解的所有属性
+    Map<String, Object> annotationAttributes = AnnotationUtils.getAnnotationAttributes(requestMapping);
+    System.out.println(annotationAttributes);
+    ```
+- `isAnnotationDeclaredLocally`: 验证annotation是否直接注释在类上而不是集成来的
+    ```java
+    boolean isExistsRequestMapping = AnnotationUtils.isAnnotationDeclaredLocally(RequestMapping.class, MainController.class);
+    System.out.println(isExistsRequestMapping);
+    
+    boolean isExistsMapping = AnnotationUtils.isAnnotationDeclaredLocally(Mapping.class, MainController.class);
+    System.out.println(isExistsMapping);
+    ```
+
+
+## ClassUtils
+## TypeUtils
+## ReflectionUtils
