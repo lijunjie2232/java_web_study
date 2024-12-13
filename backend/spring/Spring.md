@@ -738,3 +738,32 @@ public class LogAspect {
     ClassUtils.isAssignable(List.class, ArrayList.class)
     ```
 ## ReflectionUtils
+- `findMethod`: 获取方法
+    ```java
+    Method method = ReflectionUtils.findMethod(User.class, "getId");
+    ```
+- `findField`: 获取字段
+    ```java
+    Field field = ReflectionUtils.findField(User.class, "id");
+    ```
+- `invokeMethod`: 执行方法
+    ```java
+    Method method = ReflectionUtils.findMethod(User.class, "getId");
+    ReflectionUtils.invokeMethod(method, springContextsUtil.getBean(User.class), param);
+    ```
+- `isPublicStaticFinal`: 判断字段是否常量
+    ```java
+    Field field = ReflectionUtils.findField(User.class, "id");
+    System.out.println(ReflectionUtils.isPublicStaticFinal(field));
+    ```
+- `doWithFields`: 获取类的所有字段
+    ```java
+    ReflectionUtils.doWithFields(xxx.class, field -> {
+        System.out.println("Field: " + field.getName());
+    });
+    ```
+- `isEqualsMethod`: 判断是否equals方法
+    ```java
+    Method method = ReflectionUtils.findMethod(User.class, "getId");
+    System.out.println(ReflectionUtils.isEqualsMethod(method));
+    ```
