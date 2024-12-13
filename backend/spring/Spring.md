@@ -732,7 +732,9 @@ public class LogAspect {
     ```java
     System.out.println(ClassUtils.isCglibProxy(new User()));
     ```
-
 ## TypeUtils
-
+- `isAssignable`: 依照 Java 泛型規則檢查右側類型是否能转换为左側類型
+    ```java
+    ClassUtils.isAssignable(List.class, ArrayList.class)
+    ```
 ## ReflectionUtils
