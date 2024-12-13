@@ -1,39 +1,41 @@
 <!-- TOC -->
+
 * [Spring Container](#spring-container)
-  * [ConfigurableApplicationContext](#configurableapplicationcontext)
-    * [@Bean](#bean)
-    * [getBean](#getbean)
-  * [@Configuration](#configuration)
-  * [Spring MVC Annotation](#spring-mvc-annotation)
-  * [@Import](#import)
-  * [@Scope](#scope)
-  * [@Lazy](#lazy)
-  * [FactoryBean](#factorybean)
-  * [Condition](#condition)
+    * [ConfigurableApplicationContext](#configurableapplicationcontext)
+        * [@Bean](#bean)
+        * [getBean](#getbean)
+    * [@Configuration](#configuration)
+    * [Spring MVC Annotation](#spring-mvc-annotation)
+    * [@Import](#import)
+    * [@Scope](#scope)
+    * [@Lazy](#lazy)
+    * [FactoryBean](#factorybean)
+    * [Condition](#condition)
 * [Inject](#inject)
-  * [@Autowired](#autowired)
-  * [@Qualifier("personli")](#qualifierpersonli)
-  * [@Primary](#primary)
-  * [@Resource](#resource)
-  * [component constructor inject](#component-constructor-inject)
-  * [setter inject](#setter-inject)
-  * [Aware](#aware)
-  * [@Value](#value)
-  * [@PropertySource](#propertysource)
-  * [ResourceUtils](#resourceutils)
-  * [Profile](#profile)
+    * [@Autowired](#autowired)
+    * [@Qualifier("personli")](#qualifierpersonli)
+    * [@Primary](#primary)
+    * [@Resource](#resource)
+    * [component constructor inject](#component-constructor-inject)
+    * [setter inject](#setter-inject)
+    * [Aware](#aware)
+    * [@Value](#value)
+    * [@PropertySource](#propertysource)
+    * [ResourceUtils](#resourceutils)
+    * [Profile](#profile)
 * [Spring LifeCycle](#spring-lifecycle)
-  * [InitializingBean interface](#initializingbean-interface)
-  * [DisposableBean interface](#disposablebean-interface)
-  * [BeanPostProcessor](#beanpostprocessor)
-  * [lefe cycle of bean](#lefe-cycle-of-bean)
+    * [InitializingBean interface](#initializingbean-interface)
+    * [DisposableBean interface](#disposablebean-interface)
+    * [BeanPostProcessor](#beanpostprocessor)
+    * [lefe cycle of bean](#lefe-cycle-of-bean)
 * [SpringBootTest](#springboottest)
 * [AOP](#aop)
-  * [java dynamic proxy](#java-dynamic-proxy)
-  * [Spring AOP](#spring-aop)
-    * [@Aspect](#aspect)
-    * [@PointCut](#pointcut)
-    * [@Order(n)](#ordern)
+    * [java dynamic proxy](#java-dynamic-proxy)
+    * [Spring AOP](#spring-aop)
+        * [@Aspect](#aspect)
+        * [@PointCut](#pointcut)
+        * [@Order(n)](#ordern)
+
 <!-- TOC -->
 
 # Spring Container
@@ -562,7 +564,9 @@ println(proxy2.mul(2, 3));
     <artifactId>spring-boot-starter-aop</artifactId>
 </dependency>
 ```
+
 ### @Aspect
+
 - use `@Aspect` to decorate component
 
 ```java
@@ -625,7 +629,9 @@ public class LogAspect {
 
 - execute order: `Before` -> `Target` -> `AfterReturning / AfterThrowing` -> `After`
 - get target info:
+
 ```java
+
 @AfterReturning(value = "execution(int *(int , int))", returning = "result")
 public void afterReturning(JoinPoint joinPoint, Object result) {
     MethodSignature methodSignature = (MethodSignature) joinPoint.getSignature();
@@ -635,7 +641,7 @@ public void afterReturning(JoinPoint joinPoint, Object result) {
     System.out.println("Method name: " + methodSignature.getName());
     System.out.println("method args: " + joinPoint.getArgs());
     System.out.println("result: " + result);
-        
+
     System.out.println("afterReturning");
 }
 
@@ -650,7 +656,9 @@ public void afterThrowing(JoinPoint joinPoint, Throwable e) {// change Throwable
 ```
 
 ### @PointCut
+
 ```java
+
 @Component
 @Aspect
 public class LogAspect {
@@ -667,14 +675,16 @@ public class LogAspect {
 ```
 
 ### @Order(n)
+
 - if multiple pointcuts set in one method: `Proxy1(Proxy2(instance))`
 - set order to **_Proxy class_** by decorator `@Order(n)`
 - the **_smaller_** `n` is, the **_outer_** this proxy will be, the **_earlier_** its `@Before` will be called
 - default `n`: `MAX_VALUE = 0x7fffffff`
 
-
 # Spring Utils
+
 ## AnnotationUtils
+
 - `findAnnotation`: 获取Class/Method上面标注的注解
     ```java
     // 获取Class上面的注解
@@ -703,7 +713,26 @@ public class LogAspect {
     System.out.println(isExistsMapping);
     ```
 
-
 ## ClassUtils
+
+- `getAllInterfaces`: 获取对象的所有接口
+    ```java
+    Class<?>[] allInterfaces = ClassUtils.getAllInterfaces(new User());
+    ```
+- `getPackageName`: 获取某个类的包名
+    ```java
+    String packageName = ClassUtils.getPackageName(User.class);
+    System.out.println(packageName);
+    ```
+- `isInnerClass`: 判断某个类是否内部类
+    ```java
+    System.out.println(ClassUtils.isInnerClass(User.class));
+    ```
+- `isCglibProxy`: 判断对象是否代理对象
+    ```java
+    System.out.println(ClassUtils.isCglibProxy(new User()));
+    ```
+
 ## TypeUtils
+
 ## ReflectionUtils
