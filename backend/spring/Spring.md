@@ -42,6 +42,7 @@
   * [Base64Utils](#base64utils)
   * [SerializationUtils](#serializationutils)
   * [BeanUtils](#beanutils)
+* [IOC: DefaultSingletonBeanRegistry.getSingleton](#ioc-defaultsingletonbeanregistrygetsingleton)
 <!-- TOC -->
 
 # Spring Container
@@ -835,3 +836,30 @@ public class LogAspect {
     PropertyDescriptor propertyForMethod = BeanUtils.findPropertyForMethod(declaredMethod);
     System.out.println(propertyForMethod.getName());
     ```
+
+# IOC: DefaultSingletonBeanRegistry.getSingleton
+
+1. find bean
+    ```
+    1. singletonObject = singletonObjects.get(beanName);
+                 ||
+                 \/
+    2. singletonObject = earlySingletonObjects.get(beanName);
+    ```
+2. find or get bean with synchronized block
+- `singletonObjects` is an object pool
+- `singletonObjects`: `Map<String, Object>`
+- `earlySingletonObjects`: `Map<String, Object>`
+- `singletonFactories`: `Map<String, ObjectFactory<?>>`
+    ```
+    1. singletonObject = singletonObjects.get(beanName);
+                 ||
+                 \/
+    2. singletonObject = earlySingletonObjects.get(beanName);
+                 ||
+                 \/
+    3. xxxFactory = singletonFactories.get(beanName);
+       singletonObject = xxxFactory.getObject();
+       earlySingletonObjects.put(beanName, singletonObject);
+    ```
+   
