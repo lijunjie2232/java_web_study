@@ -838,7 +838,7 @@ public class LogAspect {
     ```
 
 # IOC: DefaultSingletonBeanRegistry.getSingleton
-
+- set `spring.main.allow-circular-references=true` to enable circular reference
 1. find bean
     ```
     1. singletonObject = singletonObjects.get(beanName);
