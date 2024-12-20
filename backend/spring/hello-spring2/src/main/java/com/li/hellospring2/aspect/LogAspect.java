@@ -1,6 +1,7 @@
 package com.li.hellospring2.aspect;
 
 import org.aspectj.lang.JoinPoint;
+import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.*;
 import org.aspectj.lang.reflect.MethodSignature;
 import org.springframework.core.annotation.AnnotationUtils;
@@ -9,6 +10,8 @@ import org.springframework.stereotype.Component;
 import org.springframework.util.ClassUtils;
 import org.springframework.util.ReflectionUtils;
 import org.springframework.util.TypeUtils;
+
+import java.util.Arrays;
 
 @Order
 @Component
@@ -50,6 +53,24 @@ public class LogAspect {
         System.out.println("method name: " + joinPoint.getSignature().getName());
         System.out.println("method args: " + joinPoint.getArgs());
         System.out.println("after");
+    }
+
+    @Around("pointcut()")
+    public Object Around(ProceedingJoinPoint pjp) throws Throwable {
+        Object[] args = pjp.getArgs();
+        System.out.println("around args: " + Arrays.toString(args));
+        Object result = null;
+        try {
+            System.out.println("around before");
+            result = pjp.proceed(args);
+            System.out.println("around after returning");
+        } catch (Exception e) {
+            System.out.println("around after throwing");
+            throw e;
+        } finally {
+            System.out.println("around after");
+        }
+        return result;
     }
 
 }

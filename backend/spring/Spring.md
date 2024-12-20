@@ -635,10 +635,9 @@ public class LogAspect {
 | 不实现接口的类 | ✔	      | ✔	    | ✔       |
 
 - execute order: `Before` -> `Target` -> `AfterReturning / AfterThrowing` -> `After`
-- get target info:
+#### get target info:
 
 ```java
-
 @AfterReturning(value = "execution(int *(int , int))", returning = "result")
 public void afterReturning(JoinPoint joinPoint, Object result) {
     MethodSignature methodSignature = (MethodSignature) joinPoint.getSignature();
@@ -687,6 +686,39 @@ public class LogAspect {
 - set order to **_Proxy class_** by decorator `@Order(n)`
 - the **_smaller_** `n` is, the **_outer_** this proxy will be, the **_earlier_** its `@Before` will be called
 - default `n`: `MAX_VALUE = 0x7fffffff`
+
+### @Around
+- around should throw errors to upper wrapper in catch block
+```java
+@Order
+@Component
+@Aspect
+public class LogAspect {
+
+    @Pointcut("execution(int *(int , int))")
+    private void pointcut() {
+    }
+
+    @Around("pointcut()")
+    public Object Around(ProceedingJoinPoint pjp) throws Throwable {
+        Object[] args = pjp.getArgs();
+        System.out.println("around args: " + Arrays.toString(args));
+        Object result = null;
+        try {
+            System.out.println("around before");
+            result = pjp.proceed(args);
+            System.out.println("around after returning");
+        } catch (Exception e) {
+            System.out.println("around after throwing");
+            throw e;
+        } finally {
+            System.out.println("around after");
+        }
+        return result;
+    }
+
+}
+```
 
 # Spring Utils
 
