@@ -24,7 +24,7 @@ public class BookDao {
     }
 
     public void updateBookStock(Integer bookId, Integer num){
-        String sql = "UPDATE `book` SET stock=? WHERE `id`=?";
+        String sql = "UPDATE `book` SET `stock`=`stock`+? WHERE `id`=?";
         jdbcTemplate.update(sql, num, bookId);
     }
 

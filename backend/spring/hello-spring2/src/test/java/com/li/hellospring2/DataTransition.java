@@ -2,8 +2,10 @@ package com.li.hellospring2;
 
 import com.li.hellospring2.bean.Account;
 import com.li.hellospring2.bean.Book;
+import com.li.hellospring2.bean.Order;
 import com.li.hellospring2.dao.AccountDao;
 import com.li.hellospring2.dao.BookDao;
+import com.li.hellospring2.service.impl.AccountServiceImpl;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -28,6 +30,9 @@ public class DataTransition {
 
     @Autowired
     AccountDao accountDao;
+
+    @Autowired
+    AccountServiceImpl accountService;
 
     @Test
     void datasourceTest() throws SQLException {
@@ -64,7 +69,7 @@ public class DataTransition {
 //    }
 
     @Test
-    void getAccountById(){
+    void getAccountById() {
         Account account = accountDao.getAccountById(4);
         System.out.println(account);
     }
@@ -96,5 +101,20 @@ public class DataTransition {
         account = accountDao.getAccountById(4);
         System.out.println(account);
     }
+
+//    @Test
+//    void checkoutTest() {
+//        Account account = accountDao.getAccountById(4);
+//        System.out.println(account);
+//        System.out.println("check out test");
+//        Order order = new Order();
+//        order.setAcccountId(4);
+////        order.addItem(4, 5);
+//        order.addItem(5, 1);
+//        System.out.println(order);
+//        System.out.println(accountService.checkout(order));
+//        account = accountDao.getAccountById(4);
+//        System.out.println(account);
+//    }
 
 }
