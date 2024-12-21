@@ -19,9 +19,18 @@ public class BookDao {
     }
 
     public void addBook(Book book) {
-        String sql = "insert into `book`(`bookName`, `price`, `stock`) values (?,?,?)";
+        String sql = "INSERT INTO `book`(`bookName`, `price`, `stock`) VALUES (?,?,?)";
         jdbcTemplate.update(sql, book.getBookName(), book.getPrice(), book.getStock());
     }
 
+    public void updateBookStock(Integer bookId, Integer num){
+        String sql = "UPDATE `book` SET stock=? WHERE `id`=?";
+        jdbcTemplate.update(sql, num, bookId);
+    }
+
+    public void deleteBook(Book book){
+        String sql = "DELETE FROM `book` WHERE `id`=?";
+        jdbcTemplate.update(sql, book.getId());
+    }
 
 }
