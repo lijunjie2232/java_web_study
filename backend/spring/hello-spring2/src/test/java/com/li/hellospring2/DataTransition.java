@@ -8,6 +8,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.jdbc.core.JdbcTemplate;
 
 import javax.sql.DataSource;
+import java.math.BigDecimal;
 import java.sql.Connection;
 import java.sql.SQLException;
 
@@ -32,7 +33,16 @@ public class DataTransition {
 
     @Test
     void getBookByIdTest(){
-        Book book = bookDao.getBookById(1);
+        Book book = bookDao.getBookById(5);
         System.out.println(book);
     }
+//    @Test
+//    void addBookTest(){
+//        Book book = new Book();
+//        book.setBookName("Java");
+//        book.setPrice(new BigDecimal(100));
+//        book.setStock(1);
+//        bookDao.addBook(book);
+//    }
+
 }
