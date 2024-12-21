@@ -894,4 +894,28 @@ public class LogAspect {
        singletonObject = xxxFactory.getObject();
        earlySingletonObjects.put(beanName, singletonObject);
     ```
-   
+
+# SpringBoot DataSource
+- add dependency to pom
+    ```xml
+    <!-- https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter-jdbc -->
+    <dependency>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-jdbc</artifactId>
+        <version>3.4.0</version>
+    </dependency>
+    <!-- https://mvnrepository.com/artifact/com.mysql/mysql-connector-j -->
+    <dependency>
+        <groupId>com.mysql</groupId>
+        <artifactId>mysql-connector-j</artifactId>
+        <version>9.1.0</version>
+    </dependency>
+    ```
+- add sql config to "properties file"
+    ```properties
+    spring.datasource.driver-class-name=com.mysql.cj.jdbc.Driver
+    spring.datasource.url=jdbc:mysql://localhost:13306/ssm1
+    spring.datasource.username=root
+    spring.datasource.password=root
+    ```
+- get DataSource (default hikari) by @Autowired
