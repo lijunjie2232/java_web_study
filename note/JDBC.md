@@ -874,7 +874,7 @@ public class SysUserDaoImpl extends BaseDao implements SysUserDao {
     - Durability: 一个事务一旦提交，他对数据库中数据的改变就应该是永久性的。
   - `COMMIT` commit manually above sql operations
   - `ROLLBACK` discommit all sql operations above
-#### Isolation level:
+#### Isolation level
 - 读未提交：read uncommitted
 - 读已提交：read committed
 - 可重复读：repeatable read

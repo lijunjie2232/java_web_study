@@ -979,16 +979,24 @@ public class AccountServiceImpl {
 ```
 
 ## @Transactional
-- value/transactionManager: transactionManager, default is `JdbcTransactionManager`
+- `transactionManager/value(alias of transactionManager`: transactionManager, default is `JdbcTransactionManager`
   1. `TransactionManager`: control commit/rollback of transaction
   2. `TransactionInterceptor`: control when to commit/rollback, TransactionInterceptor is an aspect
      1. `completeTransactionAfterThrowing(txInfo, ex)` -> `rollbackOn(ex)`
      2. `completeTransactionAfterReturning(txInfo)` -> `commitTransactionAfterReturning(txInfo)`
-- `propagation`: propagation behavior of transaction
+- `propagation`: propagation behavior of transaction, default is `Propagation.REQUIRED`
+  - `Required`: if no transaction exists, create a new transaction, otherwise use the current transaction
+  - `Supports`: if a transaction exists, use the current transaction, otherwise run without transaction
+  - `Mandatory`: if a transaction exists, use the current transaction, otherwise throw an exception
+  - `Requires_New`: pause existing transaction and create a new transaction
+  - `Nested`: if no transaction exists, create a new transaction, otherwise use the current transaction to create a nested transaction
+  - `Not_Supported`: (no transaction) if a transaction exists, pause the current transaction, then/otherwise run without transaction
+  - `Never`: (no transaction) if a transaction exists, throw an exception
 - `isolation`: isolation level of transaction
 - `timeout`: timeout of transaction (second)
   - timeout is from the first **_db operation_** to commit (the last db operation) instead of from the first line of method code to the end
 - `readOnly`: if db operation contains only read operation, set `readOnly=true` to enable read-only transaction which could optimize performance
 - `rollbackFor`/`rollbackForClassName`: specify **_additional_** exception class to rollback, all `RuntimeException` could already be rolled back by default
+- `noRollbackFor` / `noRollbackForClassName`: specify exception class not to trigger rollback
 - 
 - 
