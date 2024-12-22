@@ -9,6 +9,7 @@ import com.li.hellospring2.util.EnvUtil;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.ConfigurableApplicationContext;
+import org.springframework.transaction.annotation.EnableTransactionManagement;
 import org.springframework.util.ResourceUtils;
 //import org.springframework.context.annotation.Bean;
 //import org.springframework.context.annotation.ComponentScan;
@@ -17,6 +18,7 @@ import java.io.*;
 import java.util.Map;
 import java.util.Properties;
 
+@EnableTransactionManagement
 //@ComponentScan(basePackages = "com.li")
 @SpringBootApplication
 public class HelloSpring2Application {

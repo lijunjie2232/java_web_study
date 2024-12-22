@@ -7,6 +7,7 @@ import com.li.hellospring2.dao.AccountDao;
 import com.li.hellospring2.dao.BookDao;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.util.Map;
@@ -23,6 +24,7 @@ public class AccountServiceImpl {
      *
      * @param order:Order order
      */
+    @Transactional
     public boolean checkout(Order order) {
         try {
             BigDecimal totalprice = new BigDecimal(0);
@@ -38,6 +40,7 @@ public class AccountServiceImpl {
             for (Map.Entry<Integer, Integer> entry : order.getOrderMap().entrySet()) {
                 bookDao.updateBookStock(entry.getKey(), -entry.getValue());
             }
+            int a = 1 / 0;
         } catch (Exception e) {
             e.printStackTrace();
             System.out.println(e);

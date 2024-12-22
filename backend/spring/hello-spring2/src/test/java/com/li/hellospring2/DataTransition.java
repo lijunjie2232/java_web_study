@@ -102,19 +102,19 @@ public class DataTransition {
         System.out.println(account);
     }
 
-//    @Test
-//    void checkoutTest() {
-//        Account account = accountDao.getAccountById(4);
-//        System.out.println(account);
-//        System.out.println("check out test");
-//        Order order = new Order();
-//        order.setAcccountId(4);
-////        order.addItem(4, 5);
-//        order.addItem(5, 1);
-//        System.out.println(order);
-//        System.out.println(accountService.checkout(order));
-//        account = accountDao.getAccountById(4);
-//        System.out.println(account);
-//    }
+    @Test
+    void checkoutTest() {
+        Account account = accountDao.getAccountById(4);
+        System.out.println(account);
+        System.out.println("check out test");
+        Order order = new Order();
+        order.setAcccountId(4);
+//        order.addItem(4, 5);
+        order.addItem(5, 1);
+        System.out.println(order);
+        System.out.println(accountService.checkout(order));
+        account = accountDao.getAccountById(4);
+        System.out.println(account);
+    }
 
 }
