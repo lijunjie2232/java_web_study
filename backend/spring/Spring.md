@@ -989,4 +989,6 @@ public class AccountServiceImpl {
 - `timeout`: timeout of transaction (second)
   - timeout is from the first **_db operation_** to commit (the last db operation) instead of from the first line of method code to the end
 - `readOnly`: if db operation contains only read operation, set `readOnly=true` to enable read-only transaction which could optimize performance
+- `rollbackFor`/`rollbackForClassName`: specify **_additional_** exception class to rollback, all `RuntimeException` could already be rolled back by default
+- 
 - 
