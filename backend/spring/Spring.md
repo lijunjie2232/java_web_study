@@ -9,7 +9,7 @@
   * [@Scope](#scope)
   * [@Lazy](#lazy)
   * [FactoryBean](#factorybean)
-  * [Condition](#condition)
+  * [@Condition](#condition)
 * [Inject](#inject)
   * [@Autowired](#autowired)
   * [@Qualifier("personli")](#qualifierpersonli)
@@ -32,8 +32,10 @@
   * [java dynamic proxy](#java-dynamic-proxy)
   * [Spring AOP](#spring-aop)
     * [@Aspect](#aspect)
+      * [get target info:](#get-target-info)
     * [@PointCut](#pointcut)
     * [@Order(n)](#ordern)
+    * [@Around](#around)
 * [Spring Utils](#spring-utils)
   * [AnnotationUtils](#annotationutils)
   * [ClassUtils](#classutils)
@@ -43,6 +45,10 @@
   * [SerializationUtils](#serializationutils)
   * [BeanUtils](#beanutils)
 * [IOC: DefaultSingletonBeanRegistry.getSingleton](#ioc-defaultsingletonbeanregistrygetsingleton)
+* [SpringBoot DataSource](#springboot-datasource)
+* [Transaction](#transaction)
+  * [@Transactional](#transactional)
+* [Spring Conclusion](#spring-conclusion)
 <!-- TOC -->
 
 # Spring Container
@@ -205,7 +211,7 @@ public class PFactory implements FactoryBean<Person> {
 - **name: "PFactory"**
 - get bean: `ioc.getBeansOfType(Person.class)`
 
-## Condition
+## @Condition
 
 ```java
 import com.li.hellospring2.bean.Person;
@@ -998,5 +1004,58 @@ public class AccountServiceImpl {
 - `readOnly`: if db operation contains only read operation, set `readOnly=true` to enable read-only transaction which could optimize performance
 - `rollbackFor`/`rollbackForClassName`: specify **_additional_** exception class to rollback, all `RuntimeException` could already be rolled back by default
 - `noRollbackFor` / `noRollbackForClassName`: specify exception class not to trigger rollback
-- 
-- 
+
+- settings of outer method decide inner method's transaction limit if inner method propagation is `REQUIRED`
+
+# Spring Conclusion
+1. Spring 容器 (Spring Container)
+- ConfigurableApplicationContext: 构建容器时构造 Bean，默认所有 Bean 都是单例（除 prototype 范围的 Bean）。
+   提供了 getBean 方法来获取 Bean，支持通过类、名称或同时使用名称和类来获取。
+- @Bean: 用于将方法返回的对象注册为 Spring 容器中的 Bean。
+- @Configuration: 标记配置类，该类本身也是一个 Bean。
+- FactoryBean: 实现 FactoryBean 接口，提供自定义的 Bean 创建逻辑。
+- @Condition: 实现条件化创建 Bean 的逻辑。
+
+2. 依赖注入 (Inject)
+- @Autowired: 自动装配依赖，优先按类型查找，其次按名称查找。可以设置 required=false 允许为空。
+- @Qualifier: 指定特定名称的 Bean 进行注入。
+- @Primary: 标记一个 Bean 作为首选注入对象。
+- @Resource: 类似于 @Autowired，但它是 Java 的通用接口，不允许为空。
+- 构造函数注入与 Setter 注入: 支持通过构造函数或 Setter 方法进行依赖注入。
+- Aware 接口: 提供对容器环境、资源加载器等的访问。
+- @Value: 直接注入值或从属性文件中读取值。
+- @PropertySource: 指定属性文件的位置。
+- Profile: 根据激活的环境选择不同的 Bean。
+
+3. Spring 生命周期 (Spring LifeCycle)
+- InitializingBean 和 DisposableBean: 分别在初始化后和销毁前执行特定逻辑。
+- BeanPostProcessor: 在 Bean 初始化前后进行处理。
+- 生命周期顺序: 
+  - 构造函数
+  - 依赖注入
+  - postProcessBeforeInitialization
+  - @PostConstruct
+  - afterPropertiesSet
+  - @Bean init
+  - postProcessAfterInitialization
+  - @PreDestroy
+  - destroy
+
+4. Spring 测试 (SpringBootTest)
+- @SpringBootTest: 用于集成测试class，自动配置应用程序上下文。
+
+5. 面向切面编程 (AOP)
+- Java 动态代理: 适用于实现接口的类。
+- Spring AOP: 基于 AspectJ 注解实现 AOP，如 @Aspect、@PointCut、@Before、@After、@Around 等。
+- 表达式语言: 使用 execution、within、this、target、args、bean 和 @annotation 等表达式匹配目标方法。
+- @Order: 控制多个切面的执行顺序。
+
+6. Spring 工具类 (Spring Utils)
+- AnnotationUtils: 提供注解相关的工具方法，如查找注解、获取注解属性等。
+- ClassUtils: 提供类相关的工具方法，如获取接口、包名、判断内部类等。
+- TypeUtils: 提供类型转换相关的工具方法。
+- ReflectionUtils: 提供反射相关的工具方法，如查找方法、字段、调用方法等。
+
+7. Spring 事务(Spring Transaction)
+- @EnableTransactionManagement: 开启事务管理，默认使用 JdbcTransactionManager 作为事务管理器。
+- @Transactional: 用于标注在方法或类上，用于开启事务，默认的传播行为是 REQUIRED，默认的隔离级别是 DEFAULT。
