@@ -9,6 +9,7 @@ import com.li.hellospring2.util.EnvUtil;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.ConfigurableApplicationContext;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 import org.springframework.util.ResourceUtils;
 //import org.springframework.context.annotation.Bean;
@@ -24,9 +25,11 @@ import java.util.Properties;
 public class HelloSpring2Application {
 
     public static void main(String[] args) throws IOException {
-
+        // method 1
         ConfigurableApplicationContext ioc = SpringApplication.run(HelloSpring2Application.class, args);
         System.out.println(ioc);
+        // method 2
+        ClassPathXmlApplicationContext ioc = new ClassPathXmlApplicationContext("classpath:ioc.xml");
 
         String[] beanNames = ioc.getBeanDefinitionNames();
         for (String bean : beanNames) {

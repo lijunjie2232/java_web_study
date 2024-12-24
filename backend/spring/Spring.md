@@ -71,10 +71,12 @@ import org.springframework.context.annotation.Bean;
 public class HelloSpring2Application {
 
     public static void main(String[] args) {
+      // method 1
+      ConfigurableApplicationContext ioc = SpringApplication.run(HelloSpring2Application.class, args);
+      System.out.println(ioc);
+      // method 2
+//        ClassPathXmlApplicationContext ioc = new ClassPathXmlApplicationContext("classpath:ioc.xml");
 
-        ConfigurableApplicationContext ioc = SpringApplication.run(HelloSpring2Application.class, args);
-
-        System.out.println(ioc);
 
         String[] beanNames = ioc.getBeanDefinitionNames();
         for (String bean : beanNames) {
@@ -106,6 +108,62 @@ public class HelloSpring2Application {
         person.setName("li");
         return person;
     }
+}
+```
+
+### start up of ioc
+```java
+// org.springframework.context.support.ClassPathXmlApplicationContext
+// .ClassPathXmlApplicationContext(java.lang.String[], boolean, org.springframework.context.ApplicationContext)
+public ClassPathXmlApplicationContext(String[] configLocations, boolean refresh, @Nullable ApplicationContext parent) throws BeansException {
+    super(parent);
+    this.setConfigLocations(configLocations);
+    if (refresh) {
+        this.refresh();
+    }
+
+}
+```
+```java
+// org.springframework.context.support.AbstractApplicationContext.refresh
+public void refresh() throws BeansException, IllegalStateException {
+    this.startupShutdownLock.lock();
+
+    try {
+        this.startupShutdownThread = Thread.currentThread();
+        StartupStep contextRefresh = this.applicationStartup.start("spring.context.refresh");
+        this.prepareRefresh();
+        ConfigurableListableBeanFactory beanFactory = this.obtainFreshBeanFactory();
+        this.prepareBeanFactory(beanFactory);
+
+        try {
+            this.postProcessBeanFactory(beanFactory);
+            StartupStep beanPostProcess = this.applicationStartup.start("spring.context.beans.post-process");
+            this.invokeBeanFactoryPostProcessors(beanFactory);
+            this.registerBeanPostProcessors(beanFactory);
+            beanPostProcess.end();
+            this.initMessageSource();
+            this.initApplicationEventMulticaster();
+            this.onRefresh();
+            this.registerListeners();
+            this.finishBeanFactoryInitialization(beanFactory);
+            this.finishRefresh();
+        } catch (Error | RuntimeException var12) {
+            if (this.logger.isWarnEnabled()) {
+                this.logger.warn("Exception encountered during context initialization - cancelling refresh attempt: " + var12);
+            }
+
+            this.destroyBeans();
+            this.cancelRefresh(var12);
+            throw var12;
+        } finally {
+            contextRefresh.end();
+        }
+    } finally {
+        this.startupShutdownThread = null;
+        this.startupShutdownLock.unlock();
+    }
+
 }
 ```
 
