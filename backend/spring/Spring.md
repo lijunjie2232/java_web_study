@@ -166,6 +166,21 @@ public void refresh() throws BeansException, IllegalStateException {
 
 }
 ```
+1. `prepareRefresh`: init bean post processor
+2. `obtainFreshBeanFactory`: create bean factory
+3. `prepareBeanFactory`: init bean factory
+4. `postProcessBeanFactory`: post process bean factory (for by sub class)
+5. `invokeBeanFactoryPostProcessors`: invoke factory post processors registed as beans in the context
+    - `BeanFactoryPostProcessor`: post processor for bean factory
+6. `registerBeanPostProcessors`: register bean processors that intercept bean creation process (get all names of bean post processor in ioc)
+   1. get all bean post processors name
+   2. `ioc.getBean` by name, if bean not created, it will tregger bean creation process
+7. `initMessageSource`: support internationalization by init `MessageSource` component (singleton)
+8. `initApplicationEventMulticaster`: support publish event by init `ApplicationEventMulticaster` component (singleton)
+9. `onRefresh`: leave for sub class to do somethin
+10. `registerListeners`: register listener into `ApplicationEventMulticaster` (get `ApplicationListener` from ioc)
+11. `finishBeanFactoryInitialization`: init all remaining beans in ioc container which is not to be lazy loaded
+12. `finishRefresh`: publish `ContextRefreshedEvent`
 
 ### @Bean
 
