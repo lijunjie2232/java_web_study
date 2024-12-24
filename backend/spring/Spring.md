@@ -1,6 +1,7 @@
 <!-- TOC -->
 * [Spring Container](#spring-container)
   * [ConfigurableApplicationContext](#configurableapplicationcontext)
+    * [start up of ioc](#start-up-of-ioc)
     * [@Bean](#bean)
     * [getBean](#getbean)
   * [@Configuration](#configuration)
