@@ -34,3 +34,5 @@ public class HelloController {
 ```
 
 ## Start Application
+run `HelloSpringMvcApplication` to start application
+
