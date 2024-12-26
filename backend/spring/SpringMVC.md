@@ -16,18 +16,25 @@
 ```
 
 ## A Simple Controller
+
+- `@RestController` = `@Controller` + `@ResponseBody`
+
 ```java
 package com.li.hellospringmvc1.controller;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.RestController;
 
+// method 1
+@ResponseBody
 @Controller
+// method 2
+@RestController
 public class HelloController {
-    @ResponseBody
     @RequestMapping("/hello")
-    public String handle(){
+    public String handle() {
         return "hello spring mvc";
     }
 }
@@ -35,4 +42,12 @@ public class HelloController {
 
 ## Start Application
 run `HelloSpringMvcApplication` to start application
+
+## @RequestMapping
+`@RequestMapping` is used to map the URL to the controller method.
+
+### url match pattern:
+  - `*`: match any character in one path level
+  - `**`: match any number of path level, should put at the end
+  - `?`: match one character in one path level
 
