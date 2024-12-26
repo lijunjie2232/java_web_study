@@ -51,3 +51,17 @@ run `HelloSpringMvcApplication` to start application
   - `**`: match any number of path level, should put at the end
   - `?`: match one character in one path level
 
+### params:
+- `method`:
+  - `@RequestMapping(method = {RequestMethod.GET, RequestMethod.POST})`
+- `params`: 
+  - `@RequestMapping(params = "id")` must contain the parameter `id` in the request
+  - `@RequestMapping(params = "!id")` must not contain the parameter `id` in the request
+  - `@RequestMapping(params = "id=1")` must contain the parameter `id` with value `1`
+  - `@RequestMapping(params = "id!=1")` must not contain the parameter `id` with value `1`
+- `headers`:
+  - `@RequestMapping(headers = "Content-Type")` must contain the header `Content-Type`
+- `consumes`:
+  - `@RequestMapping(consumes = "application/json")` must contain the header `Content-Type` with value `application/json` and must be a json format request body
+- `produces`:
+  - `@RequestMapping(produces = "application/json")` specify the response content type
