@@ -111,3 +111,19 @@ public String handle02(
 ```
 
 ## POJO argument
+- bind an entity in method parameter with request parameter
+```java
+@Data
+public class User {
+  private String username;
+  private String password = "";
+  private String email;
+}
+```
+```java
+@RequestMapping(value = "handle03")
+public String handle03(User user) {
+    System.out.println(user);
+    return "{\"msg\": \"ok\"}";
+}
+```
