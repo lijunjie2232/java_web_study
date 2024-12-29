@@ -92,3 +92,22 @@ public String handle01(String username, String password, boolean accept) {
   return "{\"msg\": \"ok\"}";
 }
 ```
+## `@RequestParam`
+- `@RequestParam` is used to decorate the method parameter with an alias name.
+- `@RequestParam` is used to bind the request parameter to the method parameter with an alias name.
+- `defaultValue` specify the default value of the method parameter if the request parameter is not contained
+- !!! **_the alias `@RequestParam` specified must contain in the request if `required = false` is not set, or the method will return 400_**
+```java
+@RequestMapping("handle02")
+public String handle02(
+        @RequestParam("username") String user,
+        @RequestParam(defaultValue = "") String password,
+        @RequestParam(value = "agree", required = false) boolean accept) {
+    System.out.println("username = " + user);
+    System.out.println("password = " + password);
+    System.out.println("accept = " + accept);
+    return "{\"msg\": \"ok\"}";
+}
+```
+
+## POJO argument
