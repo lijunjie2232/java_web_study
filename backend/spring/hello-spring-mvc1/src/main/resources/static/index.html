@@ -4,30 +4,88 @@
     <meta charset="UTF-8">
     <title>Title</title>
     <link rel="stylesheet" href="/css/index.css">
+    <!-- 引入 Bootstrap CSS -->
+    <link href="/css/bootstrap.min.css" rel="stylesheet">
 </head>
 <body>
 <form action="/handle06" method="post">
-    <input type="text" name="username" placeholder="Username"></input>
-    <input type="password" name="password" placeholder="Password"></input>
+    <div class="form-group">
+        <label for="username">Username</label>
+        <input type="text" id="username" name="username" placeholder="Username" class="form-control"></input>
+    </div>
+    <div class="form-group">
+        <label for="password">Password</label>
+        <input type="password" id="password" name="password" placeholder="Password" class="form-control"></input>
+    </div>
 
     <!--  single check sex-->
-    <input type="radio" name="sex" value="male"></input> Male
-    <input type="radio" name="sex" value="female"></input> Female
-    <input type="radio" name="sex" value="other"></input> Other
+    <div class="form-group">
+        <label>Sex</label>
+        <div class="form-check">
+            <input type="radio" id="sex_male" name="sex" value="male" class="form-check-input"></input>
+            <label class="form-check-label" for="sex_male">Male</label>
+        </div>
+        <div class="form-check">
+            <input type="radio" id="sex_female" name="sex" value="female" class="form-check-input"></input>
+            <label class="form-check-label" for="sex_female">Female</label>
+        </div>
+        <div class="form-check">
+            <input type="radio" id="sex_other" name="sex" value="other" class="form-check-input"></input>
+            <label class="form-check-label" for="sex_other">Other</label>
+        </div>
+    </div>
+
     <!--  select grade -->
-    <select name="grade">
-        <option value="1">1</option>
-        <option value="2">2</option>
-        <option value="3">3</option>
-    </select>
+    <div class="form-group">
+        <label for="grade">Grade</label>
+        <select id="grade" name="grade" class="form-control">
+            <option value="1">1</option>
+            <option value="2">2</option>
+            <option value="3">3</option>
+        </select>
+    </div>
+
+    <!--  Address field -->
+    <div class="form-group">
+        <div class="form-group">
+            <label for="province">Province</label>
+            <select id="province" name="address.province" class="form-control" onchange="updateCities()">
+                <option value="">Select Province</option>
+                <option value="Tokyo">Tokyo</option>
+                <option value="Kyoto">Kyoto</option>
+                <option value="Osaka">Osaka</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label for="city">City</label>
+            <input type="text" id="city" name="address.city" placeholder="City" class="form-control"></input>
+        </div>
+    </div>
+
 
     <!--  multi check favorite-->
-    <div class="checkbox-group">
-        <label><input type="checkbox" name="favorite" value="football"></input> Football</label>
-        <label><input type="checkbox" name="favorite" value="basketball"></input> Basketball</label>
-        <label><input type="checkbox" name="favorite" value="swimming"></input> Swimming</label>
+    <div class="form-group">
+        <label>Favorite</label>
+        <div class="form-check">
+            <label class="form-check-label">
+                <input type="checkbox" name="favorite" value="football" class="form-check-input"></input>
+                Football
+            </label>
+        </div>
+        <div class="form-check">
+            <label class="form-check-label">
+                <input type="checkbox" name="favorite" value="basketball" class="form-check-input"></input>
+                Basketball
+            </label>
+        </div>
+        <div class="form-check">
+            <label class="form-check-label">
+                <input type="checkbox" name="favorite" value="swimming" class="form-check-input"></input>
+                Swimming
+            </label>
+        </div>
     </div>
-    <input type="submit" value="提交"></input>
+    <input type="submit" value="提交" class="btn btn-success"></input>
 </form>
 </body>
 </html>

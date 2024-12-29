@@ -9,6 +9,7 @@ body {
 }
 
 form {
+    min-width: 600px;
     background-color: #fff;
     padding: 20px;
     border-radius: 5px;
