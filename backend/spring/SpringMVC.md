@@ -1,3 +1,14 @@
+<!-- TOC -->
+* [Start a Spring MVC Application](#start-a-spring-mvc-application)
+  * [maven dependency](#maven-dependency)
+  * [A Simple Controller](#a-simple-controller)
+  * [Start Application](#start-application)
+  * [@RequestMapping](#requestmapping)
+    * [url match pattern:](#url-match-pattern)
+    * [params:](#params)
+* [](#)
+<!-- TOC -->
+
 
 # Start a Spring MVC Application
 ## maven dependency
@@ -65,3 +76,19 @@ run `HelloSpringMvcApplication` to start application
   - `@RequestMapping(consumes = "application/json")` must contain the header `Content-Type` with value `application/json` and must be a json format request body
 - `produces`:
   - `@RequestMapping(produces = "application/json")` specify the response content type
+
+# SpringMVC argument resolver
+## `@RequestParam`
+- `@RequestParam` is used to bind the request parameter to the method parameter.
+- if not contain the parameter in the request, the method parameter will be null but boolean type will be false
+- !!! `@RequestParam` is used to bind the **_request parameter_** to the method parameter, not to bind the request body to the method parameter
+- !!! **_name of the method parameter must be the same as the request parameter_**
+```java
+@RequestMapping("handle01")
+public String handle01(String username, String password, boolean accept) {
+  System.out.println("username = " + username);
+  System.out.println("password = " + password);
+  System.out.println("accept = " + accept);
+  return "{\"msg\": \"ok\"}";
+}
+```
