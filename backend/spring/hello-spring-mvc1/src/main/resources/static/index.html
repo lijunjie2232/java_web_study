@@ -1,10 +1,33 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>Title</title>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link rel="stylesheet" href="/css/index.css">
 </head>
 <body>
+<form action="/handle06" method="post">
+    <input type="text" name="username" placeholder="Username"></input>
+    <input type="password" name="password" placeholder="Password"></input>
 
+    <!--  single check sex-->
+    <input type="radio" name="sex" value="male"></input> Male
+    <input type="radio" name="sex" value="female"></input> Female
+    <input type="radio" name="sex" value="other"></input> Other
+    <!--  select grade -->
+    <select name="grade">
+        <option value="1">1</option>
+        <option value="2">2</option>
+        <option value="3">3</option>
+    </select>
+
+    <!--  multi check favorite-->
+    <div class="checkbox-group">
+        <label><input type="checkbox" name="favorite" value="football"></input> Football</label>
+        <label><input type="checkbox" name="favorite" value="basketball"></input> Basketball</label>
+        <label><input type="checkbox" name="favorite" value="swimming"></input> Swimming</label>
+    </div>
+    <input type="submit" value="提交"></input>
+</form>
 </body>
 </html>

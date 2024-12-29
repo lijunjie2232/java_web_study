@@ -1,19 +1,21 @@
 <!-- TOC -->
+
 * [Start a Spring MVC Application](#start-a-spring-mvc-application)
-  * [maven dependency](#maven-dependency)
-  * [A Simple Controller](#a-simple-controller)
-    * [`@RequestMapping`](#requestmapping)
-    * [`@Controller`](#controller)
-    * [`@ResponseBody`](#responsebody)
-    * [`@RestController`](#restcontroller)
-    * [Start Application](#start-application)
-    * [url match pattern:](#url-match-pattern)
-    * [params:](#params)
+    * [maven dependency](#maven-dependency)
+    * [A Simple Controller](#a-simple-controller)
+        * [`@RequestMapping`](#requestmapping)
+        * [`@Controller`](#controller)
+        * [`@ResponseBody`](#responsebody)
+        * [`@RestController`](#restcontroller)
+        * [Start Application](#start-application)
+        * [url match pattern:](#url-match-pattern)
+        * [params:](#params)
 * [SpringMVC argument resolver](#springmvc-argument-resolver)
-  * [direct get request parameter by setting method parameter](#direct-get-request-parameter-by-setting-method-parameter)
-  * [`@RequestParam`](#requestparam)
-  * [use POJO to get parameter](#use-pojo-to-get-parameter)
-  * [`@RequestHeader`](#requestheader)
+    * [direct get request parameter by setting method parameter](#direct-get-request-parameter-by-setting-method-parameter)
+    * [`@RequestParam`](#requestparam)
+    * [use POJO to get parameter](#use-pojo-to-get-parameter)
+    * [`@RequestHeader`](#requestheader)
+
 <!-- TOC -->
 
 # Start a Spring MVC Application
@@ -183,4 +185,105 @@ public String handle04(
     System.out.println(userAgent);
     return "{\"msg\": \"ok\"}";
 }
+```
+
+## `@CookieValue`
+
+- bind the request cookie to the method parameter
+
+```java
+
+@RequestMapping(value = "handle05")
+public String handle05(@CookieValue("JSESSIONID") String sessionId) {
+    System.out.println(sessionId);
+    return "{\"msg\": \"ok\"}";
+}
+```
+
+## POJO for Complex HTML Form
+
+### form
+
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link rel="stylesheet" href="/css/index.css">
+</head>
+<body>
+<form action="/handle06" method="post">
+    <input type="text" name="username" placeholder="Username"></input>
+    <input type="password" name="password" placeholder="Password"></input>
+
+    <!--  single check sex-->
+    <input type="radio" name="sex" value="male"></input> Male
+    <input type="radio" name="sex" value="female"></input> Female
+    <input type="radio" name="sex" value="other"></input> Other
+    <!--  select grade -->
+    <select name="grade">
+        <option value="1">1</option>
+        <option value="2">2</option>
+        <option value="3">3</option>
+    </select>
+
+    <!--  multi check favorite-->
+    <div class="checkbox-group">
+        <label><input type="checkbox" name="favorite" value="football"></input> Football</label>
+        <label><input type="checkbox" name="favorite" value="basketball"></input> Basketball</label>
+        <label><input type="checkbox" name="favorite" value="swimming"></input> Swimming</label>
+    </div>
+    <input type="submit" value="提交"></input>
+</form>
+</body>
+</html>
+```
+
+### example request data
+
+- form data: (`username=123&password=321&sex=male&grade=2&favorite=football&favorite=swimming`)
+    - username: 123
+    - password: 321
+    - sex: male
+    - grade: 2
+    - favorite: football
+    - favorite: swimming
+
+### Entity
+
+```java
+package com.li.hellospringmvc1.bean;
+
+import lombok.Data;
+
+@Data
+public class Handle06Form {
+    //    username=123&password=321&sex=male&grade=2&favorite=football&favorite=swimming
+    private String username;
+    private String password;
+    private String sex;
+    private int grade;
+    private String[] favorite;
+}
+```
+
+### handle
+
+```java
+
+@RequestMapping(value = "handle06")
+public String handle06(Handle06Form form) {
+    System.out.println("-------- form --------");
+    System.out.println(form);
+    System.out.println("-------- form --------");
+    return "{\"msg\": \"ok\"}";
+}
+```
+
+### Output
+```
+-------- form --------
+Handle06Form(username=123, password=321, sex=male, grade=2, favorite=[football, swimming])
+-------- form --------
 ```

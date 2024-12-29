@@ -1,10 +1,8 @@
 package com.li.hellospringmvc1.controller;
 
+import com.li.hellospringmvc1.bean.Handle06Form;
 import com.li.hellospringmvc1.bean.User;
-import org.springframework.web.bind.annotation.RequestHeader;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 public class RequestTestController {
@@ -42,6 +40,20 @@ public class RequestTestController {
     ) {
         System.out.println(host);
         System.out.println(userAgent);
+        return "{\"msg\": \"ok\"}";
+    }
+
+    @RequestMapping(value = "handle05")
+    public String handle05(@CookieValue("JSESSIONID") String sessionId){
+        System.out.println(sessionId);
+        return "{\"msg\": \"ok\"}";
+    }
+
+    @RequestMapping(value = "handle06")
+    public String handle06(Handle06Form form){
+        System.out.println("-------- form --------");
+        System.out.println(form);
+        System.out.println("-------- form --------");
         return "{\"msg\": \"ok\"}";
     }
 }
