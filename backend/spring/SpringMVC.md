@@ -1,28 +1,26 @@
 <!-- TOC -->
-
 * [Start a Spring MVC Application](#start-a-spring-mvc-application)
-    * [maven dependency](#maven-dependency)
-    * [A Simple Controller](#a-simple-controller)
-        * [`@RequestMapping`](#requestmapping)
-        * [`@Controller`](#controller)
-        * [`@ResponseBody`](#responsebody)
-        * [`@RestController`](#restcontroller)
-        * [Start Application](#start-application)
-        * [url match pattern:](#url-match-pattern)
-        * [params:](#params)
+  * [maven dependency](#maven-dependency)
+  * [A Simple Controller](#a-simple-controller)
+    * [`@RequestMapping`](#requestmapping)
+    * [`@Controller`](#controller)
+    * [`@ResponseBody`](#responsebody)
+    * [`@RestController`](#restcontroller)
+    * [Start Application](#start-application)
+    * [url match pattern:](#url-match-pattern)
+    * [params:](#params)
 * [SpringMVC argument resolver](#springmvc-argument-resolver)
-    * [direct get request parameter by setting method parameter](#direct-get-request-parameter-by-setting-method-parameter)
-    * [`@RequestParam`](#requestparam)
-    * [use POJO to get parameter](#use-pojo-to-get-parameter)
-    * [`@RequestHeader`](#requestheader)
-    * [`@CookieValue`](#cookievalue)
-    * [POJO for Complex HTML Form](#pojo-for-complex-html-form)
-        * [form](#form)
-        * [example request data](#example-request-data)
-        * [Entity](#entity)
-        * [handle](#handle)
-        * [Output](#output)
-
+  * [direct get request parameter by setting method parameter](#direct-get-request-parameter-by-setting-method-parameter)
+  * [`@RequestParam`](#requestparam)
+  * [use POJO to get parameter](#use-pojo-to-get-parameter)
+  * [`@RequestHeader`](#requestheader)
+  * [`@CookieValue`](#cookievalue)
+  * [POJO for Complex HTML Form](#pojo-for-complex-html-form)
+    * [form](#form)
+    * [example request data](#example-request-data)
+    * [Entity](#entity)
+    * [handle](#handle)
+    * [Output](#output)
 <!-- TOC -->
 
 # Start a Spring MVC Application
@@ -362,4 +360,37 @@ public String handle06(Handle06Form form) {
 -------- form --------
 Handle06Form(username=123, password=321, sex=male, grade=1, address=Address(province=Kyoto, city=a), street=null, zipCode=null, favorite=[football, swimming])
 -------- form --------
+```
+
+## `@RequestBody`
+- receive json data
+```java
+@RequestMapping(value = "handle07")
+//    receive json data
+public String handle07(@RequestBody Handle06Form form) {
+    System.out.println(form);
+    return "{\"msg\": \"ok\"}";
+    }
+```
+- test json data
+```json
+{
+    "username": "123",
+    "password": "321",
+    "sex": "male",
+    "grade": "2",
+    "address": {
+        "province": "Tokyo",
+        "city": "a"
+    },
+    "favorite": [
+        "football",
+        "swimming"
+    ]
+}
+```
+
+- output:
+```
+Handle06Form(username=123, password=321, sex=male, grade=2, address=Address(province=Tokyo, city=a), street=null, zipCode=null, favorite=[football, swimming])
 ```
