@@ -3,6 +3,8 @@ package com.li.hellospringmvc1.controller;
 import com.li.hellospringmvc1.bean.Handle06Form;
 import com.li.hellospringmvc1.bean.User;
 import com.li.hellospringmvc1.util.FileUtil;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.web.bind.annotation.*;
@@ -104,4 +106,11 @@ public class RequestTestController {
         return "{\"msg\": \"ok\"}";
     }
 
+    // Servlet API Test
+    @RequestMapping(value = "handle10")
+    public void handle10(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        // print json request body
+        System.out.println(request.getReader().lines().reduce("", (acc, cur) -> acc + cur));
+        response.getWriter().write("{\"msg\": \"ok\"}");
+    }
 }

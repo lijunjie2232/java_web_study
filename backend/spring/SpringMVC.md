@@ -517,3 +517,14 @@ public String handle09(
 Handle06Form(username=123, password=321, sex=male, grade=2, address=Address(province=Tokyo, city=a), street=null, zipCode=null, favorite=[football, swimming])
 [cookie:"JSESSIONID=123321; AUTH=111111;", user-agent:"PostmanRuntime/7.43.0", accept:"*/*", host:"127.0.0.1:8080", accept-encoding:"gzip, deflate, br", connection:"keep-alive", content-length:"235", Content-Type:"application/json;charset=UTF-8"]
 ```
+
+## Servlet API
+```java
+// Servlet API Test
+@RequestMapping(value = "handle10")
+public void handle10(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    // print json request body
+    System.out.println(request.getReader().lines().reduce("", (acc, cur) -> acc + cur));
+    response.getWriter().write("{\"msg\": \"ok\"}");
+}
+```
