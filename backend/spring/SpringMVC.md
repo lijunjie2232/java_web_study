@@ -1,26 +1,28 @@
 <!-- TOC -->
+
 * [Start a Spring MVC Application](#start-a-spring-mvc-application)
-  * [maven dependency](#maven-dependency)
-  * [A Simple Controller](#a-simple-controller)
-    * [`@RequestMapping`](#requestmapping)
-    * [`@Controller`](#controller)
-    * [`@ResponseBody`](#responsebody)
-    * [`@RestController`](#restcontroller)
-    * [Start Application](#start-application)
-    * [url match pattern:](#url-match-pattern)
-    * [params:](#params)
+    * [maven dependency](#maven-dependency)
+    * [A Simple Controller](#a-simple-controller)
+        * [`@RequestMapping`](#requestmapping)
+        * [`@Controller`](#controller)
+        * [`@ResponseBody`](#responsebody)
+        * [`@RestController`](#restcontroller)
+        * [Start Application](#start-application)
+        * [url match pattern:](#url-match-pattern)
+        * [params:](#params)
 * [SpringMVC argument resolver](#springmvc-argument-resolver)
-  * [direct get request parameter by setting method parameter](#direct-get-request-parameter-by-setting-method-parameter)
-  * [`@RequestParam`](#requestparam)
-  * [use POJO to get parameter](#use-pojo-to-get-parameter)
-  * [`@RequestHeader`](#requestheader)
-  * [`@CookieValue`](#cookievalue)
-  * [POJO for Complex HTML Form](#pojo-for-complex-html-form)
-    * [form](#form)
-    * [example request data](#example-request-data)
-    * [Entity](#entity)
-    * [handle](#handle)
-    * [Output](#output)
+    * [direct get request parameter by setting method parameter](#direct-get-request-parameter-by-setting-method-parameter)
+    * [`@RequestParam`](#requestparam)
+    * [use POJO to get parameter](#use-pojo-to-get-parameter)
+    * [`@RequestHeader`](#requestheader)
+    * [`@CookieValue`](#cookievalue)
+    * [POJO for Complex HTML Form](#pojo-for-complex-html-form)
+        * [form](#form)
+        * [example request data](#example-request-data)
+        * [Entity](#entity)
+        * [handle](#handle)
+        * [Output](#output)
+
 <!-- TOC -->
 
 # Start a Spring MVC Application
@@ -304,7 +306,8 @@ public String handle05(@CookieValue("JSESSIONID") String sessionId) {
 
 ### example request data
 
-- form data: (`username=123&password=321&sex=male&grade=1&address.province=Kyoto&address.city=a&favorite=football&favorite=swimming`)
+- form data: (
+  `username=123&password=321&sex=male&grade=1&address.province=Kyoto&address.city=a&favorite=football&favorite=swimming`)
     - username: 123
     - password: 321
     - sex: male
@@ -363,40 +366,48 @@ Handle06Form(username=123, password=321, sex=male, grade=1, address=Address(prov
 ```
 
 ## `@RequestBody`
+
 - receive json data binding to POJO
+
 ```java
+
 @RequestMapping(value = "handle07")
 //    receive json data
 public String handle07(@RequestBody Handle06Form form) {
     System.out.println(form);
     return "{\"msg\": \"ok\"}";
-    }
+}
 ```
+
 - test json data
+
 ```json
 {
-    "username": "123",
-    "password": "321",
-    "sex": "male",
-    "grade": "2",
-    "address": {
-        "province": "Tokyo",
-        "city": "a"
-    },
-    "favorite": [
-        "football",
-        "swimming"
-    ]
+  "username": "123",
+  "password": "321",
+  "sex": "male",
+  "grade": "2",
+  "address": {
+    "province": "Tokyo",
+    "city": "a"
+  },
+  "favorite": [
+    "football",
+    "swimming"
+  ]
 }
 ```
 
 - output:
+
 ```
 Handle06Form(username=123, password=321, sex=male, grade=2, address=Address(province=Tokyo, city=a), street=null, zipCode=null, favorite=[football, swimming])
 ```
 
 ## File Upload
+
 ### Form
+
 ```html
 <!DOCTYPE html>
 <html lang="en">
@@ -430,6 +441,7 @@ Handle06Form(username=123, password=321, sex=male, grade=2, address=Address(prov
 ```
 
 ### handle
+
 ```java
 // get tmp dir path from spring boot application.properties, default is ./tmp
 @Value("${tmp.path}")
@@ -442,18 +454,18 @@ public String handle08(
         @RequestParam("file") MultipartFile file,
         @RequestParam("files") MultipartFile[] files
 ) throws IOException {
-  System.out.println(name);
-  System.out.println(file.getOriginalFilename());
+    System.out.println(name);
+    System.out.println(file.getOriginalFilename());
 
-  // write file to tmp dir
-  FileUtil.multipartFileWriter(file, tmpPath, true);
+    // write file to tmp dir
+    FileUtil.multipartFileWriter(file, tmpPath, true);
 
-  System.out.println(files.length);
-  for (MultipartFile multipartFile : files) {
-    System.out.println(multipartFile.getOriginalFilename());
-    FileUtil.multipartFileWriter(multipartFile, tmpPath, true);
-  }
-  return "{\"msg\": \"ok\"}";
+    System.out.println(files.length);
+    for (MultipartFile multipartFile : files) {
+        System.out.println(multipartFile.getOriginalFilename());
+        FileUtil.multipartFileWriter(multipartFile, tmpPath, true);
+    }
+    return "{\"msg\": \"ok\"}";
 }
 ```
 
@@ -473,6 +485,7 @@ public static void multipartFileWriter(MultipartFile file, File tmpDir, boolean 
 ```
 
 ### spring file upload option
+
 - `spring.servlet.multipart.enabled=true`: enable file upload
 - `spring.servlet.multipart.file-size-threshold=0`: support file upload in disk
 - `spring.servlet.multipart.max-file-size=10MB`: max file size in bytes
@@ -481,13 +494,17 @@ public static void multipartFileWriter(MultipartFile file, File tmpDir, boolean 
 - `spring.servlet.multipart.resolve-lazily=true`: resolve file upload lazily
 
 ## HttpEntity
-- `HttpEntity` is a generic interface for HTTP requests and responses. It provides a way to access the request or response body as a byte array, a String, or a stream.
+
+- `HttpEntity` is a generic interface for HTTP requests and responses. It provides a way to access the request or
+  response body as a byte array, a String, or a stream.
+
 ```java
+
 @RequestMapping(value = "handle09")
 public String handle09(
 //        HttpEntity<String> entity
         HttpEntity<Handle06Form> entity
-){
+) {
     System.out.println(entity.getBody());
     System.out.println(entity.getHeaders());
     return "{\"msg\": \"ok\"}";
@@ -495,30 +512,33 @@ public String handle09(
 ```
 
 ### Request Body
+
 ```json
 {
-    "username": "123",
-    "password": "321",
-    "sex": "male",
-    "grade": "2",
-    "address": {
-        "province": "Tokyo",
-        "city": "a"
-    },
-    "favorite": [
-        "football",
-        "swimming"
-    ]
+  "username": "123",
+  "password": "321",
+  "sex": "male",
+  "grade": "2",
+  "address": {
+    "province": "Tokyo",
+    "city": "a"
+  },
+  "favorite": [
+    "football",
+    "swimming"
+  ]
 }
 ```
 
 ### Output
+
 ```
 Handle06Form(username=123, password=321, sex=male, grade=2, address=Address(province=Tokyo, city=a), street=null, zipCode=null, favorite=[football, swimming])
 [cookie:"JSESSIONID=123321; AUTH=111111;", user-agent:"PostmanRuntime/7.43.0", accept:"*/*", host:"127.0.0.1:8080", accept-encoding:"gzip, deflate, br", connection:"keep-alive", content-length:"235", Content-Type:"application/json;charset=UTF-8"]
 ```
 
 ## Servlet API
+
 ```java
 // Servlet API Test
 @RequestMapping(value = "handle10")
@@ -530,7 +550,9 @@ public void handle10(HttpServletRequest request, HttpServletResponse response) t
 ```
 
 ## 总结
+
 ### RequestMapping 函数接收参数类型:
+
 1. WebRequest / NativeWebRequest: 使用非原生的Servlet API获取request
 2. ServletRequest / HttpServletRequest: 使用原生的 Servlet API
 3. HttpSession: 获取session对象
@@ -542,3 +564,25 @@ public void handle10(HttpServletRequest request, HttpServletResponse response) t
 9. InputStream, Reader: 获取请求的输入流
 10. OutputStream, Writer: 获取响应的输出流
 11. @PathVariable: 获取url路径参数
+12. @MatrixVariable: 获取矩阵变量
+13. @RequestParam: 获取请求参数
+14. @RequestHeader: 获取请求头
+15. @CookieValue: 获取cookie值
+16. @RequestBody: 获取请求体
+17. HttpEntity<T>: 获取请求体和请求头
+18. @RequestPart: 获取请求体中的文件
+19. Map, Model, ModelMap: 服务端渲染共享数据
+20. @ModelAttribute: 前置数据绑定
+21. Errors, BindingResult: 数据校验结果
+22. @SessionAttributes: 绑定session对象
+23. UriCompnentsBuilder: 构建URI
+24. @RequestAttribute: 请求域中的属性
+25. 其他默认为@RequestParam的参数
+
+### @RequestPart和 @RequestParam的区别
+| 特性   | @RequestParam                                           | @RequestPart              |
+|------|---------------------------------------------------------|---------------------------|
+| 用途   | 从 URL 查询参数或表单数据中提取单个值                                   | 从 multipart 请求中提取特定部分的数据  |
+| 适用场景 | 简单表单数据和 URL 查询参数                                        | 包含文件上传和表单数据的 multipart 请求 |
+| 数据类型 | 基本数据类型或对象                                               | MultipartFile 对象或其他对象     |
+| 请求类型 | application/x-www-form-urlencoded 或 multipart/form-data | multipart/form-data       |
