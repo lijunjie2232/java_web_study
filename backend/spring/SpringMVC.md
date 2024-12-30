@@ -528,3 +528,17 @@ public void handle10(HttpServletRequest request, HttpServletResponse response) t
     response.getWriter().write("{\"msg\": \"ok\"}");
 }
 ```
+
+## 总结
+### RequestMapping 函数接收参数类型:
+1. WebRequest / NativeWebRequest: 使用非原生的Servlet API获取request
+2. ServletRequest / HttpServletRequest: 使用原生的 Servlet API
+3. HttpSession: 获取session对象
+4. PushBuilder: 推送消息(HTTP/2)
+5. Principal: 获取当前认证用户
+6. HttpMethod: 获取当前请求方法
+7. Locale: 获取当前请求的区域信息
+8. TimeZone, ZoneId: 获取当前请求的时区信息
+9. InputStream, Reader: 获取请求的输入流
+10. OutputStream, Writer: 获取响应的输出流
+11. @PathVariable: 获取url路径参数
