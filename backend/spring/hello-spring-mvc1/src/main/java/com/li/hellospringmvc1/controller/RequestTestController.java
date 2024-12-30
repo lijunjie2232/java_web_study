@@ -2,10 +2,24 @@ package com.li.hellospringmvc1.controller;
 
 import com.li.hellospringmvc1.bean.Handle06Form;
 import com.li.hellospringmvc1.bean.User;
+import com.li.hellospringmvc1.util.FileUtil;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.Objects;
 
 @RestController
 public class RequestTestController {
+
+    // get tmp dir path from spring boot application.properties, default is ./tmp
+    @Value("${tmp.path}")
+    private File tmpPath;
+
 
     @RequestMapping("handle01")
     public String handle01(String username, String password, boolean accept) {
@@ -51,10 +65,32 @@ public class RequestTestController {
         return "{\"msg\": \"ok\"}";
     }
 
+    //    receive json data
     @RequestMapping(value = "handle07")
-//    receive json data
     public String handle07(@RequestBody Handle06Form form) {
         System.out.println(form);
         return "{\"msg\": \"ok\"}";
     }
+
+    // file upload
+    @RequestMapping(value = "handle08")
+    public String handle08(
+            @RequestParam("name") String name,
+            @RequestParam("file") MultipartFile file,
+            @RequestParam("files") MultipartFile[] files
+    ) throws IOException {
+        System.out.println(name);
+        System.out.println(file.getOriginalFilename());
+
+        // write file to tmp dir
+        FileUtil.multipartFileWriter(file, tmpPath, true);
+
+        System.out.println(files.length);
+        for (MultipartFile multipartFile : files) {
+            System.out.println(multipartFile.getOriginalFilename());
+            FileUtil.multipartFileWriter(multipartFile, tmpPath, true);
+        }
+        return "{\"msg\": \"ok\"}";
+    }
+
 }

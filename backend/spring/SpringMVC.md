@@ -363,7 +363,7 @@ Handle06Form(username=123, password=321, sex=male, grade=1, address=Address(prov
 ```
 
 ## `@RequestBody`
-- receive json data
+- receive json data binding to POJO
 ```java
 @RequestMapping(value = "handle07")
 //    receive json data
@@ -393,4 +393,81 @@ public String handle07(@RequestBody Handle06Form form) {
 - output:
 ```
 Handle06Form(username=123, password=321, sex=male, grade=2, address=Address(province=Tokyo, city=a), street=null, zipCode=null, favorite=[football, swimming])
+```
+
+## File Upload
+### Form
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>$Title$</title>
+    <!-- 引入 Bootstrap CSS -->
+    <link href="/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+<form action="/handle08" method="post" enctype="multipart/form-data">
+    <div class="form-group">
+        <label for="name">Name</label>
+        <input type="text" class="form-control" id="name" name="name" placeholder="Enter your name">
+    </div>
+    <!--  single file upload-->
+    <div class="form-group">
+        <label for="file">File</label>
+        <input type="file" class="form-control-file" id="file" name="file">
+    </div>
+
+    <!--  multi file upload-->
+    <div class="form-group">
+        <label for="files">Files</label>
+        <input type="file" class="form-control-file" id="files" name="files" multiple></input>
+    </div>
+    <button type="submit" class="btn btn-primary">Upload</button>
+</form>
+</body>
+</html>
+```
+
+### handle
+```java
+// get tmp dir path from spring boot application.properties, default is ./tmp
+@Value("${tmp.path}")
+private File tmpPath;
+
+// file upload
+@RequestMapping(value = "handle08")
+public String handle08(
+        @RequestParam("name") String name,
+        @RequestParam("file") MultipartFile file,
+        @RequestParam("files") MultipartFile[] files
+) throws IOException {
+  System.out.println(name);
+  System.out.println(file.getOriginalFilename());
+
+  // write file to tmp dir
+  FileUtil.multipartFileWriter(file, tmpPath, true);
+
+  System.out.println(files.length);
+  for (MultipartFile multipartFile : files) {
+    System.out.println(multipartFile.getOriginalFilename());
+    FileUtil.multipartFileWriter(multipartFile, tmpPath, true);
+  }
+  return "{\"msg\": \"ok\"}";
+}
+```
+
+```java
+// FileUtil.multipartFileWriter
+
+// static method for write MultipartFile file to tmp dir
+public static void multipartFileWriter(MultipartFile file, File tmpDir, boolean overwrite) throws IOException {
+    if (!tmpDir.exists()) {
+        tmpDir.mkdirs();
+    }
+    File tmpFile = new File(tmpDir, Objects.requireNonNull(file.getOriginalFilename()));
+    if (!tmpFile.exists() || overwrite) {
+        file.transferTo(tmpFile);
+    }
+}
 ```
