@@ -4,6 +4,7 @@ import com.li.hellospringmvc1.bean.Handle06Form;
 import com.li.hellospringmvc1.bean.User;
 import com.li.hellospringmvc1.util.FileUtil;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -90,6 +91,16 @@ public class RequestTestController {
             System.out.println(multipartFile.getOriginalFilename());
             FileUtil.multipartFileWriter(multipartFile, tmpPath, true);
         }
+        return "{\"msg\": \"ok\"}";
+    }
+
+    @RequestMapping(value = "handle09")
+    public String handle09(
+//            HttpEntity<String> entity
+            HttpEntity<Handle06Form> entity
+    ){
+        System.out.println(entity.getBody());
+        System.out.println(entity.getHeaders());
         return "{\"msg\": \"ok\"}";
     }
 

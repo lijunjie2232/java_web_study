@@ -471,3 +471,49 @@ public static void multipartFileWriter(MultipartFile file, File tmpDir, boolean 
     }
 }
 ```
+
+### spring file upload option
+- `spring.servlet.multipart.enabled=true`: enable file upload
+- `spring.servlet.multipart.file-size-threshold=0`: support file upload in disk
+- `spring.servlet.multipart.max-file-size=10MB`: max file size in bytes
+- `spring.servlet.multipart.max-request-size=10MB`: max request size in bytes
+- `spring.servlet.multipart.location=/tmp`: file upload tmp dir
+- `spring.servlet.multipart.resolve-lazily=true`: resolve file upload lazily
+
+## HttpEntity
+- `HttpEntity` is a generic interface for HTTP requests and responses. It provides a way to access the request or response body as a byte array, a String, or a stream.
+```java
+@RequestMapping(value = "handle09")
+public String handle09(
+//        HttpEntity<String> entity
+        HttpEntity<Handle06Form> entity
+){
+    System.out.println(entity.getBody());
+    System.out.println(entity.getHeaders());
+    return "{\"msg\": \"ok\"}";
+}
+```
+
+### Request Body
+```json
+{
+    "username": "123",
+    "password": "321",
+    "sex": "male",
+    "grade": "2",
+    "address": {
+        "province": "Tokyo",
+        "city": "a"
+    },
+    "favorite": [
+        "football",
+        "swimming"
+    ]
+}
+```
+
+### Output
+```
+Handle06Form(username=123, password=321, sex=male, grade=2, address=Address(province=Tokyo, city=a), street=null, zipCode=null, favorite=[football, swimming])
+[cookie:"JSESSIONID=123321; AUTH=111111;", user-agent:"PostmanRuntime/7.43.0", accept:"*/*", host:"127.0.0.1:8080", accept-encoding:"gzip, deflate, br", connection:"keep-alive", content-length:"235", Content-Type:"application/json;charset=UTF-8"]
+```
