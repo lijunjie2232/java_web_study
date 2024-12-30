@@ -580,9 +580,38 @@ public void handle10(HttpServletRequest request, HttpServletResponse response) t
 25. 其他默认为@RequestParam的参数
 
 ### @RequestPart和 @RequestParam的区别
-| 特性   | @RequestParam                                           | @RequestPart              |
-|------|---------------------------------------------------------|---------------------------|
-| 用途   | 从 URL 查询参数或表单数据中提取单个值                                   | 从 multipart 请求中提取特定部分的数据  |
-| 适用场景 | 简单表单数据和 URL 查询参数                                        | 包含文件上传和表单数据的 multipart 请求 |
-| 数据类型 | 基本数据类型或对象                                               | MultipartFile 对象或其他对象     |
-| 请求类型 | application/x-www-form-urlencoded 或 multipart/form-data | multipart/form-data       |
+
+| 特性   | @RequestParam                                                | @RequestPart              |
+|------|--------------------------------------------------------------|---------------------------|
+| 用途   | 从 URL 查询参数或表单数据中提取单个值                                        | 从 multipart 请求中提取特定部分的数据  |
+| 适用场景 | 简单表单数据和 URL 查询参数                                             | 包含文件上传和表单数据的 multipart 请求 |
+| 数据类型 | 基本数据类型或对象                                                    | `MultipartFile` 对象或其他对象   |
+| 请求类型 | ` application/x-www-form-urlencoded` 或 `multipart/form-data` | `multipart/form-data`     |
+
+- 当请求为`multipart/form-data`时，`@RequestParam`只能接收`String`类型的name-value值，`@RequestPart`可以接收复杂的请求域（像
+  `json`、`xml`）；`@RequestParam` 依赖Converter or PropertyEditor进行数据解析， `@RequestPart`参考'Content-Type' header，依赖
+  `HttpMessageConverters`进行数据解析
+
+    - 对于`multipart/form-data`类型的请求体，`@RequestPart~可以将jsonData的json数据转换为Person对象
+      ```java
+      @RequestMapping("jsonDataAndUploadFile")
+      @ResponseBody
+      public String jsonDataAndUploadFile(@RequestPart("uploadFile") MultiPartFile uploadFile,
+                                          @RequestPart("jsonData") Person person) {
+          StringBuilder sb = new StringBuilder();
+          sb.append(uploadFile.getOriginalFilename()).append(";;;"));
+          return person.toString() + ":::" + sb.toString();
+      }
+      ```
+
+    - 对于`multipart/form-data`类型的请求体，`@RequestParam`对于jsonData的json数据只能用String字符串来接收
+      ```java
+      @RequestMapping("jsonDataAndUploadFile")
+      @ResponseBody
+      public String jsonDataAndUploadFile(@RequestPart("uploadFile") MultiPartFile uploadFile,
+                                          @RequestParam("josnData") String jsonData) {
+          StringBuilder sb = new StringBuilder();
+          sb.append(uploadFile.getOriginalFilename()).append(";;;"));
+          return person.toString() + ":::" + sb.toString();
+      }
+      ```
