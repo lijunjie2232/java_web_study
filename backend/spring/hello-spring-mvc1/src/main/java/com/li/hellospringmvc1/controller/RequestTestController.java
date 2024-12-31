@@ -112,4 +112,11 @@ public class RequestTestController {
         response.getWriter().write("{\"msg\": \"ok\"}");
     }
 
+    // ------------------ SpringMVC Response Test ------------------
+    // return json data
+    @RequestMapping(value = "handle11")
+    public User handle11() {
+        return new User("123", "321", "123@321.123");
+    }
+
 }

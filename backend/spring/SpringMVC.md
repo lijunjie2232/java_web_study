@@ -625,3 +625,14 @@ public void handle10(HttpServletRequest request, HttpServletResponse response) t
           return person.toString() + ":::" + sb.toString();
       }
       ```
+      
+# SpringMVC Response
+- `@ResponseBody`: 将返回值作为响应体返回，默认使用`HttpMessageConverter`转换器转换成响应体
+
+## Response json data by bean
+```java
+@RequestMapping(value = "handle11")
+public User handle11() {
+    return new User("123", "321", "123@321.123");
+}
+```
