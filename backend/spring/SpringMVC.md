@@ -636,3 +636,41 @@ public User handle11() {
     return new User("123", "321", "123@321.123");
 }
 ```
+
+## File download
+- 设置响应状态为200 OK：`.ok()`, 表示请求成功。
+- 添加响应头：`.header(HttpHeaders.CONTENT_DISPOSITION, "attachment;filename=" + filename)`, 设置Content-Disposition为attachment;filename=filename，提示浏览器以附件形式下载文件，并指定文件名。
+- 设置内容类型：`.contentType(MediaType.APPLICATION_OCTET_STREAM)`, 使用application/octet-stream，表示二进制流数据。
+- 设置内容长度：`.contentLength(bytes.length)`, 告知客户端文件的大小。
+- 设置响应体：`.body(bytes)`, 将文件内容作为字节数组返回。
+
+```java
+@RequestMapping(value = "handle12")
+public ResponseEntity<byte[]> handle12(String filename) {
+    // 构建文件路径
+    File file = new File(tmpPath, filename);
+    System.out.println(file.getAbsoluteFile());
+
+    // 检查文件是否存在
+    if (!file.exists()) {
+        return ResponseEntity.notFound().build();
+    }
+    try (FileInputStream fs = new FileInputStream(file)) {
+        byte[] bytes = fs.readAllBytes();
+        /*
+        设置响应状态为200 OK：表示请求成功。
+        添加响应头：设置Content-Disposition为attachment;filename=filename，提示浏览器以附件形式下载文件，并指定文件名。
+        设置内容类型：使用application/octet-stream，表示二进制流数据。
+        设置内容长度：告知客户端文件的大小。
+        设置响应体：将文件内容作为字节数组返回。
+         */
+        return ResponseEntity.ok()
+                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment;filename=" + filename)
+                .contentType(MediaType.APPLICATION_OCTET_STREAM)
+                .contentLength(bytes.length)
+                .body(bytes);
+    } catch (IOException e) {
+        throw new RuntimeException(e);
+    }
+}
+```
