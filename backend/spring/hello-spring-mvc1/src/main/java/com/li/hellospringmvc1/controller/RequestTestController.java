@@ -10,10 +10,7 @@ import org.springframework.http.HttpEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
+import java.io.*;
 import java.util.Objects;
 
 @RestController
@@ -24,6 +21,7 @@ public class RequestTestController {
     private File tmpPath;
 
 
+    // ------------------ SpringMVC Request Test ------------------
     @RequestMapping("handle01")
     public String handle01(String username, String password, boolean accept) {
         System.out.println("username = " + username);
@@ -113,4 +111,5 @@ public class RequestTestController {
         System.out.println(request.getReader().lines().reduce("", (acc, cur) -> acc + cur));
         response.getWriter().write("{\"msg\": \"ok\"}");
     }
+
 }

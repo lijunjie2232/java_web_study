@@ -1,40 +1,38 @@
 <!-- TOC -->
-
 * [Start a Spring MVC Application](#start-a-spring-mvc-application)
-    * [maven dependency](#maven-dependency)
-    * [A Simple Controller](#a-simple-controller)
-        * [`@RequestMapping`](#requestmapping)
-        * [`@Controller`](#controller)
-        * [`@ResponseBody`](#responsebody)
-        * [`@RestController`](#restcontroller)
-        * [Start Application](#start-application)
-        * [url match pattern:](#url-match-pattern)
-        * [params:](#params)
+  * [maven dependency](#maven-dependency)
+  * [A Simple Controller](#a-simple-controller)
+    * [`@RequestMapping`](#requestmapping)
+    * [`@Controller`](#controller)
+    * [`@ResponseBody`](#responsebody)
+    * [`@RestController`](#restcontroller)
+    * [Start Application](#start-application)
+    * [url match pattern:](#url-match-pattern)
+    * [params:](#params)
 * [SpringMVC argument resolver](#springmvc-argument-resolver)
-    * [direct get request parameter by setting method parameter](#direct-get-request-parameter-by-setting-method-parameter)
-    * [`@RequestParam`](#requestparam)
-    * [use POJO to get parameter](#use-pojo-to-get-parameter)
-    * [`@RequestHeader`](#requestheader)
-    * [`@CookieValue`](#cookievalue)
-    * [POJO for Complex HTML Form](#pojo-for-complex-html-form)
-        * [form](#form)
-        * [example request data](#example-request-data)
-        * [Entity](#entity)
-        * [handle](#handle)
-        * [Output](#output)
-    * [`@RequestBody`](#requestbody)
-    * [File Upload](#file-upload)
-        * [Form](#form-1)
-        * [handle](#handle-1)
-        * [spring file upload option](#spring-file-upload-option)
-    * [HttpEntity](#httpentity)
-        * [Request Body](#request-body)
-        * [Output](#output-1)
-    * [Servlet API](#servlet-api)
-    * [总结](#总结)
-        * [RequestMapping 函数接收参数类型:](#requestmapping-函数接收参数类型)
-        * [@RequestPart和 @RequestParam的区别](#requestpart和-requestparam的区别)
-
+  * [direct get request parameter by setting method parameter](#direct-get-request-parameter-by-setting-method-parameter)
+  * [`@RequestParam`](#requestparam)
+  * [use POJO to get parameter](#use-pojo-to-get-parameter)
+  * [`@RequestHeader`](#requestheader)
+  * [`@CookieValue`](#cookievalue)
+  * [POJO for Complex HTML Form](#pojo-for-complex-html-form)
+    * [form](#form)
+    * [example request data](#example-request-data)
+    * [Entity](#entity)
+    * [handle](#handle)
+    * [Output](#output)
+  * [`@RequestBody`](#requestbody)
+  * [File Upload](#file-upload)
+    * [Form](#form-1)
+    * [handle](#handle-1)
+    * [spring file upload option](#spring-file-upload-option)
+  * [HttpEntity](#httpentity)
+    * [Request Body](#request-body)
+    * [Output](#output-1)
+  * [Servlet API](#servlet-api)
+  * [SpringMVC Request 总结](#springmvc-request-总结)
+    * [RequestMapping 函数接收参数类型:](#requestmapping-函数接收参数类型)
+    * [@RequestPart和 @RequestParam的区别](#requestpart和-requestparam的区别)
 <!-- TOC -->
 
 # Start a Spring MVC Application
@@ -122,7 +120,7 @@ run `HelloSpringMvcApplication` to start application
 - `produces`:
     - `@RequestMapping(produces = "application/json")` specify the response content type
 
-# SpringMVC argument resolver
+# SpringMVC Request
 
 ## direct get request parameter by setting method parameter
 
@@ -561,7 +559,7 @@ public void handle10(HttpServletRequest request, HttpServletResponse response) t
 }
 ```
 
-## 总结
+## SpringMVC Request 总结
 
 ### RequestMapping 函数接收参数类型:
 
