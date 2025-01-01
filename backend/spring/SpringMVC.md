@@ -9,7 +9,7 @@
     * [Start Application](#start-application)
     * [url match pattern:](#url-match-pattern)
     * [params:](#params)
-* [SpringMVC argument resolver](#springmvc-argument-resolver)
+* [SpringMVC Request](#springmvc-request)
   * [direct get request parameter by setting method parameter](#direct-get-request-parameter-by-setting-method-parameter)
   * [`@RequestParam`](#requestparam)
   * [use POJO to get parameter](#use-pojo-to-get-parameter)
@@ -33,6 +33,14 @@
   * [SpringMVC Request 总结](#springmvc-request-总结)
     * [RequestMapping 函数接收参数类型:](#requestmapping-函数接收参数类型)
     * [@RequestPart和 @RequestParam的区别](#requestpart和-requestparam的区别)
+* [SpringMVC Response](#springmvc-response)
+  * [Response json data by bean](#response-json-data-by-bean)
+  * [File download](#file-download)
+    * [File Name Encode](#file-name-encode)
+    * [Continuous Download for Large File](#continuous-download-for-large-file)
+      * [Parse of `Range` in Header](#parse-of-range-in-header)
+      * [Use OutputStream of Response](#use-outputstream-of-response)
+      * [Use `InputStreamResource` (return `ResponseEntity<InputStreamResource>`)](#use-inputstreamresource-return-responseentityinputstreamresource)
 <!-- TOC -->
 
 # Start a Spring MVC Application
