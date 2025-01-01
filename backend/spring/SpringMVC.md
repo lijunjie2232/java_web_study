@@ -678,3 +678,10 @@ public ResponseEntity<byte[]> handle12(String filename) {
 ### File Name Encode
 - use `URLEncoder.encode(filename, StandardCharsets.UTF_8)` to encode file name
 
+### Continuous Download for Large File
+#### Use Stream
+1. 获取文件长度：使用`file.length()`获取文件长度。
+2. 设置响应头：使用`response.setHeader("Content-Length", String.valueOf(file.length()))`设置响应头的Content-Length为文件长度。 
+3. 设置响应体：使用`response.getOutputStream()`获取输出流，并使用`FileInputStream`读取文件内容，将内容写入输出流。 
+4. 刷新输出流：使用`response.getOutputStream().flush()`刷新输出流，确保所有数据都被写入输出流。 
+5. 关闭输出流：使用`response.getOutputStream().close()`关闭输出流。
