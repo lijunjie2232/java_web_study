@@ -157,6 +157,7 @@ public class RequestTestController {
                             HttpHeaders.CONTENT_DISPOSITION,
                             "attachment;filename=" + URLEncoder.encode(filename, StandardCharsets.UTF_8)
                     )
+                    .header(HttpHeaders.CONTENT_LENGTH, String.valueOf(file.length()))
                     .contentType(MediaType.APPLICATION_OCTET_STREAM)
                     .contentLength(bytes.length)
                     .body(bytes);

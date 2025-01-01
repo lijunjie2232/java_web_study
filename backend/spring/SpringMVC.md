@@ -682,29 +682,184 @@ public ResponseEntity<byte[]> handle12(String filename) {
 
 #### Parse of `Range` in Header
 ```java
-// 获取请求头中的Range字段
-String rangeHeader = request.getHeader(HttpHeaders.RANGE);
-if (rangeHeader != null && rangeHeader.startsWith("bytes=")) {
-    String[] rangeParts = rangeHeader.substring(6).split("-");
-    start = Long.parseLong(rangeParts[0]);
-    if (rangeParts.length > 1) {
-        end = Long.parseLong(rangeParts[1]);
+public void downloadFile(@RequestParam String filename, HttpServletRequest request) throws IOException {
+
+    // 获取请求头中的Range字段
+    String rangeHeader = request.getHeader(HttpHeaders.RANGE);
+    if (rangeHeader != null && rangeHeader.startsWith("bytes=")) {
+        String[] rangeParts = rangeHeader.substring(6).split("-");
+        start = Long.parseLong(rangeParts[0]);
+        if (rangeParts.length > 1) {
+            end = Long.parseLong(rangeParts[1]);
+        }
     }
+
+    // 检查请求的范围是否有效
+    assert start > end || start >= fileSize
+
+    // 设置响应头
+    HttpHeaders headers = new HttpHeaders();
+    headers.setContentType(MediaType.APPLICATION_OCTET_STREAM);
+    headers.setContentLength(end - start + 1);
+    headers.setContentRange("bytes " + start + "-" + end + "/" + fileSize);
+    headers.add(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=" + filename);
+    
+    // ...
 }
-
-// 检查请求的范围是否有效
-assert start > end || start >= fileSize
-
 ```
 
 #### Use OutputStream of Response
 1. 获取文件长度：使用`file.length()`获取文件长度
 2. 获取客户端请求文件起始位置： 从请求头中获取Range，并解析出起始位置和结束位置
-3. 设置响应头：使用`response.setHeader("Content-Length", String.valueOf(file.length()))`设置响应头的Content-Length为文件长度。
+3. 设置响应头：使用`response.setHeader("Content-Length", new String(end - start + 1))`设置响应头的Content-Length为文件长度等。
 4. 设置响应体：使用`response.getOutputStream()`获取输出流
 5. 读取数据：使用`FileInputStream.read(buffer, start, buffer.length)`从断点读取最长为缓冲区大小的文件内容到`buffer`
 6. 写入数据：使用`response.getOutputStream().write(buffer, 0, bytesRead)`将读取的数据写入输出流
 7. 刷新输出流：使用`response.getOutputStream().flush()`刷新输出流，确保所有数据都被写入输出流
 8. 关闭输出流：使用`response.getOutputStream().close()`关闭输出流
 
-#### Use 
+```java
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+
+import javax.servlet.http.HttpServletResponse;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.OutputStream;
+
+@RestController
+public class FileDownloadController {
+
+    // 假设tmpPath是文件存储的临时目录
+    private final File tmpPath = new File("./tmp");
+
+    @GetMapping("/download")
+    public void downloadFile(@RequestParam String filename, HttpServletResponse response) throws IOException {
+        // 构建文件路径
+        File file = new File(tmpPath, filename);
+        System.out.println(file.getAbsolutePath());
+
+        // 检查文件是否存在
+        if (!file.exists()) {
+            response.sendError(HttpServletResponse.SC_NOT_FOUND, "File not found");
+            return;
+        }
+
+        // 设置响应头
+        response.setHeader(HttpHeaders.CONTENT_DISPOSITION, "attachment;filename=" + filename);
+        response.setContentType(MediaType.APPLICATION_OCTET_STREAM_VALUE);
+        response.setContentLengthLong(file.length());
+
+        // 获取输出流
+        OutputStream outputStream = response.getOutputStream();
+
+        // 使用FileInputStream读取文件内容，并写入输出流
+        try (FileInputStream fileInputStream = new FileInputStream(file)) {
+            byte[] buffer = new byte[4096];
+            int bytesRead;
+            while ((bytesRead = fileInputStream.read(buffer)) != -1) {
+                outputStream.write(buffer, 0, bytesRead);
+            }
+        }
+
+        // 刷新输出流
+        outputStream.flush();
+
+        // 关闭输出流
+        outputStream.close();
+    }
+}
+
+```
+
+#### Use `InputStreamResource` (return `ResponseEntity<InputStreamResource>`)
+1. 获取文件长度：使用`file.length()`获取文件长度
+2. 获取客户端请求文件起始位置： 从请求头中获取Range，并解析出起始位置和结束位置
+3. 初始化`ResponseEntity.ok()`并设置响应头
+   - 使用`.header(HttpHeaders.CONTENT_RANGE, "bytes " + start + "-" + end + "/" + fileSize)`设置响应头的Content-Range为文件范围等
+   - 使用`.header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=" + URLEncoder.encode(filename, StandardCharsets.UTF_8))`设置响应头的Content-Disposition为附件形式下载，并指定文件名
+   - 使用`.contentType(MediaType.APPLICATION_OCTET_STREAM)`设置响应头的Content-Type为二进制流数据
+   - 使用`.contentLength(end - start + 1)`设置响应头的Content-Length为文件长度
+4. 获取文件输入流资源： 使用`InputStreamResource resource = new InputStreamResource(new FileInputStream(file))`获取文件输入流资源
+5. 将输入流资源封装为响应体：使用`.body(resource)`将输入流资源封装为响应体
+
+- Verson 1:
+```java
+import org.springframework.core.io.FileSystemResource;
+import org.springframework.core.io.Resource;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+
+import javax.servlet.http.HttpServletRequest;
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+
+@RestController
+public class FileDownloadController {
+
+    // 假设tmpPath是文件存储的临时目录
+    private final File tmpPath = new File("./tmp");
+
+    @GetMapping("/download")
+    public ResponseEntity<Resource> downloadFile(@RequestParam String filename, HttpServletRequest request) throws IOException {
+        // 构建文件路径
+        File file = new File(tmpPath, filename);
+        System.out.println(file.getAbsolutePath());
+
+        // 检查文件是否存在
+        if (!file.exists()) {
+            return ResponseEntity.notFound().build();
+        }
+
+        // 获取文件长度
+        long fileSize = file.length();
+        long start = 0;
+        long end = fileSize - 1;
+
+        // 获取请求头中的Range字段
+        String rangeHeader = request.getHeader(HttpHeaders.RANGE);
+        if (rangeHeader != null && rangeHeader.startsWith("bytes=")) {
+            String[] rangeParts = rangeHeader.substring(6).split("-");
+            start = Long.parseLong(rangeParts[0]);
+            if (rangeParts.length > 1) {
+                end = Long.parseLong(rangeParts[1]);
+            }
+        }
+
+        // 检查请求的范围是否有效
+        if (start > end || start >= fileSize) {
+            return ResponseEntity.status(HttpStatus.REQUESTED_RANGE_NOT_SATISFIABLE)
+                    .header(HttpHeaders.CONTENT_RANGE, "bytes */" + fileSize)
+                    .build();
+        }
+
+        // 设置响应头
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_OCTET_STREAM);
+        headers.setContentLength(end - start + 1);
+        headers.setContentRange("bytes " + start + "-" + end + "/" + fileSize);
+        headers.add(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=" + filename);
+
+        // 创建文件资源
+        Resource resource = new FileSystemResource(file);
+
+        // 返回部分文件内容
+        return ResponseEntity.status(HttpStatus.PARTIAL_CONTENT)
+                .headers(headers)
+                .body(resource);
+    }
+}
+```
