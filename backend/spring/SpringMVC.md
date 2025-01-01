@@ -788,10 +788,8 @@ public class FileDownloadController {
 4. 获取文件输入流资源： 使用`InputStreamResource resource = new InputStreamResource(new FileInputStream(file))`获取文件输入流资源
 5. 将输入流资源封装为响应体：使用`.body(resource)`将输入流资源封装为响应体
 
-- Verson 1:
 ```java
-import org.springframework.core.io.FileSystemResource;
-import org.springframework.core.io.Resource;
+import org.springframework.core.io.InputStreamResource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -802,10 +800,11 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
+import java.io.InputStream;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 
 @RestController
 public class FileDownloadController {
@@ -814,7 +813,7 @@ public class FileDownloadController {
     private final File tmpPath = new File("./tmp");
 
     @GetMapping("/download")
-    public ResponseEntity<Resource> downloadFile(@RequestParam String filename, HttpServletRequest request) throws IOException {
+    public ResponseEntity<InputStreamResource> downloadFile(@RequestParam String filename, HttpServletRequest request) throws IOException {
         // 构建文件路径
         File file = new File(tmpPath, filename);
         System.out.println(file.getAbsolutePath());
@@ -834,7 +833,7 @@ public class FileDownloadController {
         if (rangeHeader != null && rangeHeader.startsWith("bytes=")) {
             String[] rangeParts = rangeHeader.substring(6).split("-");
             start = Long.parseLong(rangeParts[0]);
-            if (rangeParts.length > 1) {
+            if (rangeParts.length > 1 && !rangeParts[1].isEmpty()) {
                 end = Long.parseLong(rangeParts[1]);
             }
         }
@@ -851,15 +850,25 @@ public class FileDownloadController {
         headers.setContentType(MediaType.APPLICATION_OCTET_STREAM);
         headers.setContentLength(end - start + 1);
         headers.setContentRange("bytes " + start + "-" + end + "/" + fileSize);
-        headers.add(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=" + filename);
+        headers.add(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=" + URLEncoder.encode(filename, StandardCharsets.UTF_8));
 
-        // 创建文件资源
-        Resource resource = new FileSystemResource(file);
+        // method 1
+        // 获取文件输入流资源
+        InputStream inputStream = new FileInputStream(file);
+        InputStreamResource resource = new InputStreamResource(inputStream);
+//        // method 2
+//        // 创建文件资源
+//        Resource resource = new FileSystemResource(file);
 
         // 返回部分文件内容
         return ResponseEntity.status(HttpStatus.PARTIAL_CONTENT)
+                .header(HttpHeaders.CONTENT_RANGE, "bytes " + start + "-" + end + "/" + fileSize)
+                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=" + URLEncoder.encode(filename, StandardCharsets.UTF_8))
+                .contentType(MediaType.APPLICATION_OCTET_STREAM)
+                .contentLength(end - start + 1)
                 .headers(headers)
                 .body(resource);
     }
 }
+
 ```
