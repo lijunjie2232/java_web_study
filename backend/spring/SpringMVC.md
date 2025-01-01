@@ -696,3 +696,15 @@ if (rangeHeader != null && rangeHeader.startsWith("bytes=")) {
 assert start > end || start >= fileSize
 
 ```
+
+#### Use OutputStream of Response
+1. 获取文件长度：使用`file.length()`获取文件长度
+2. 获取客户端请求文件起始位置： 从请求头中获取Range，并解析出起始位置和结束位置
+3. 设置响应头：使用`response.setHeader("Content-Length", String.valueOf(file.length()))`设置响应头的Content-Length为文件长度。
+4. 设置响应体：使用`response.getOutputStream()`获取输出流
+5. 读取数据：使用`FileInputStream.read(buffer, start, buffer.length)`从断点读取最长为缓冲区大小的文件内容到`buffer`
+6. 写入数据：使用`response.getOutputStream().write(buffer, 0, bytesRead)`将读取的数据写入输出流
+7. 刷新输出流：使用`response.getOutputStream().flush()`刷新输出流，确保所有数据都被写入输出流
+8. 关闭输出流：使用`response.getOutputStream().close()`关闭输出流
+
+#### Use 
