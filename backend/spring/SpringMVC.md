@@ -674,3 +674,7 @@ public ResponseEntity<byte[]> handle12(String filename) {
     }
 }
 ```
+
+### File Name Encode
+- use `URLEncoder.encode(filename, StandardCharsets.UTF_8)` to encode file name
+

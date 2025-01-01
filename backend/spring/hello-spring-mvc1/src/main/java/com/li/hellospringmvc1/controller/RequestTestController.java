@@ -20,6 +20,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.io.*;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.util.Objects;
 
 @RestController
@@ -140,6 +142,7 @@ public class RequestTestController {
         if (!file.exists()) {
             return ResponseEntity.notFound().build();
         }
+
         try (FileInputStream fs = new FileInputStream(file)) {
             byte[] bytes = fs.readAllBytes();
             /*
@@ -150,7 +153,10 @@ public class RequestTestController {
             设置响应体：将文件内容作为字节数组返回。
              */
             return ResponseEntity.ok()
-                    .header(HttpHeaders.CONTENT_DISPOSITION, "attachment;filename=" + filename)
+                    .header(
+                            HttpHeaders.CONTENT_DISPOSITION,
+                            "attachment;filename=" + URLEncoder.encode(filename, StandardCharsets.UTF_8)
+                    )
                     .contentType(MediaType.APPLICATION_OCTET_STREAM)
                     .contentLength(bytes.length)
                     .body(bytes);
