@@ -22,8 +22,11 @@ public class MVCController {
     public String loginac(@RequestParam("username") String username, @RequestParam("password") String password, Model model){
         model.addAttribute("username", username);
         model.addAttribute("password", password);
-        List list = new ArrayList();
-        list.add(new User("li", "123"))
+        List<User> userList = new ArrayList<>();
+        userList.add(new User("1", "123", "123@qq.com"));
+        userList.add(new User("2", "321", "321@qq.com"));
+        userList.add(new User("3", "111", "111@qq.com"));
+        model.addAttribute("users", userList);
         return "logined";
     }
 }

@@ -8,5 +8,21 @@
 <h1>Login Success</h1>
 <h2 th:text="${password}"></h2>
 <h2 th:id="${password}">password: [[${password}]]</h2>
+
+<!--table of user(username, password, email) by th:each-->
+<table border="1">
+    <tr>
+        <th>col</th>
+        <th>username</th>
+        <th>password</th>
+        <th>email</th>
+    </tr>
+    <tr th:each="user, status : ${users}"><!-- status could be omitted -->
+        <td th:text="${status.index}"></td>
+        <td th:text="${user.username}"></td>
+        <td th:text="${user.password}"></td>
+        <td th:text="${user.email}"></td>
+    </tr>
+</table>
 </body>
 </html>

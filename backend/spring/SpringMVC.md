@@ -934,6 +934,7 @@ public class MVCController {
 </html>
 ```
 ### thymeleaf grammar
+#### attibute change
 - `th:xxx=${var}` / `th:attr="xxx=${var}"`: change html attribute xxx to var
   - `th:text="${var}"`
   - `th:id="${var}"`
@@ -948,9 +949,31 @@ public class MVCController {
   - `th:style="${var}"`
   - `th:attr="xxx=${var}"`: change value of a attribute xxx (including custom attributes)
   - `<xx th:xx1-xx2="${var}" />` = `<xx th:xx1="${var}" th:xx2="${var}"/>`
-  - `th:attrappend="xxx=${var}""` / `th:attrprepend="xxx=${var}"`: append / prepend var to attribute xxx
-  - `th:with="xxx=${var}""`: create a new variable xxx, the created variable can be used in the same scope (including child elements)
-- iterate:
+  - `th:attrappend="xxx=${var}"` / `th:attrprepend="xxx=${var}"`: append / prepend var to attribute xxx
+  - `th:with="xxx=${var}"`: create a new variable xxx, the created variable can be used in the same scope (including child elements)
+#### iterate
 ```html
-
+<table border="1">
+  <tr>
+    <th>col</th>
+    <th>username</th>
+    <th>password</th>
+    <th>email</th>
+  </tr>
+  <tr th:each="user, status : ${users}"><!-- status could be omitted -->
+    <td th:text="${status.index}"></td>
+    <td th:text="${user.username}"></td>
+    <td th:text="${user.password}"></td>
+    <td th:text="${user.email}"></td>
+  </tr>
+</table>
 ```
+- properties of status:
+  - index:`int` index of current element
+  - count:`int` index of current element + 1
+  - size:`int` size of list
+  - even:`boolean` true if index is even
+  - odd:`boolean` true if index is odd
+  - first:`boolean` true if index is 0
+  - last:`boolean` true if index is size - 1
+  - current:`Object` current element
