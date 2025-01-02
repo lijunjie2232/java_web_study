@@ -1301,8 +1301,22 @@ public class MVCController {
       This content will remain, but the div tags will be removed.
     </div>
     
-    <!-- 移除元素的注释 -->
-    <div>
-      <!--/* This comment will be removed. */-->
+    <!--none：不做任何处理。该值对于动态计算时有用-->
+    <div class="hint" th:remove="none">
+        <p>none<span> ^</span></p>
+    </div>
+
+    <!--all-but-first：除第一个子项以外，删除其它所有子项-->
+    <div class="hint" th:remove="all-but-first">
+        <p>all-but-first1<span> %</span></p>
+        <!-- 上面第一个子项不会被删除，从第二个子项开始全部会被删除-->
+        <p>all-but-first2<span> %</span></p>
+    </div>
+    ```
+   - apply of `th:remove`
+    ```html
+    <div th:remove="${isAdmin} ? all : none">
+        <!-- 只有管理员才能看到这个内容 -->
+        <p>Admin content here</p>
     </div>
     ```
