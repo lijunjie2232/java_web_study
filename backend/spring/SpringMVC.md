@@ -958,6 +958,22 @@ public class MVCController {
 
 #### attibute change
 
+- expression:
+- ${var}
+```html
+<p th:text="${message}"></p>
+```
+- *{var}
+```html
+<div th:object="${session.user}"><!-- bind session.user as context object by th:object -->
+    <p th:text="*{name}"></p><!-- session.user.name -->
+    <p th:text="*{sex}"></p>
+    <p th:text="*{age}"></p>
+</div>
+```
+- #{var}
+
+
 - `th:xxx=${var}` / `th:attr="xxx=${var}"`: change html attribute xxx to var
     - `th:text="${var}"`: change html attribute xxx to var
     - `th:utext="${var}"`: change html attribute xxx to var, but escape html (不进行字符转义)
@@ -1019,12 +1035,12 @@ public class MVCController {
     - else if yyy is true, show yyy
     - else show zzz
 - `th:switch`:
-  ```html
-  <div th:switch="${user.role}">
+    ```html
+    <div th:switch="${user.role}">
       <p th:case="admin">管理员</p>
       <p th:case="user">普通用户</p>
-  </div>
-  ```
+    </div>
+    ```
 
 #### local variable
 
@@ -1037,3 +1053,35 @@ public class MVCController {
 </p>
 ```
 
+#### inline expression
+
+- `[[${var]]` = `th:text="${var}"`
+    - `<h2>password: [[${password}]]</h2>`
+- `[(${var}]` = `th:utext="${var}"`
+    - `<h2>password: [(${password})]</h2>`
+- `th:inline="xxx"`
+    - `th:inline="none"`: disable inline expression
+    - `th:inline="text"`: inline expression is text
+    ```html
+    <p th:inline="text">
+    [# th:each="city : ${cities}"]
+        [(${city.name})]
+    [/]
+    </p>
+    ```
+    - `th:inline="html"`: inline expression is html
+    - `th:inline="javascript"`: inline expression is javascript
+    ```html
+    <script th:inline="javascript">
+        var user = [[${user}]];
+        alert("用户名：" + user.name);
+    </script>
+    ```
+    - `th:inline="css"`: inline expression is css
+    ```html
+    <style th:inline="css">
+        body {
+            background-color:[[${bgColor}]];
+        }
+    </style>
+    ```
