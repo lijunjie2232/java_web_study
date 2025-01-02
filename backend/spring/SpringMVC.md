@@ -1,49 +1,57 @@
 <!-- TOC -->
-
 * [Start a Spring MVC Application](#start-a-spring-mvc-application)
-    * [maven dependency](#maven-dependency)
-    * [A Simple Controller](#a-simple-controller)
-        * [`@RequestMapping`](#requestmapping)
-        * [`@Controller`](#controller)
-        * [`@ResponseBody`](#responsebody)
-        * [`@RestController`](#restcontroller)
-        * [Start Application](#start-application)
-        * [url match pattern:](#url-match-pattern)
-        * [params:](#params)
+  * [maven dependency](#maven-dependency)
+  * [A Simple Controller](#a-simple-controller)
+    * [`@RequestMapping`](#requestmapping)
+    * [`@Controller`](#controller)
+    * [`@ResponseBody`](#responsebody)
+    * [`@RestController`](#restcontroller)
+    * [Start Application](#start-application)
+    * [url match pattern:](#url-match-pattern)
+    * [params:](#params)
 * [SpringMVC Request](#springmvc-request)
-    * [direct get request parameter by setting method parameter](#direct-get-request-parameter-by-setting-method-parameter)
-    * [`@RequestParam`](#requestparam)
-    * [use POJO to get parameter](#use-pojo-to-get-parameter)
-    * [`@RequestHeader`](#requestheader)
-    * [`@CookieValue`](#cookievalue)
-    * [POJO for Complex HTML Form](#pojo-for-complex-html-form)
-        * [form](#form)
-        * [example request data](#example-request-data)
-        * [Entity](#entity)
-        * [handle](#handle)
-        * [Output](#output)
-    * [`@RequestBody`](#requestbody)
-    * [File Upload](#file-upload)
-        * [Form](#form-1)
-        * [handle](#handle-1)
-        * [spring file upload option](#spring-file-upload-option)
-    * [HttpEntity](#httpentity)
-        * [Request Body](#request-body)
-        * [Output](#output-1)
-    * [Servlet API](#servlet-api)
-    * [SpringMVC Request 总结](#springmvc-request-总结)
-        * [RequestMapping 函数接收参数类型:](#requestmapping-函数接收参数类型)
-        * [@RequestPart和 @RequestParam的区别](#requestpart和-requestparam的区别)
+  * [direct get request parameter by setting method parameter](#direct-get-request-parameter-by-setting-method-parameter)
+  * [`@RequestParam`](#requestparam)
+  * [use POJO to get parameter](#use-pojo-to-get-parameter)
+  * [`@RequestHeader`](#requestheader)
+  * [`@CookieValue`](#cookievalue)
+  * [POJO for Complex HTML Form](#pojo-for-complex-html-form)
+    * [form](#form)
+    * [example request data](#example-request-data)
+    * [Entity](#entity)
+    * [handle](#handle)
+    * [Output](#output)
+  * [`@RequestBody`](#requestbody)
+  * [File Upload](#file-upload)
+    * [Form](#form-1)
+    * [handle](#handle-1)
+    * [spring file upload option](#spring-file-upload-option)
+  * [HttpEntity](#httpentity)
+    * [Request Body](#request-body)
+    * [Output](#output-1)
+  * [Servlet API](#servlet-api)
+  * [SpringMVC Request 总结](#springmvc-request-总结)
+    * [RequestMapping 函数接收参数类型:](#requestmapping-函数接收参数类型)
+    * [@RequestPart和 @RequestParam的区别](#requestpart和-requestparam的区别)
 * [SpringMVC Response](#springmvc-response)
-    * [Response json data by bean](#response-json-data-by-bean)
-    * [File download](#file-download)
-        * [File Name Encode](#file-name-encode)
-        * [Continuous Download for Large File](#continuous-download-for-large-file)
-            * [Parse of `Range` in Header](#parse-of-range-in-header)
-            * [Use OutputStream of Response](#use-outputstream-of-response)
-            * [Use `InputStreamResource` (return
-              `ResponseEntity<InputStreamResource>`)](#use-inputstreamresource-return-responseentityinputstreamresource)
-
+  * [Response json data by bean](#response-json-data-by-bean)
+  * [File download](#file-download)
+    * [File Name Encode](#file-name-encode)
+    * [Continuous Download for Large File](#continuous-download-for-large-file)
+      * [Parse of `Range` in Header](#parse-of-range-in-header)
+      * [Use OutputStream of Response](#use-outputstream-of-response)
+      * [Use `InputStreamResource` (return `ResponseEntity<InputStreamResource>`)](#use-inputstreamresource-return-responseentityinputstreamresource)
+  * [Thymeleaf](#thymeleaf)
+    * [dependency](#dependency)
+    * [a simple example](#a-simple-example)
+    * [expression:](#expression)
+    * [inner object](#inner-object)
+    * [value](#value)
+    * [iterate](#iterate)
+      * [conditional](#conditional)
+      * [local variable](#local-variable)
+      * [inline expression](#inline-expression)
+  * [template fragment](#template-fragment)
 <!-- TOC -->
 
 # Start a Spring MVC Application
@@ -954,11 +962,7 @@ public class MVCController {
 </html>
 ```
 
-### thymeleaf grammar
-
-#### attibute change
-
-- expression:
+### expression
 - ${var}
 
 ```html
@@ -1256,4 +1260,49 @@ public class MVCController {
             background-color:[[${bgColor}]];
         }
     </style>
+    ```
+  
+### template fragment
+1. `th:fragment`: 定义一个可重用的模板片段
+    ```html
+    <div th:fragment="header">
+      <h1>My Website</h1>
+      <p>Welcome to my website</p>
+    </div>
+    ```
+2. `th:replace`: 用指定的片段替换当前元素
+    ```html
+    <!-- 在另一个模板中引用片段 -->
+    <div th:replace="~{fragments/header :: header}">
+      <!-- 这个 div 将被 header 片段替换 -->
+    </div>
+    ```
+3. `th:insert`: 将指定的片段插入到当前元素内部
+    ```html
+    <!-- 在另一个模板中插入片段 -->
+    <div th:insert="~{fragments/header :: header}">
+      <!-- header 片段将被插入到这个 div 内部 -->
+    </div>
+    ```
+4. `th:remove`: 根据条件移除元素
+    ```html
+    <!-- 移除整个元素及其内容 -->
+    <div th:remove="all">
+      This will be removed.
+    </div>
+    
+    <!-- 移除元素的内容，但保留元素本身 -->
+    <div th:remove="body">
+      This content will be removed, but the div will remain.
+    </div>
+    
+    <!-- 移除元素的开始和结束标签，但保留其内容 -->
+    <div th:remove="tag">
+      This content will remain, but the div tags will be removed.
+    </div>
+    
+    <!-- 移除元素的注释 -->
+    <div>
+      <!--/* This comment will be removed. */-->
+    </div>
     ```
