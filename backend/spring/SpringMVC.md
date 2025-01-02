@@ -960,19 +960,127 @@ public class MVCController {
 
 - expression:
 - ${var}
+
 ```html
 <p th:text="${message}"></p>
 ```
+
 - *{var}
+
 ```html
+
 <div th:object="${session.user}"><!-- bind session.user as context object by th:object -->
     <p th:text="*{name}"></p><!-- session.user.name -->
     <p th:text="*{sex}"></p>
     <p th:text="*{age}"></p>
 </div>
 ```
-- #{var}
 
+- #{var}: for Localization
+    - create file `messages_en.properties` and `messages_zh.properties` in `src/main/resources/i18n`
+    - name of i18n config file:
+        - basename.properties
+        - basename_language.properties
+        - basename_language_country.properties
+    - add configuration class:
+      ```java
+      
+      import java.util.Locale;
+       
+      import org.springframework.context.annotation.Bean;
+      import org.springframework.context.annotation.Configuration;
+      import org.springframework.web.servlet.LocaleResolver;
+      import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
+      import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
+      import org.springframework.web.servlet.i18n.CookieLocaleResolver;
+      import org.springframework.web.servlet.i18n.LocaleChangeInterceptor;
+       
+      /**
+       * 国际化配置
+       * 
+       * @author YqZhilan
+       *
+       */
+      @Configuration
+      public class I18nConfig extends WebMvcConfigurerAdapter {
+          @Bean
+          public LocaleResolver localeResolver(){
+              
+              CookieLocaleResolver localeResolver = new CookieLocaleResolver();
+              localeResolver.setCookieName("localeCookie"); // 将语言信息添加到Cookie中
+              //设置默认区域
+              localeResolver.setDefaultLocale(Locale.SIMPLIFIED_CHINESE); // 默认简化汉语
+              localeResolver.setCookieMaxAge(86400);//设置cookie有效期.24小时
+              return localeResolver;
+          }
+          
+          @Bean
+          public LocaleChangeInterceptor localeChangeInterceptor() {
+              LocaleChangeInterceptor lci = new LocaleChangeInterceptor();
+              // 参数名
+              lci.setParamName("l");
+              return lci;
+          }
+       
+          @Override
+          public void addInterceptors(InterceptorRegistry registry) {
+              registry.addInterceptor(localeChangeInterceptor());
+          }
+      }
+      ```
+    - write localized message in properties file like:
+        - `welcome.message = 欢迎` in `messages_zh.properties` and `welcome.message = Welcome` in
+          `messages_en.properties`
+        - `welcome.message = Welcome, {0}` in `messages_en.properties`, to format it:
+          ```java
+          import java.util.Locale;
+          import java.util.ResourceBundle;
+          
+          public class Main {
+             public static void main(String[] args) {
+                 // 设置语言环境为英语
+                 Locale locale = new Locale("en");
+                 ResourceBundle messages = ResourceBundle.getBundle("messages", locale);
+          
+                 // 获取消息并替换占位符
+                 String welcomeMessage = messages.getString("welcome.message");
+                 String formattedMessage = java.text.MessageFormat.format(welcomeMessage, "John");
+                 
+                 // ...
+             }
+          }
+          ```
+        - `<p th:text="#{welcome.user.message(${session.user.name})}"></p>`
+    - create localization config in `src/main/resources/application.properties`:
+      `spring.messages.basename=i18n/messages`
+- @{url}
+
+```html
+<!--绝对地址示例：-->
+<!-- https://fanlychie.github.io -->
+<p th:text="@{https://fanlychie.github.io}"></p>
+
+<!--页面相对地址示例：-->
+<!-- commons/base.html -->
+<p th:text="@{commons/base.html}"></p>
+
+<!--上下文相对地址（相对于当前的服务）示例：-->
+<!-- /css/mian.css -->
+<p th:text="@{/css/mian.css}"></p>
+
+<!--服务器相对地址（相对于部署在同一个服务器中的不同服务）示例：-->
+<!-- /image/upload -->
+<p th:text="@{~/image/upload}"></p>
+```
+
+- ~{...}:
+    - ~{templatename} 引用整个模板文件的代码片段
+    - ~{templatename :: selector} selector 可以是 th:fragment 指定的名称或其他选择器。 如类选择器、ID选择器等
+    - ~{::selector} 相当于 ~{this :: selector}，表示引用当前模板定义的代码片段
+
+###
+
+### value
 
 - `th:xxx=${var}` / `th:attr="xxx=${var}"`: change html attribute xxx to var
     - `th:text="${var}"`: change html attribute xxx to var
@@ -990,8 +1098,28 @@ public class MVCController {
     - `th:attr="xxx=${var}"`: change value of a attribute xxx (including custom attributes)
     - `<xx th:xx1-xx2="${var}" />` = `<xx th:xx1="${var}" th:xx2="${var}"/>`
     - `th:attrappend="xxx=${var}"` / `th:attrprepend="xxx=${var}"`: append / prepend var to attribute xxx
+- calculate:
+  - string concat:
+      - `<p th:text="'Welcome to ' + ${location} + '!'"></p>`
+      - `<p th:text="|Welcome to ${location}!|"></p>`
+  - value calculate:
+      - `<p th:text="${pagination.page + 1}"></p>` = `<p th:text="${pagination.page} + 1"></p>`
+  - boolean calculate:
+      - `<p th:text="${user.online and user.vip}"></p>`
+      - `<p th:text="${user.online or user.vip}"></p>`
+      - `<p th:text="${!user.online}"></p>`
+      - `<p th:text="${not user.online}"></p>`
+  - compare:
+      - `<p th:text="${user.age < 60}"></p>`
+      - `<p th:text="${user.age <= 60}"></p>`
+      - `<p th:text="${user.age > 18}"></p>`
+      - `<p th:text="${user.age >= 18}"></p>`
+      - `<p th:text="${user.age == 18}"></p>`
+      - `<p th:text="${user.age != 18}"></p>`
+  - `<p th:text="${user.online ? '在线' : '离线'}"></p>`
+  - `<p th:text="${token} ?: 'please login'"></p>` = `<p th:text="${token} ?: _">please login</p>`
 
-#### iterate
+### iterate
 
 ```html
 
