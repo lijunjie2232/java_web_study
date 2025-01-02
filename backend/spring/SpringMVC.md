@@ -890,3 +890,46 @@ public class FileDownloadController {
 </dependency>
 ```
 
+### a simple example
+- put page in `src/main/resources/templates`
+- put static resources in `src/main/resources/static`
+- add `@Controller` and `@RequestMapping`, not need `@ResponseBody`
+- the returned string is name of page file in `src/main/resources/templates`
+- attribute passed to page:
+  - `model.addAttribute(key, value)`
+  - `model.addAllAttributes(map)`
+
+```java
+@Controller
+public class MVCController {
+
+    // thymeleaf test
+    @RequestMapping(value = "login")
+    public String login() {
+        return "login";
+    }
+
+    @RequestMapping(value = "login.action")
+    public String loginac(@RequestParam("username") String username, @RequestParam("password") String password, Model model){
+        model.addAttribute("username", username);
+        model.addAttribute("password", password);
+        return "logined";
+    }
+}
+```
+
+```html
+<!--logined.html-->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Title</title>
+</head>
+<body>
+<h1>Login Success</h1>
+<h2 th:text="${password}"></h2>
+<h2 th:id="${password}">password: [[${password}]]</h2>
+</body>
+</html>
+```
