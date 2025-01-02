@@ -1078,7 +1078,51 @@ public class MVCController {
     - ~{templatename :: selector} selector 可以是 th:fragment 指定的名称或其他选择器。 如类选择器、ID选择器等
     - ~{::selector} 相当于 ~{this :: selector}，表示引用当前模板定义的代码片段
 
-###
+### inner object
+1. #ctx
+2. #vars
+3. #locale
+4. #request
+5. #response
+6. #session
+7. #servletContext
+
+- !!! variable put into session could not be access by `#session.xxx`, should use `${session.xxx}`
+```html
+<!-- zh_CN -->
+<p th:text="${#ctx.getLocale()}"></p>
+<!-- Welcome to BeiJing! -->
+<p th:text="${#ctx.getVariable('message')}"></p>
+<!-- true -->
+<p th:text="${#ctx.containsVariable('message')}"></p>
+
+<!-- zh_CN -->
+<p th:text="${#vars.getLocale()}"></p>
+<!-- Welcome to BeiJing! -->
+<p th:text="${#vars.getVariable('message')}"></p>
+<!-- true -->
+<p th:text="${#vars.containsVariable('message')}"></p>
+
+<!-- zh_CN -->
+<p th:text="${#locale}"></p>
+<!-- CN -->
+<p th:text="${#locale.country}"></p>
+<!-- 中国 -->
+<p th:text="${#locale.displayCountry}"></p>
+<!-- zh -->
+<p th:text="${#locale.language}"></p>
+<!-- 中文 -->
+<p th:text="${#locale.displayLanguage}"></p>
+<!-- 中文 (中国) -->
+<p th:text="${#locale.displayName}"></p>
+
+<!-- 2BCB2A0EACFF2D9D249D9799431B5127 -->
+<p th:text="${#session.id}"></p>
+<!-- 1499786693244 -->
+<p th:text="${#session.lastAccessedTime}"></p>
+<!-- fanlychie -->
+<p th:text="${#session.getAttribute('user').name}"></p>
+```
 
 ### value
 
