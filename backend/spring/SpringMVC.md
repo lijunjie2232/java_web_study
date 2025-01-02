@@ -44,14 +44,14 @@
   * [Thymeleaf](#thymeleaf)
     * [dependency](#dependency)
     * [a simple example](#a-simple-example)
-    * [expression:](#expression)
+    * [expression](#expression)
     * [inner object](#inner-object)
     * [value](#value)
     * [iterate](#iterate)
-      * [conditional](#conditional)
-      * [local variable](#local-variable)
-      * [inline expression](#inline-expression)
-  * [template fragment](#template-fragment)
+    * [conditional](#conditional)
+    * [local variable](#local-variable)
+    * [inline expression](#inline-expression)
+    * [template fragment](#template-fragment)
 <!-- TOC -->
 
 # Start a Spring MVC Application
@@ -1197,7 +1197,7 @@ public class MVCController {
     - last:`boolean` true if index is size - 1
     - current:`Object` current element
 
-#### conditional
+### conditional
 
 - `th:if="xxx"`
     - if xxx is true, show element
@@ -1218,7 +1218,7 @@ public class MVCController {
     </div>
     ```
 
-#### local variable
+### local variable
 
 - `th:with="xxx=${var}"`: create a new variable xxx, the created variable can be used in the same scope (including child
   elements)
@@ -1229,7 +1229,7 @@ public class MVCController {
 </p>
 ```
 
-#### inline expression
+### inline expression
 
 - `[[${var]]` = `th:text="${var}"`
     - `<h2>password: [[${password}]]</h2>`
