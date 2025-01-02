@@ -1,46 +1,49 @@
 <!-- TOC -->
+
 * [Start a Spring MVC Application](#start-a-spring-mvc-application)
-  * [maven dependency](#maven-dependency)
-  * [A Simple Controller](#a-simple-controller)
-    * [`@RequestMapping`](#requestmapping)
-    * [`@Controller`](#controller)
-    * [`@ResponseBody`](#responsebody)
-    * [`@RestController`](#restcontroller)
-    * [Start Application](#start-application)
-    * [url match pattern:](#url-match-pattern)
-    * [params:](#params)
+    * [maven dependency](#maven-dependency)
+    * [A Simple Controller](#a-simple-controller)
+        * [`@RequestMapping`](#requestmapping)
+        * [`@Controller`](#controller)
+        * [`@ResponseBody`](#responsebody)
+        * [`@RestController`](#restcontroller)
+        * [Start Application](#start-application)
+        * [url match pattern:](#url-match-pattern)
+        * [params:](#params)
 * [SpringMVC Request](#springmvc-request)
-  * [direct get request parameter by setting method parameter](#direct-get-request-parameter-by-setting-method-parameter)
-  * [`@RequestParam`](#requestparam)
-  * [use POJO to get parameter](#use-pojo-to-get-parameter)
-  * [`@RequestHeader`](#requestheader)
-  * [`@CookieValue`](#cookievalue)
-  * [POJO for Complex HTML Form](#pojo-for-complex-html-form)
-    * [form](#form)
-    * [example request data](#example-request-data)
-    * [Entity](#entity)
-    * [handle](#handle)
-    * [Output](#output)
-  * [`@RequestBody`](#requestbody)
-  * [File Upload](#file-upload)
-    * [Form](#form-1)
-    * [handle](#handle-1)
-    * [spring file upload option](#spring-file-upload-option)
-  * [HttpEntity](#httpentity)
-    * [Request Body](#request-body)
-    * [Output](#output-1)
-  * [Servlet API](#servlet-api)
-  * [SpringMVC Request 总结](#springmvc-request-总结)
-    * [RequestMapping 函数接收参数类型:](#requestmapping-函数接收参数类型)
-    * [@RequestPart和 @RequestParam的区别](#requestpart和-requestparam的区别)
+    * [direct get request parameter by setting method parameter](#direct-get-request-parameter-by-setting-method-parameter)
+    * [`@RequestParam`](#requestparam)
+    * [use POJO to get parameter](#use-pojo-to-get-parameter)
+    * [`@RequestHeader`](#requestheader)
+    * [`@CookieValue`](#cookievalue)
+    * [POJO for Complex HTML Form](#pojo-for-complex-html-form)
+        * [form](#form)
+        * [example request data](#example-request-data)
+        * [Entity](#entity)
+        * [handle](#handle)
+        * [Output](#output)
+    * [`@RequestBody`](#requestbody)
+    * [File Upload](#file-upload)
+        * [Form](#form-1)
+        * [handle](#handle-1)
+        * [spring file upload option](#spring-file-upload-option)
+    * [HttpEntity](#httpentity)
+        * [Request Body](#request-body)
+        * [Output](#output-1)
+    * [Servlet API](#servlet-api)
+    * [SpringMVC Request 总结](#springmvc-request-总结)
+        * [RequestMapping 函数接收参数类型:](#requestmapping-函数接收参数类型)
+        * [@RequestPart和 @RequestParam的区别](#requestpart和-requestparam的区别)
 * [SpringMVC Response](#springmvc-response)
-  * [Response json data by bean](#response-json-data-by-bean)
-  * [File download](#file-download)
-    * [File Name Encode](#file-name-encode)
-    * [Continuous Download for Large File](#continuous-download-for-large-file)
-      * [Parse of `Range` in Header](#parse-of-range-in-header)
-      * [Use OutputStream of Response](#use-outputstream-of-response)
-      * [Use `InputStreamResource` (return `ResponseEntity<InputStreamResource>`)](#use-inputstreamresource-return-responseentityinputstreamresource)
+    * [Response json data by bean](#response-json-data-by-bean)
+    * [File download](#file-download)
+        * [File Name Encode](#file-name-encode)
+        * [Continuous Download for Large File](#continuous-download-for-large-file)
+            * [Parse of `Range` in Header](#parse-of-range-in-header)
+            * [Use OutputStream of Response](#use-outputstream-of-response)
+            * [Use `InputStreamResource` (return
+              `ResponseEntity<InputStreamResource>`)](#use-inputstreamresource-return-responseentityinputstreamresource)
+
 <!-- TOC -->
 
 # Start a Spring MVC Application
@@ -633,12 +636,15 @@ public void handle10(HttpServletRequest request, HttpServletResponse response) t
           return person.toString() + ":::" + sb.toString();
       }
       ```
-      
+
 # SpringMVC Response
+
 - `@ResponseBody`: 将返回值作为响应体返回，默认使用`HttpMessageConverter`转换器转换成响应体
 
 ## Response json data by bean
+
 ```java
+
 @RequestMapping(value = "handle11")
 public User handle11() {
     return new User("123", "321", "123@321.123");
@@ -646,13 +652,16 @@ public User handle11() {
 ```
 
 ## File download
+
 - 设置响应状态为200 OK：`.ok()`, 表示请求成功。
-- 添加响应头：`.header(HttpHeaders.CONTENT_DISPOSITION, "attachment;filename=" + filename)`, 设置Content-Disposition为attachment;filename=filename，提示浏览器以附件形式下载文件，并指定文件名。
+- 添加响应头：`.header(HttpHeaders.CONTENT_DISPOSITION, "attachment;filename=" + filename)`,
+  设置Content-Disposition为attachment;filename=filename，提示浏览器以附件形式下载文件，并指定文件名。
 - 设置内容类型：`.contentType(MediaType.APPLICATION_OCTET_STREAM)`, 使用application/octet-stream，表示二进制流数据。
 - 设置内容长度：`.contentLength(bytes.length)`, 告知客户端文件的大小。
 - 设置响应体：`.body(bytes)`, 将文件内容作为字节数组返回。
 
 ```java
+
 @RequestMapping(value = "handle12")
 public ResponseEntity<byte[]> handle12(String filename) {
     // 构建文件路径
@@ -684,11 +693,13 @@ public ResponseEntity<byte[]> handle12(String filename) {
 ```
 
 ### File Name Encode
+
 - use `URLEncoder.encode(filename, StandardCharsets.UTF_8)` to encode file name
 
 ### Continuous Download for Large File
 
 #### Parse of `Range` in Header
+
 ```java
 public void downloadFile(@RequestParam String filename, HttpServletRequest request) throws IOException {
 
@@ -711,12 +722,13 @@ public void downloadFile(@RequestParam String filename, HttpServletRequest reque
     headers.setContentLength(end - start + 1);
     headers.setContentRange("bytes " + start + "-" + end + "/" + fileSize);
     headers.add(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=" + filename);
-    
+
     // ...
 }
 ```
 
 #### Use OutputStream of Response
+
 1. 获取文件长度：使用`file.length()`获取文件长度
 2. 获取客户端请求文件起始位置： 从请求头中获取Range，并解析出起始位置和结束位置
 3. 设置响应头：使用`response.setHeader("Content-Length", new String(end - start + 1))`设置响应头的Content-Length为文件长度等。
@@ -786,13 +798,16 @@ public class FileDownloadController {
 ```
 
 #### Use `InputStreamResource` (return `ResponseEntity<InputStreamResource>`)
+
 1. 获取文件长度：使用`file.length()`获取文件长度
 2. 获取客户端请求文件起始位置： 从请求头中获取Range，并解析出起始位置和结束位置
 3. 初始化`ResponseEntity.ok()`并设置响应头
-   - 使用`.header(HttpHeaders.CONTENT_RANGE, "bytes " + start + "-" + end + "/" + fileSize)`设置响应头的Content-Range为文件范围等
-   - 使用`.header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=" + URLEncoder.encode(filename, StandardCharsets.UTF_8))`设置响应头的Content-Disposition为附件形式下载，并指定文件名
-   - 使用`.contentType(MediaType.APPLICATION_OCTET_STREAM)`设置响应头的Content-Type为二进制流数据
-   - 使用`.contentLength(end - start + 1)`设置响应头的Content-Length为文件长度
+    - 使用`.header(HttpHeaders.CONTENT_RANGE, "bytes " + start + "-" + end + "/" + fileSize)`设置响应头的Content-Range为文件范围等
+    - 使用
+      `.header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=" + URLEncoder.encode(filename, StandardCharsets.UTF_8))`
+      设置响应头的Content-Disposition为附件形式下载，并指定文件名
+    - 使用`.contentType(MediaType.APPLICATION_OCTET_STREAM)`设置响应头的Content-Type为二进制流数据
+    - 使用`.contentLength(end - start + 1)`设置响应头的Content-Length为文件长度
 4. 获取文件输入流资源： 使用`InputStreamResource resource = new InputStreamResource(new FileInputStream(file))`获取文件输入流资源
 5. 将输入流资源封装为响应体：使用`.body(resource)`将输入流资源封装为响应体
 
@@ -882,8 +897,11 @@ public class FileDownloadController {
 ```
 
 ## Thymeleaf
+
 ### dependency
+
 ```xml
+
 <dependency>
     <groupId>org.springframework.boot</groupId>
     <artifactId>spring-boot-starter-thymeleaf</artifactId>
@@ -891,15 +909,17 @@ public class FileDownloadController {
 ```
 
 ### a simple example
+
 - put page in `src/main/resources/templates`
 - put static resources in `src/main/resources/static`
 - add `@Controller` and `@RequestMapping`, not need `@ResponseBody`
 - the returned string is name of page file in `src/main/resources/templates`
 - attribute passed to page:
-  - `model.addAttribute(key, value)`
-  - `model.addAllAttributes(map)`
+    - `model.addAttribute(key, value)`
+    - `model.addAllAttributes(map)`
 
 ```java
+
 @Controller
 public class MVCController {
 
@@ -910,7 +930,7 @@ public class MVCController {
     }
 
     @RequestMapping(value = "login.action")
-    public String loginac(@RequestParam("username") String username, @RequestParam("password") String password, Model model){
+    public String loginac(@RequestParam("username") String username, @RequestParam("password") String password, Model model) {
         model.addAttribute("username", username);
         model.addAttribute("password", password);
         return "logined";
@@ -923,8 +943,8 @@ public class MVCController {
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>Title</title>
+    <meta charset="UTF-8">
+    <title>Title</title>
 </head>
 <body>
 <h1>Login Success</h1>
@@ -933,47 +953,87 @@ public class MVCController {
 </body>
 </html>
 ```
+
 ### thymeleaf grammar
+
 #### attibute change
+
 - `th:xxx=${var}` / `th:attr="xxx=${var}"`: change html attribute xxx to var
-  - `th:text="${var}"`
-  - `th:id="${var}"`
-  - `th:value="${var}"`
-  - `th:src="${var}"`
-  - `th:href="${var}"`
-  - `th:title="${var}"`
-  - `th:alt="${var}"`
-  - `th:checked="${var}"`
-  - `th:disabled="${var}"`
-  - `th:class="${var}"`
-  - `th:style="${var}"`
-  - `th:attr="xxx=${var}"`: change value of a attribute xxx (including custom attributes)
-  - `<xx th:xx1-xx2="${var}" />` = `<xx th:xx1="${var}" th:xx2="${var}"/>`
-  - `th:attrappend="xxx=${var}"` / `th:attrprepend="xxx=${var}"`: append / prepend var to attribute xxx
-  - `th:with="xxx=${var}"`: create a new variable xxx, the created variable can be used in the same scope (including child elements)
+    - `th:text="${var}"`: change html attribute xxx to var
+    - `th:utext="${var}"`: change html attribute xxx to var, but escape html (不进行字符转义)
+    - `th:id="${var}"`
+    - `th:value="${var}"`
+    - `th:src="${var}"`
+    - `th:href="${var}"`
+    - `th:title="${var}"`
+    - `th:alt="${var}"`
+    - `th:checked="${var}"`
+    - `th:disabled="${var}"`
+    - `th:class="${var}"`
+    - `th:style="${var}"`
+    - `th:attr="xxx=${var}"`: change value of a attribute xxx (including custom attributes)
+    - `<xx th:xx1-xx2="${var}" />` = `<xx th:xx1="${var}" th:xx2="${var}"/>`
+    - `th:attrappend="xxx=${var}"` / `th:attrprepend="xxx=${var}"`: append / prepend var to attribute xxx
+
 #### iterate
+
 ```html
+
 <table border="1">
-  <tr>
-    <th>col</th>
-    <th>username</th>
-    <th>password</th>
-    <th>email</th>
-  </tr>
-  <tr th:each="user, status : ${users}"><!-- status could be omitted -->
-    <td th:text="${status.index}"></td>
-    <td th:text="${user.username}"></td>
-    <td th:text="${user.password}"></td>
-    <td th:text="${user.email}"></td>
-  </tr>
+    <tr>
+        <th>col</th>
+        <th>username</th>
+        <th>password</th>
+        <th>email</th>
+    </tr>
+    <tr th:each="user, status : ${users}"><!-- status could be omitted -->
+        <td th:text="${status.index}"></td>
+        <td th:text="${user.username}"></td>
+        <td th:text="${user.password}"></td>
+        <td th:text="${user.email}"></td>
+    </tr>
 </table>
 ```
+
 - properties of status:
-  - index:`int` index of current element
-  - count:`int` index of current element + 1
-  - size:`int` size of list
-  - even:`boolean` true if index is even
-  - odd:`boolean` true if index is odd
-  - first:`boolean` true if index is 0
-  - last:`boolean` true if index is size - 1
-  - current:`Object` current element
+    - index:`int` index of current element
+    - count:`int` index of current element + 1
+    - size:`int` size of list
+    - even:`boolean` true if index is even
+    - odd:`boolean` true if index is odd
+    - first:`boolean` true if index is 0
+    - last:`boolean` true if index is size - 1
+    - current:`Object` current element
+
+#### conditional
+
+- `th:if="xxx"`
+    - if xxx is true, show element
+- `th:unless="xxx"`
+    - show element if xxx is false (unless xxx is true) / not show element only if xxx is true
+- `th:if="xxx" th:else="yyy"`
+    - if xxx is true show element
+    - else show yyy
+- `th:if="xxx" th:elseif="yyy" th:else="zzz"`
+    - if xxx is true, show element
+    - else if yyy is true, show yyy
+    - else show zzz
+- `th:switch`:
+  ```html
+  <div th:switch="${user.role}">
+      <p th:case="admin">管理员</p>
+      <p th:case="user">普通用户</p>
+  </div>
+  ```
+
+#### local variable
+
+- `th:with="xxx=${var}"`: create a new variable xxx, the created variable can be used in the same scope (including child
+  elements)
+
+```html
+<p th:with="name='${var}'">
+    <span th:text="${name}"></span>
+</p>
+```
+
