@@ -933,3 +933,24 @@ public class MVCController {
 </body>
 </html>
 ```
+### thymeleaf grammar
+- `th:xxx=${var}` / `th:attr="xxx=${var}"`: change html attribute xxx to var
+  - `th:text="${var}"`
+  - `th:id="${var}"`
+  - `th:value="${var}"`
+  - `th:src="${var}"`
+  - `th:href="${var}"`
+  - `th:title="${var}"`
+  - `th:alt="${var}"`
+  - `th:checked="${var}"`
+  - `th:disabled="${var}"`
+  - `th:class="${var}"`
+  - `th:style="${var}"`
+  - `th:attr="xxx=${var}"`: change value of a attribute xxx (including custom attributes)
+  - `<xx th:xx1-xx2="${var}" />` = `<xx th:xx1="${var}" th:xx2="${var}"/>`
+  - `th:attrappend="xxx=${var}""` / `th:attrprepend="xxx=${var}"`: append / prepend var to attribute xxx
+  - `th:with="xxx=${var}""`: create a new variable xxx, the created variable can be used in the same scope (including child elements)
+- iterate:
+```html
+
+```
