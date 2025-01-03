@@ -1,57 +1,60 @@
 <!-- TOC -->
+
 * [Start a Spring MVC Application](#start-a-spring-mvc-application)
-  * [maven dependency](#maven-dependency)
-  * [A Simple Controller](#a-simple-controller)
-    * [`@RequestMapping`](#requestmapping)
-    * [`@Controller`](#controller)
-    * [`@ResponseBody`](#responsebody)
-    * [`@RestController`](#restcontroller)
-    * [Start Application](#start-application)
-    * [url match pattern:](#url-match-pattern)
-    * [params:](#params)
+    * [maven dependency](#maven-dependency)
+    * [A Simple Controller](#a-simple-controller)
+        * [`@RequestMapping`](#requestmapping)
+        * [`@Controller`](#controller)
+        * [`@ResponseBody`](#responsebody)
+        * [`@RestController`](#restcontroller)
+        * [Start Application](#start-application)
+        * [url match pattern:](#url-match-pattern)
+        * [params:](#params)
 * [SpringMVC Request](#springmvc-request)
-  * [direct get request parameter by setting method parameter](#direct-get-request-parameter-by-setting-method-parameter)
-  * [`@RequestParam`](#requestparam)
-  * [use POJO to get parameter](#use-pojo-to-get-parameter)
-  * [`@RequestHeader`](#requestheader)
-  * [`@CookieValue`](#cookievalue)
-  * [POJO for Complex HTML Form](#pojo-for-complex-html-form)
-    * [form](#form)
-    * [example request data](#example-request-data)
-    * [Entity](#entity)
-    * [handle](#handle)
-    * [Output](#output)
-  * [`@RequestBody`](#requestbody)
-  * [File Upload](#file-upload)
-    * [Form](#form-1)
-    * [handle](#handle-1)
-    * [spring file upload option](#spring-file-upload-option)
-  * [HttpEntity](#httpentity)
-    * [Request Body](#request-body)
-    * [Output](#output-1)
-  * [Servlet API](#servlet-api)
-  * [SpringMVC Request 总结](#springmvc-request-总结)
-    * [RequestMapping 函数接收参数类型:](#requestmapping-函数接收参数类型)
-    * [@RequestPart和 @RequestParam的区别](#requestpart和-requestparam的区别)
+    * [direct get request parameter by setting method parameter](#direct-get-request-parameter-by-setting-method-parameter)
+    * [`@RequestParam`](#requestparam)
+    * [use POJO to get parameter](#use-pojo-to-get-parameter)
+    * [`@RequestHeader`](#requestheader)
+    * [`@CookieValue`](#cookievalue)
+    * [POJO for Complex HTML Form](#pojo-for-complex-html-form)
+        * [form](#form)
+        * [example request data](#example-request-data)
+        * [Entity](#entity)
+        * [handle](#handle)
+        * [Output](#output)
+    * [`@RequestBody`](#requestbody)
+    * [File Upload](#file-upload)
+        * [Form](#form-1)
+        * [handle](#handle-1)
+        * [spring file upload option](#spring-file-upload-option)
+    * [HttpEntity](#httpentity)
+        * [Request Body](#request-body)
+        * [Output](#output-1)
+    * [Servlet API](#servlet-api)
+    * [SpringMVC Request 总结](#springmvc-request-总结)
+        * [RequestMapping 函数接收参数类型:](#requestmapping-函数接收参数类型)
+        * [@RequestPart和 @RequestParam的区别](#requestpart和-requestparam的区别)
 * [SpringMVC Response](#springmvc-response)
-  * [Response json data by bean](#response-json-data-by-bean)
-  * [File download](#file-download)
-    * [File Name Encode](#file-name-encode)
-    * [Continuous Download for Large File](#continuous-download-for-large-file)
-      * [Parse of `Range` in Header](#parse-of-range-in-header)
-      * [Use OutputStream of Response](#use-outputstream-of-response)
-      * [Use `InputStreamResource` (return `ResponseEntity<InputStreamResource>`)](#use-inputstreamresource-return-responseentityinputstreamresource)
-  * [Thymeleaf](#thymeleaf)
-    * [dependency](#dependency)
-    * [a simple example](#a-simple-example)
-    * [expression](#expression)
-    * [inner object](#inner-object)
-    * [value](#value)
-    * [iterate](#iterate)
-    * [conditional](#conditional)
-    * [local variable](#local-variable)
-    * [inline expression](#inline-expression)
-    * [template fragment](#template-fragment)
+    * [Response json data by bean](#response-json-data-by-bean)
+    * [File download](#file-download)
+        * [File Name Encode](#file-name-encode)
+        * [Continuous Download for Large File](#continuous-download-for-large-file)
+            * [Parse of `Range` in Header](#parse-of-range-in-header)
+            * [Use OutputStream of Response](#use-outputstream-of-response)
+            * [Use `InputStreamResource` (return
+              `ResponseEntity<InputStreamResource>`)](#use-inputstreamresource-return-responseentityinputstreamresource)
+    * [Thymeleaf](#thymeleaf)
+        * [dependency](#dependency)
+        * [a simple example](#a-simple-example)
+        * [expression](#expression)
+        * [inner object](#inner-object)
+        * [value](#value)
+        * [iterate](#iterate)
+        * [conditional](#conditional)
+        * [local variable](#local-variable)
+        * [inline expression](#inline-expression)
+        * [template fragment](#template-fragment)
+
 <!-- TOC -->
 
 # Start a Spring MVC Application
@@ -963,6 +966,7 @@ public class MVCController {
 ```
 
 ### expression
+
 - ${var}
 
 ```html
@@ -1083,6 +1087,7 @@ public class MVCController {
     - ~{::selector} 相当于 ~{this :: selector}，表示引用当前模板定义的代码片段
 
 ### inner object
+
 1. #ctx
 2. #vars
 3. #locale
@@ -1092,6 +1097,7 @@ public class MVCController {
 7. #servletContext
 
 - !!! variable put into session could not be access by `#session.xxx`, should use `${session.xxx}`
+
 ```html
 <!-- zh_CN -->
 <p th:text="${#ctx.getLocale()}"></p>
@@ -1147,25 +1153,25 @@ public class MVCController {
     - `<xx th:xx1-xx2="${var}" />` = `<xx th:xx1="${var}" th:xx2="${var}"/>`
     - `th:attrappend="xxx=${var}"` / `th:attrprepend="xxx=${var}"`: append / prepend var to attribute xxx
 - calculate:
-  - string concat:
-      - `<p th:text="'Welcome to ' + ${location} + '!'"></p>`
-      - `<p th:text="|Welcome to ${location}!|"></p>`
-  - value calculate:
-      - `<p th:text="${pagination.page + 1}"></p>` = `<p th:text="${pagination.page} + 1"></p>`
-  - boolean calculate:
-      - `<p th:text="${user.online and user.vip}"></p>`
-      - `<p th:text="${user.online or user.vip}"></p>`
-      - `<p th:text="${!user.online}"></p>`
-      - `<p th:text="${not user.online}"></p>`
-  - compare:
-      - `<p th:text="${user.age < 60}"></p>`
-      - `<p th:text="${user.age <= 60}"></p>`
-      - `<p th:text="${user.age > 18}"></p>`
-      - `<p th:text="${user.age >= 18}"></p>`
-      - `<p th:text="${user.age == 18}"></p>`
-      - `<p th:text="${user.age != 18}"></p>`
-  - `<p th:text="${user.online ? '在线' : '离线'}"></p>`
-  - `<p th:text="${token} ?: 'please login'"></p>` = `<p th:text="${token} ?: _">please login</p>`
+    - string concat:
+        - `<p th:text="'Welcome to ' + ${location} + '!'"></p>`
+        - `<p th:text="|Welcome to ${location}!|"></p>`
+    - value calculate:
+        - `<p th:text="${pagination.page + 1}"></p>` = `<p th:text="${pagination.page} + 1"></p>`
+    - boolean calculate:
+        - `<p th:text="${user.online and user.vip}"></p>`
+        - `<p th:text="${user.online or user.vip}"></p>`
+        - `<p th:text="${!user.online}"></p>`
+        - `<p th:text="${not user.online}"></p>`
+    - compare:
+        - `<p th:text="${user.age < 60}"></p>`
+        - `<p th:text="${user.age <= 60}"></p>`
+        - `<p th:text="${user.age > 18}"></p>`
+        - `<p th:text="${user.age >= 18}"></p>`
+        - `<p th:text="${user.age == 18}"></p>`
+        - `<p th:text="${user.age != 18}"></p>`
+    - `<p th:text="${user.online ? '在线' : '离线'}"></p>`
+    - `<p th:text="${token} ?: 'please login'"></p>` = `<p th:text="${token} ?: _">please login</p>`
 
 ### iterate
 
@@ -1261,8 +1267,9 @@ public class MVCController {
         }
     </style>
     ```
-  
+
 ### template fragment
+
 1. `th:fragment`: 定义一个可重用的模板片段
     ```html
     <div th:fragment="header">
@@ -1313,10 +1320,26 @@ public class MVCController {
         <p>all-but-first2<span> %</span></p>
     </div>
     ```
-   - apply of `th:remove`
+    - apply of `th:remove`
     ```html
     <div th:remove="${isAdmin} ? all : none">
         <!-- 只有管理员才能看到这个内容 -->
         <p>Admin content here</p>
     </div>
     ```
+
+# RESTful
+
+- RESTful is a set of constraints that define a set of architectural principles for building web services.
+
+## An Example of RESTful API
+
+| Path                           | Method | Description                   |
+|--------------------------------|--------|-------------------------------|
+| /users                         | GET    | Get all users                 |
+| /users/{id}                    | GET    | Get user by id                |
+| /users                         | POST   | Create a new user             |
+| /users                         | PUT    | Update user by id             |
+| /users/{id}                    | DELETE | Delete user by id             |
+| /users/{id}/friends            | GET    | Get all friends of user by id |
+
