@@ -1,6 +1,5 @@
 package com.li.hellospringrestful.service.impl;
 
-import ch.qos.logback.core.util.StringUtil;
 import com.li.hellospringrestful.bean.Employee;
 import com.li.hellospringrestful.dao.EmployeeDao;
 import com.li.hellospringrestful.service.EmployeeService;
