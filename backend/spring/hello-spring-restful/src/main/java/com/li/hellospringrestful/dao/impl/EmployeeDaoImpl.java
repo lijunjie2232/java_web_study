@@ -22,12 +22,14 @@ public class EmployeeDaoImpl implements EmployeeDao {
 
     @Override
     public void addEmployee(Employee employee) {
-        
+        String sql = "INSERT INTO `employee` (`name`, `age`, `email`, `gender`, `address`, `salary`) VALUES (?, ?, ?, ?, ?, ?)";
+        jdbcTemplate.update(sql, employee.getName(), employee.getAge(), employee.getEmail(), employee.getGender(), employee.getAddress(), employee.getSalary());
     }
 
     @Override
     public void deleteEmployee(int id) {
-
+        String sql = "DELETE FROM `employee` WHERE `id`=?";
+        jdbcTemplate.update(sql, id);
     }
 
     @Override
