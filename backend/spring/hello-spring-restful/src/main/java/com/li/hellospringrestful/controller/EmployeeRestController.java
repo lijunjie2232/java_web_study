@@ -6,6 +6,7 @@ import com.li.hellospringrestful.service.EmployeeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+@RequestMapping("/restapi/v1")
 @RestController
 public class EmployeeRestController {
 
@@ -17,8 +18,10 @@ public class EmployeeRestController {
         return new Result(employeeService.getEmployee(id));
     }
 
-    @RequestMapping(value = "/employee", method = RequestMethod.POST)
+//    @RequestMapping(value = "/employee", method = RequestMethod.POST)
+    @PostMapping(value = "/employee")
     public Result addEmployee(@RequestBody Employee employee) {
+
         employeeService.addEmployee(employee);
         return new Result();
     }
