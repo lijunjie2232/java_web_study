@@ -2,6 +2,8 @@ package com.li.hellospringrestful.service;
 
 import com.li.hellospringrestful.bean.Employee;
 
+import java.util.List;
+
 public interface EmployeeService {
 
     /*
@@ -25,4 +27,6 @@ public interface EmployeeService {
     void updateEmployee(Employee employee);
 
     Employee getEmployee(int id);
+
+    List<Employee> getEmployees(int page, int limit);
 }

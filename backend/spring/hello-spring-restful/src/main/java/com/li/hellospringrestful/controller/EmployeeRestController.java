@@ -18,17 +18,28 @@ public class EmployeeRestController {
     }
 
     @RequestMapping(value = "/employee", method = RequestMethod.POST)
-    public void addEmployee(@RequestBody Employee employee) {
+    public Result addEmployee(@RequestBody Employee employee) {
         employeeService.addEmployee(employee);
+        return new Result();
     }
 
     @RequestMapping(value = "/employee", method = RequestMethod.PUT)
-    public void updateEmployee(@RequestBody Employee employee) {
+    public Result updateEmployee(@RequestBody Employee employee) {
         employeeService.updateEmployee(employee);
+        return new Result();
     }
 
     @RequestMapping(value = "/employee/{id}", method = RequestMethod.DELETE)
-    public void deleteEmployee(@PathVariable int id) {
+    public Result deleteEmployee(@PathVariable int id) {
         employeeService.deleteEmployee(id);
+        return new Result();
+    }
+
+    @RequestMapping(value = "/employees", method = RequestMethod.GET)
+    public Result getEmployees(
+            @RequestParam(value = "page", defaultValue = "1") int page,
+            @RequestParam(value = "size", defaultValue = "5") int limit
+    ) {
+        return new Result(employeeService.getEmployees(page, limit));
     }
 }

@@ -39,4 +39,10 @@ public class EmployeeDaoImpl implements EmployeeDao {
         jdbcTemplate.update(sql, employee.getName(), employee.getAge(), employee.getEmail(), employee.getGender(), employee.getAddress(), employee.getSalary(), employee.getId());
     }
 
+    @Override
+    public List<Employee> getAllEmployees(int offset, int pageSize) {
+        String sql = "SELECT * FROM `employee` LIMIT ?, ?";
+        return jdbcTemplate.query(sql, new BeanPropertyRowMapper<Employee>(Employee.class), offset, pageSize);
+    }
+
 }

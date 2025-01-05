@@ -56,4 +56,9 @@ public class EmployeeDaoTest {
 //        );
 //        System.out.println(employeeDaoImpl.getEmployeeById(7));
 //    }
+//
+//    @Test
+//    public void getAllEmployeesTest() {
+//        System.out.println(employeeDaoImpl.getAllEmployees());
+//    }
 }
