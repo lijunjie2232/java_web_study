@@ -1,6 +1,7 @@
 package com.li.hellospringrestful.controller;
 
 import com.li.hellospringrestful.bean.Employee;
+import com.li.hellospringrestful.bean.Result;
 import com.li.hellospringrestful.service.EmployeeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -12,8 +13,8 @@ public class EmployeeRestController {
     EmployeeService employeeService;
 
     @RequestMapping(value = "/employee/{id}", method = RequestMethod.GET)
-    public Employee getEmployee(@PathVariable int id) {
-        return employeeService.getEmployee(id);
+    public Result getEmployee(@PathVariable int id) {
+        return new Result(employeeService.getEmployee(id));
     }
 
     @RequestMapping(value = "/employee", method = RequestMethod.POST)
