@@ -1,8 +1,8 @@
 package com.li.hello_spring_practice1.controller;
 
-import com.li.hellospringrestful.bean.Employee;
-import com.li.hellospringrestful.bean.Result;
-import com.li.hellospringrestful.service.EmployeeService;
+import com.li.hello_spring_practice1.bean.Employee;
+import com.li.hello_spring_practice1.bean.Result;
+import com.li.hello_spring_practice1.service.EmployeeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 

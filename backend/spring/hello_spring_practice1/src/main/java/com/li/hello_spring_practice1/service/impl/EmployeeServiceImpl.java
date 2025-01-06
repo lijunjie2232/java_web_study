@@ -1,8 +1,8 @@
 package com.li.hello_spring_practice1.service.impl;
 
-import com.li.hellospringrestful.bean.Employee;
-import com.li.hellospringrestful.dao.EmployeeDao;
-import com.li.hellospringrestful.service.EmployeeService;
+import com.li.hello_spring_practice1.bean.Employee;
+import com.li.hello_spring_practice1.dao.EmployeeDao;
+import com.li.hello_spring_practice1.service.EmployeeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;

@@ -1,7 +1,7 @@
 package com.li.hello_spring_practice1.dao.impl;
 
-import com.li.hellospringrestful.bean.Employee;
-import com.li.hellospringrestful.dao.EmployeeDao;
+import com.li.hello_spring_practice1.bean.Employee;
+import com.li.hello_spring_practice1.dao.EmployeeDao;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;

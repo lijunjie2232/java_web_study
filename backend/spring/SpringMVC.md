@@ -1356,3 +1356,74 @@ public class MVCController {
 | /users/{id}                    | DELETE | Delete user by id             |
 | /users/{id}/friends            | GET    | Get all friends of user by id |
 
+# Spring Filter
+- create a filter
+```java
+package com.li.hello_spring_practice1.interceptor;
+
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import org.springframework.stereotype.Component;
+import org.springframework.web.servlet.HandlerInterceptor;
+import org.springframework.web.servlet.ModelAndView;
+
+@Component
+public class MyHandlerInterceptor implements HandlerInterceptor {
+    @Override
+    public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
+        System.out.println("MyHandlerInterceptor preHandle");
+        return true;
+    }
+
+    @Override
+    public void postHandle(HttpServletRequest request, HttpServletResponse response, Object handler, ModelAndView modelAndView) throws Exception {
+        System.out.println("MyHandlerInterceptor postHandle");
+    }
+    @Override
+    public void afterCompletion(HttpServletRequest request, HttpServletResponse response, Object handler, Exception ex) throws Exception {
+        System.out.println("MyHandlerInterceptor afterCompletion");
+    }
+}
+```
+
+- register the filter to configuration class
+```java
+package com.li.hello_spring_practice1.config;
+
+import com.li.hello_spring_practice1.interceptor.MyHandlerInterceptor;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
+
+// method 1
+/*@Configuration
+public class MySpringMVCConfig {
+
+    @Autowired
+    MyHandlerInterceptor myHandlerInterceptor;
+    @Bean
+    WebMvcConfigurer webMvcConfigurer(){
+        return new WebMvcConfigurer() {
+            @Override
+            public void addInterceptors(InterceptorRegistry registry) {
+                registry.addInterceptor(myHandlerInterceptor).addPathPatterns("/**");
+            }
+        };
+    }
+}*/
+
+// method 2
+@Configuration
+public class MySpringMVCConfig implements WebMvcConfigurer {
+
+    @Autowired
+    MyHandlerInterceptor myHandlerInterceptor;
+
+    @Override
+    public void addInterceptors(InterceptorRegistry registry) {
+        registry.addInterceptor(myHandlerInterceptor).addPathPatterns("/**");
+    }
+}
+```
