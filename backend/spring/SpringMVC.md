@@ -61,6 +61,12 @@
     * [Example](#example)
   * [`@ControllerAdvice`](#controlleradvice)
     * [Example](#example-1)
+  * [Exception handling in Project](#exception-handling-in-project)
+    * [a simple business exception class example](#a-simple-business-exception-class-example)
+      * [a enum class to store error code and message](#a-enum-class-to-store-error-code-and-message)
+      * [a business exception class](#a-business-exception-class)
+      * [register the exception handler](#register-the-exception-handler)
+      * [throw the exception in service](#throw-the-exception-in-service)
 <!-- TOC -->
 
 # Start a Spring MVC Application
