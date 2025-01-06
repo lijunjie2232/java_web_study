@@ -208,6 +208,20 @@ public String handle03(User user) {
 }
 ```
 
+## `@PathVariable`
+```java
+@RequestMapping(value = "/employee/{id}", method = RequestMethod.GET)
+public Result getEmployee(@PathVariable int id) {
+    return new Result(employeeService.getEmployee(id));
+}
+```
+- request path pattern:
+  - `@RequestMapping("/employee/{id}")`
+  - `@RequestMapping("/employee/{*id}")`: /employee/1/2/3 -> id = 1/2/3
+  - `@RequestMapping("/res/{filename:\\w+}.dat")`: filename should satisfy the regular expression `\w+`
+
+
+
 ## `@RequestHeader`
 
 - bind the request header to the method parameter

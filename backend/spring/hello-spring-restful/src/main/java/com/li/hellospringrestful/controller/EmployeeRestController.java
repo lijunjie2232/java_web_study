@@ -7,6 +7,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 @RequestMapping("/restapi/v1")
+// cllow cross origin
+@CrossOrigin(origins = "*")
 @RestController
 public class EmployeeRestController {
 
