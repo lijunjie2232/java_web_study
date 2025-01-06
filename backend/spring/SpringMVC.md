@@ -1496,3 +1496,69 @@ public class GlobalExceptionHandler {
 ```
 
 - if either `@ExceptionHandler` or `@ControllerAdvice` is declared in a controller, it will call the default exception handler of the controller and return 500 page or json to browser
+
+## Exception handling in Project
+- backend only concern the correct service logic 
+- backend throw exception and terminate service if in unexpected situation and return error message to frontend
+- backend should inform services in higher level by throwing business exception if terminate current service
+- frontend should concern response code and message
+
+### a simple business exception class example
+#### a enum class to store error code and message
+```java
+@Data
+public enum BusinessError {
+    
+    ORDER_CLOSED(10001, "Order closed"),
+    ORDER_NOT_EXIST(10002, "Order not exist"),
+    ORDER_NOT_PAID(10003, "Order not paid"),
+    ORDER_TIMEOUT(10004, "Order timeout")
+    // ...
+    ;
+    
+    private final int errorCode;
+    private final String errorMessage;
+    
+    public int code() {}
+    public String message() {}
+}
+```
+#### a business exception class
+```java
+package xxxxxxx;
+
+public class BusinessException extends RuntimeException {
+    private int errorCode;
+    private String errorMessage;
+
+    public BusinessException(BusinessError businessError) {
+        this.errorCode = businessError.code();
+        this.errorMessage = businessError.message();
+    }
+
+    public int getErrorCode() {
+        return errorCode;
+    }
+
+    public String getErrorMessage() {
+        return errorMessage;
+    }
+}
+```
+#### register the exception handler
+```java
+@ExceptionHandler(BusinessException.class)
+public Result handleBusinessException(BusinessException e) {
+    return new Result(e.getErrorCode(), e.getErrorMessage());
+}
+```
+#### throw the exception in service
+```java
+@getMapping("/{orderId}")
+public void handle11(int id) {
+    if  (id <0) {
+        throw new BusinessException(BusinessError.ORDER_NOT_EXIST);
+    }
+    // ...
+}
+```
