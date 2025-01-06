@@ -56,6 +56,11 @@
 * [RESTful](#restful)
   * [An Example of RESTful API](#an-example-of-restful-api)
 * [Spring Filter](#spring-filter)
+* [Spring Exception](#spring-exception)
+  * [`@ExceptionHandler`](#exceptionhandler)
+    * [Example](#example)
+  * [`@ControllerAdvice`](#controlleradvice)
+    * [Example](#example-1)
 <!-- TOC -->
 
 # Start a Spring MVC Application
