@@ -1429,3 +1429,23 @@ public class MySpringMVCConfig implements WebMvcConfigurer {
     }
 }
 ```
+
+- orders of multiple filters
+```
+MyHandlerInterceptor preHandle
+MyHandlerInterceptor1 preHandle
+MyHandlerInterceptor2 preHandle
+MyHandlerInterceptor2 postHandle
+MyHandlerInterceptor1 postHandle
+MyHandlerInterceptor postHandle
+MyHandlerInterceptor2 afterCompletion
+MyHandlerInterceptor1 afterCompletion
+MyHandlerInterceptor afterCompletion
+```
+
+- if one filter returns true in prehandle, it's afterCompletion will be called anyway
+- if any filter returns false in prehandle:
+  - all filters' postHandle could not be called
+  - all the prehandle of filters after it will not be called
+- if one postHandle returns false, all the postHandle of filters before it will not be called
+
