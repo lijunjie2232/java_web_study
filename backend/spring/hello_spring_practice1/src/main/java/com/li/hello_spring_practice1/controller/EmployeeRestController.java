@@ -20,7 +20,7 @@ public class EmployeeRestController {
         return new Result(employeeService.getEmployee(id));
     }
 
-//    @RequestMapping(value = "/employee", method = RequestMethod.POST)
+    //    @RequestMapping(value = "/employee", method = RequestMethod.POST)
     @PostMapping(value = "/employee")
     public Result addEmployee(@RequestBody Employee employee) {
 
@@ -46,5 +46,17 @@ public class EmployeeRestController {
             @RequestParam(value = "size", defaultValue = "5") int limit
     ) {
         return new Result(employeeService.getEmployees(page, limit));
+    }
+
+    // status exceotion handle test
+    @RequestMapping(value = "/employee/status", method = RequestMethod.GET)
+    public Result getEmployeeStatus(@RequestParam(value = "id", defaultValue = "0")int id) {
+        int i = 100 / id;
+        return Result.ok(i);
+    }
+
+    @ExceptionHandler(ArithmeticException.class)
+    public Result handleArithmeticException(ArithmeticException e) {
+        return new Result(500, e.getMessage());
     }
 }

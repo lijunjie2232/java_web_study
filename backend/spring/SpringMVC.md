@@ -1449,3 +1449,17 @@ MyHandlerInterceptor afterCompletion
   - all the prehandle of filters after it will not be called
 - if one postHandle returns false, all the postHandle of filters before it will not be called
 
+# Spring Exception
+## `@ExceptionHandler`
+- declare a method to handle exception
+- if `@ExceptionHandler` is declared in a controller, it will auto registered as the exception handler of the controller
+- `@ExceptionHandler(xxx.class)`: `xxx` is the name of the exception class to be handled 
+
+## Example
+```java
+// EmployeeRestController.handleArithmeticException
+@ExceptionHandler(ArithmeticException.class)
+public Result handleArithmeticException(ArithmeticException e) {
+    return new Result(500, e.getMessage());
+}
+```
