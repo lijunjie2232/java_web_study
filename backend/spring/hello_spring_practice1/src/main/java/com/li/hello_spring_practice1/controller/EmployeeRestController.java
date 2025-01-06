@@ -50,13 +50,14 @@ public class EmployeeRestController {
 
     // status exceotion handle test
     @RequestMapping(value = "/employee/status", method = RequestMethod.GET)
-    public Result getEmployeeStatus(@RequestParam(value = "id", defaultValue = "0")int id) {
+    public Result getEmployeeStatus(@RequestParam(value = "id", defaultValue = "0") int id) {
         int i = 100 / id;
         return Result.ok(i);
     }
 
     @ExceptionHandler(ArithmeticException.class)
     public Result handleArithmeticException(ArithmeticException e) {
+        System.out.println("[EmployeeRestController]: " + e.getMessage());
         return new Result(500, e.getMessage());
     }
 }

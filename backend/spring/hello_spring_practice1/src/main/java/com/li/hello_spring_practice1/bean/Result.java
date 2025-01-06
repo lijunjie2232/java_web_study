@@ -28,4 +28,8 @@ public class Result {
     public static Result ok(Object data) {
         return new Result(data);
     }
+
+    public static Result error(int code, String msg) {
+        return new Result(code, msg);
+    }
 }
