@@ -1489,3 +1489,5 @@ public class GlobalExceptionHandler {
     }
 }
 ```
+
+- if either `@ExceptionHandler` or `@ControllerAdvice` is declared in a controller, it will call the default exception handler of the controller and return 500 page or json to browser
