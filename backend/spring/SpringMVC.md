@@ -13,6 +13,7 @@
   * [direct get request parameter by setting method parameter](#direct-get-request-parameter-by-setting-method-parameter)
   * [`@RequestParam`](#requestparam)
   * [use POJO to get parameter](#use-pojo-to-get-parameter)
+  * [`@PathVariable`](#pathvariable)
   * [`@RequestHeader`](#requestheader)
   * [`@CookieValue`](#cookievalue)
   * [POJO for Complex HTML Form](#pojo-for-complex-html-form)
@@ -54,6 +55,7 @@
     * [template fragment](#template-fragment)
 * [RESTful](#restful)
   * [An Example of RESTful API](#an-example-of-restful-api)
+* [Spring Filter](#spring-filter)
 <!-- TOC -->
 
 # Start a Spring MVC Application
