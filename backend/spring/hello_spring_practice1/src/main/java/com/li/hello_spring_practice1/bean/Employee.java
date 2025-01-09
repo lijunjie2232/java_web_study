@@ -1,5 +1,6 @@
 package com.li.hello_spring_practice1.bean;
 
+import jakarta.validation.constraints.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -25,10 +26,23 @@ public class Employee {
     );
      */
     private Integer id;
+
+    @NotBlank
     private String name;
+
+    @Min(value = 0, message = "age could smaller than 0")
     private Integer age;
+
+    @Email(message = "email format error")
     private String email;
+
+    @Max(value = 1, message = "gender could only be 0 or 1")
+    @Min(value = 0, message = "gender could only be 0 or 1")
     private Integer gender;
+
+    @NotBlank
     private String address;
+
+    @DecimalMin(value = "0.00", message = "salary could not smaller than 0")
     private BigDecimal salary;
 }

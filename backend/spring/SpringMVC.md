@@ -1,72 +1,75 @@
 <!-- TOC -->
+
 * [Start a Spring MVC Application](#start-a-spring-mvc-application)
-  * [maven dependency](#maven-dependency)
-  * [A Simple Controller](#a-simple-controller)
-    * [`@RequestMapping`](#requestmapping)
-    * [`@Controller`](#controller)
-    * [`@ResponseBody`](#responsebody)
-    * [`@RestController`](#restcontroller)
-    * [Start Application](#start-application)
-    * [url match pattern:](#url-match-pattern)
-    * [params:](#params)
+    * [maven dependency](#maven-dependency)
+    * [A Simple Controller](#a-simple-controller)
+        * [`@RequestMapping`](#requestmapping)
+        * [`@Controller`](#controller)
+        * [`@ResponseBody`](#responsebody)
+        * [`@RestController`](#restcontroller)
+        * [Start Application](#start-application)
+        * [url match pattern:](#url-match-pattern)
+        * [params:](#params)
 * [SpringMVC Request](#springmvc-request)
-  * [direct get request parameter by setting method parameter](#direct-get-request-parameter-by-setting-method-parameter)
-  * [`@RequestParam`](#requestparam)
-  * [use POJO to get parameter](#use-pojo-to-get-parameter)
-  * [`@PathVariable`](#pathvariable)
-  * [`@RequestHeader`](#requestheader)
-  * [`@CookieValue`](#cookievalue)
-  * [POJO for Complex HTML Form](#pojo-for-complex-html-form)
-    * [form](#form)
-    * [example request data](#example-request-data)
-    * [Entity](#entity)
-    * [handle](#handle)
-    * [Output](#output)
-  * [`@RequestBody`](#requestbody)
-  * [File Upload](#file-upload)
-    * [Form](#form-1)
-    * [handle](#handle-1)
-    * [spring file upload option](#spring-file-upload-option)
-  * [HttpEntity](#httpentity)
-    * [Request Body](#request-body)
-    * [Output](#output-1)
-  * [Servlet API](#servlet-api)
-  * [SpringMVC Request 总结](#springmvc-request-总结)
-    * [RequestMapping 函数接收参数类型:](#requestmapping-函数接收参数类型)
-    * [@RequestPart和 @RequestParam的区别](#requestpart和-requestparam的区别)
+    * [direct get request parameter by setting method parameter](#direct-get-request-parameter-by-setting-method-parameter)
+    * [`@RequestParam`](#requestparam)
+    * [use POJO to get parameter](#use-pojo-to-get-parameter)
+    * [`@PathVariable`](#pathvariable)
+    * [`@RequestHeader`](#requestheader)
+    * [`@CookieValue`](#cookievalue)
+    * [POJO for Complex HTML Form](#pojo-for-complex-html-form)
+        * [form](#form)
+        * [example request data](#example-request-data)
+        * [Entity](#entity)
+        * [handle](#handle)
+        * [Output](#output)
+    * [`@RequestBody`](#requestbody)
+    * [File Upload](#file-upload)
+        * [Form](#form-1)
+        * [handle](#handle-1)
+        * [spring file upload option](#spring-file-upload-option)
+    * [HttpEntity](#httpentity)
+        * [Request Body](#request-body)
+        * [Output](#output-1)
+    * [Servlet API](#servlet-api)
+    * [SpringMVC Request 总结](#springmvc-request-总结)
+        * [RequestMapping 函数接收参数类型:](#requestmapping-函数接收参数类型)
+        * [@RequestPart和 @RequestParam的区别](#requestpart和-requestparam的区别)
 * [SpringMVC Response](#springmvc-response)
-  * [Response json data by bean](#response-json-data-by-bean)
-  * [File download](#file-download)
-    * [File Name Encode](#file-name-encode)
-    * [Continuous Download for Large File](#continuous-download-for-large-file)
-      * [Parse of `Range` in Header](#parse-of-range-in-header)
-      * [Use OutputStream of Response](#use-outputstream-of-response)
-      * [Use `InputStreamResource` (return `ResponseEntity<InputStreamResource>`)](#use-inputstreamresource-return-responseentityinputstreamresource)
-  * [Thymeleaf](#thymeleaf)
-    * [dependency](#dependency)
-    * [a simple example](#a-simple-example)
-    * [expression](#expression)
-    * [inner object](#inner-object)
-    * [value](#value)
-    * [iterate](#iterate)
-    * [conditional](#conditional)
-    * [local variable](#local-variable)
-    * [inline expression](#inline-expression)
-    * [template fragment](#template-fragment)
+    * [Response json data by bean](#response-json-data-by-bean)
+    * [File download](#file-download)
+        * [File Name Encode](#file-name-encode)
+        * [Continuous Download for Large File](#continuous-download-for-large-file)
+            * [Parse of `Range` in Header](#parse-of-range-in-header)
+            * [Use OutputStream of Response](#use-outputstream-of-response)
+            * [Use `InputStreamResource` (return
+              `ResponseEntity<InputStreamResource>`)](#use-inputstreamresource-return-responseentityinputstreamresource)
+    * [Thymeleaf](#thymeleaf)
+        * [dependency](#dependency)
+        * [a simple example](#a-simple-example)
+        * [expression](#expression)
+        * [inner object](#inner-object)
+        * [value](#value)
+        * [iterate](#iterate)
+        * [conditional](#conditional)
+        * [local variable](#local-variable)
+        * [inline expression](#inline-expression)
+        * [template fragment](#template-fragment)
 * [RESTful](#restful)
-  * [An Example of RESTful API](#an-example-of-restful-api)
+    * [An Example of RESTful API](#an-example-of-restful-api)
 * [Spring Filter](#spring-filter)
 * [Spring Exception](#spring-exception)
-  * [`@ExceptionHandler`](#exceptionhandler)
-    * [Example](#example)
-  * [`@ControllerAdvice`](#controlleradvice)
-    * [Example](#example-1)
-  * [Exception handling in Project](#exception-handling-in-project)
-    * [a simple business exception class example](#a-simple-business-exception-class-example)
-      * [a enum class to store error code and message](#a-enum-class-to-store-error-code-and-message)
-      * [a business exception class](#a-business-exception-class)
-      * [register the exception handler](#register-the-exception-handler)
-      * [throw the exception in service](#throw-the-exception-in-service)
+    * [`@ExceptionHandler`](#exceptionhandler)
+        * [Example](#example)
+    * [`@ControllerAdvice`](#controlleradvice)
+        * [Example](#example-1)
+    * [Exception handling in Project](#exception-handling-in-project)
+        * [a simple business exception class example](#a-simple-business-exception-class-example)
+            * [a enum class to store error code and message](#a-enum-class-to-store-error-code-and-message)
+            * [a business exception class](#a-business-exception-class)
+            * [register the exception handler](#register-the-exception-handler)
+            * [throw the exception in service](#throw-the-exception-in-service)
+
 <!-- TOC -->
 
 # Start a Spring MVC Application
@@ -222,18 +225,19 @@ public String handle03(User user) {
 ```
 
 ## `@PathVariable`
+
 ```java
+
 @RequestMapping(value = "/employee/{id}", method = RequestMethod.GET)
 public Result getEmployee(@PathVariable int id) {
     return new Result(employeeService.getEmployee(id));
 }
 ```
+
 - request path pattern:
-  - `@RequestMapping("/employee/{id}")`
-  - `@RequestMapping("/employee/{*id}")`: /employee/1/2/3 -> id = 1/2/3
-  - `@RequestMapping("/res/{filename:\\w+}.dat")`: filename should satisfy the regular expression `\w+`
-
-
+    - `@RequestMapping("/employee/{id}")`
+    - `@RequestMapping("/employee/{*id}")`: /employee/1/2/3 -> id = 1/2/3
+    - `@RequestMapping("/res/{filename:\\w+}.dat")`: filename should satisfy the regular expression `\w+`
 
 ## `@RequestHeader`
 
@@ -1360,17 +1364,19 @@ public class MVCController {
 
 ## An Example of RESTful API
 
-| Path                           | Method | Description                   |
-|--------------------------------|--------|-------------------------------|
-| /users                         | GET    | Get all users                 |
-| /users/{id}                    | GET    | Get user by id                |
-| /users                         | POST   | Create a new user             |
-| /users                         | PUT    | Update user by id             |
-| /users/{id}                    | DELETE | Delete user by id             |
-| /users/{id}/friends            | GET    | Get all friends of user by id |
+| Path                | Method | Description                   |
+|---------------------|--------|-------------------------------|
+| /users              | GET    | Get all users                 |
+| /users/{id}         | GET    | Get user by id                |
+| /users              | POST   | Create a new user             |
+| /users              | PUT    | Update user by id             |
+| /users/{id}         | DELETE | Delete user by id             |
+| /users/{id}/friends | GET    | Get all friends of user by id |
 
 # Spring Filter
+
 - create a filter
+
 ```java
 package com.li.hello_spring_practice1.interceptor;
 
@@ -1392,6 +1398,7 @@ public class MyHandlerInterceptor implements HandlerInterceptor {
     public void postHandle(HttpServletRequest request, HttpServletResponse response, Object handler, ModelAndView modelAndView) throws Exception {
         System.out.println("MyHandlerInterceptor postHandle");
     }
+
     @Override
     public void afterCompletion(HttpServletRequest request, HttpServletResponse response, Object handler, Exception ex) throws Exception {
         System.out.println("MyHandlerInterceptor afterCompletion");
@@ -1400,6 +1407,7 @@ public class MyHandlerInterceptor implements HandlerInterceptor {
 ```
 
 - register the filter to configuration class
+
 ```java
 package com.li.hello_spring_practice1.config;
 
@@ -1442,6 +1450,7 @@ public class MySpringMVCConfig implements WebMvcConfigurer {
 ```
 
 - orders of multiple filters
+
 ```
 MyHandlerInterceptor preHandle
 MyHandlerInterceptor1 preHandle
@@ -1456,17 +1465,20 @@ MyHandlerInterceptor afterCompletion
 
 - if one filter returns true in prehandle, it's afterCompletion will be called anyway
 - if any filter returns false in prehandle:
-  - all filters' postHandle could not be called
-  - all the prehandle of filters after it will not be called
+    - all filters' postHandle could not be called
+    - all the prehandle of filters after it will not be called
 - if one postHandle returns false, all the postHandle of filters before it will not be called
 
 # Spring Exception
+
 ## `@ExceptionHandler`
+
 - declare a method to handle exception
 - if `@ExceptionHandler` is declared in a controller, it will auto registered as the exception handler of the controller
-- `@ExceptionHandler(xxx.class)`: `xxx` is the name of the exception class to be handled 
+- `@ExceptionHandler(xxx.class)`: `xxx` is the name of the exception class to be handled
 
 ### Example
+
 ```java
 // EmployeeRestController.handleArithmeticException
 @ExceptionHandler(ArithmeticException.class)
@@ -1476,12 +1488,15 @@ public Result handleArithmeticException(ArithmeticException e) {
 ```
 
 ## `@ControllerAdvice`
+
 - declare a class to handle exception globally
 - method decorated with `@ExceptionHandler` in this class will be registered as global exception handler
-- if same type exception handled by inner controller method, the inner controller method will be called for having higher priority
+- if same type exception handled by inner controller method, the inner controller method will be called for having
+  higher priority
 - !!! if return json data, `@ResponseBody` should be added to the method or class
 
 ### Example
+
 ```java
 package com.li.hello_spring_practice1.advice;
 
@@ -1501,35 +1516,45 @@ public class GlobalExceptionHandler {
 }
 ```
 
-- if either `@ExceptionHandler` or `@ControllerAdvice` is declared in a controller, it will call the default exception handler of the controller and return 500 page or json to browser
+- if either `@ExceptionHandler` or `@ControllerAdvice` is declared in a controller, it will call the default exception
+  handler of the controller and return 500 page or json to browser
 
 ## Exception handling in Project
-- backend only concern the correct service logic 
+
+- backend only concern the correct service logic
 - backend throw exception and terminate service if in unexpected situation and return error message to frontend
 - backend should inform services in higher level by throwing business exception if terminate current service
 - frontend should concern response code and message
 
 ### a simple business exception class example
+
 #### a enum class to store error code and message
+
 ```java
+
 @Data
 public enum BusinessError {
-    
+
     ORDER_CLOSED(10001, "Order closed"),
     ORDER_NOT_EXIST(10002, "Order not exist"),
     ORDER_NOT_PAID(10003, "Order not paid"),
     ORDER_TIMEOUT(10004, "Order timeout")
     // ...
     ;
-    
+
     private final int errorCode;
     private final String errorMessage;
-    
-    public int code() {}
-    public String message() {}
+
+    public int code() {
+    }
+
+    public String message() {
+    }
 }
 ```
+
 #### a business exception class
+
 ```java
 package xxxxxxx;
 
@@ -1551,20 +1576,123 @@ public class BusinessException extends RuntimeException {
     }
 }
 ```
+
 #### register the exception handler
+
 ```java
+
 @ExceptionHandler(BusinessException.class)
 public Result handleBusinessException(BusinessException e) {
     return new Result(e.getErrorCode(), e.getErrorMessage());
 }
 ```
+
 #### throw the exception in service
+
 ```java
+
 @getMapping("/{orderId}")
 public void handle11(int id) {
-    if  (id <0) {
+    if (id < 0) {
         throw new BusinessException(BusinessError.ORDER_NOT_EXIST);
     }
     // ...
 }
 ```
+
+# Spring Data Validation
+
+- import spring-boot-stater-validation
+    ```xml
+    <dependency>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-validation</artifactId>
+    </dependency>
+    ```
+- add valid condition decorators to beans
+    ```java
+    package com.li.hello_spring_practice1.bean;
+    
+    import jakarta.validation.constraints.*;
+    import lombok.AllArgsConstructor;
+    import lombok.Data;
+    import lombok.NoArgsConstructor;
+    
+    import java.math.BigDecimal;
+    
+    @Data
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public class Employee {
+        /*
+        for sql table:
+        CREATE TABLE IF NOT EXISTS `employee`
+        (
+            `id`      INT(11)        NOT NULL AUTO_INCREMENT,
+            `name`    VARCHAR(255)   NOT NULL,
+            `age`     INT(11)        NOT NULL,
+            `email`   VARCHAR(255)   NOT NULL,
+            `gender`  INT1           NOT NULL,
+            `address` VARCHAR(255)   NOT NULL,
+            `salary`  DECIMAL(10, 2) NOT NULL,
+            PRIMARY KEY (`id`) USING BTREE
+        );
+         */
+        private Integer id;
+    
+        @NotBlank
+        private String name;
+    
+        @Min(value = 0, message = "age could smaller than 0")
+        private Integer age;
+    
+        @Email(message = "email format error")
+        private String email;
+    
+        @Max(value = 1, message = "gender could only be 0 or 1")
+        @Min(value = 0, message = "gender could only be 0 or 1")
+        private Integer gender;
+    
+        @NotBlank
+        private String address;
+    
+        @DecimalMin(value = "0.00", message = "salary could not smaller than 0")
+        private BigDecimal salary;
+    }
+    ```
+- add `@Valid` to the parameter to be validated in controller method
+    ```java
+    @RequestMapping(value = "/employee/valtest", method = RequestMethod.GET)
+    public Result getEmployeeValTest(
+            @RequestBody @Valid Employee employee
+    ) {
+        return Result.ok();
+    }
+    ```
+
+- JSR 303/349 (Bean Validation) 标准注解
+    - `@Null`：验证对象是否为 null
+    - `@NotNull`：验证对象是否不为 null
+    - `@AssertTrue`：验证 boolean 属性是否为 true
+    - `@AssertFalse`：验证 boolean 属性是否为 false
+    - `@Min(value)`：验证数值是否大于等于指定的最小值
+    - `@Max(value)`：验证数值是否小于等于指定的最大值
+    - `@DecimalMin(value)`：验证字符串或数值是否大于等于指定的最小值（支持小数）
+    - `@DecimalMax(value)`：验证字符串或数值是否小于等于指定的最大值（支持小数）
+    - `@Size(min, max)`：验证集合、数组、字符串长度是否在指定范围内
+    - `@Digits(integer, fraction)`：验证字符串是否是符合指定格式的数字（整数位数和小数位数）
+    - `@Past`：验证日期是否在过去
+    - `@Future`：验证日期是否在未来
+    - `@Pattern(regex)`：验证字符串是否符合指定的正则表达式
+- Hibernate Validator 扩展注解
+    - `@NotEmpty`：验证集合、数组、字符串是否不为空（但可以接受空白字符串）
+    - `@NotBlank`：验证字符串是否不为空且不是空白字符
+    - `@Email`：验证字符串是否为有效的电子邮件地址
+    - `@URL`：验证字符串是否为有效的URL
+- 自定义注解
+    - 可以通过实现 ConstraintValidator 接口来自定义校验逻辑，并创建自己的校验注解。
+
+- `@NotNull` & `@NotEmpty`: `@NotNull` could be empty string ("") but `@NotEmpty` could not
+- `@NotEmpty` & `@NotBlank`:
+    - `@NotEmpty`: "not null and size > 0" whick could decorate collection, array, map, string
+    - `@NotBlank`: could only decorate string

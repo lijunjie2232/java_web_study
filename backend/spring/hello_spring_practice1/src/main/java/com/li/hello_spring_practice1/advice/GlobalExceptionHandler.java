@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 @ResponseBody
 @ControllerAdvice
 public class GlobalExceptionHandler {
-    @ExceptionHandler(ArithmeticException.class)
+    @ExceptionHandler(Exception.class)
     public Result handleException(Exception e) {
         System.out.println("[GlobalExceptionHandler]: " + e.getMessage());
         return Result.error(500, e.getMessage());

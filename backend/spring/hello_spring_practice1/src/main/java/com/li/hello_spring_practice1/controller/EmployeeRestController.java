@@ -3,8 +3,14 @@ package com.li.hello_spring_practice1.controller;
 import com.li.hello_spring_practice1.bean.Employee;
 import com.li.hello_spring_practice1.bean.Result;
 import com.li.hello_spring_practice1.service.EmployeeService;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.HashMap;
+import java.util.Map;
 
 @RequestMapping("/restapi/v1")
 // cllow cross origin
@@ -59,5 +65,19 @@ public class EmployeeRestController {
     public Result handleArithmeticException(ArithmeticException e) {
         System.out.println("[EmployeeRestController]: " + e.getMessage());
         return new Result(500, e.getMessage());
+    }
+
+    @RequestMapping(value = "/employee/valtest", method = RequestMethod.GET)
+    public Result getEmployeeValTest(
+            @RequestBody @Valid Employee employee,
+            BindingResult bindingResult
+    ) {
+        if (!bindingResult.hasErrors())
+            return Result.ok(employee);
+
+        Map<String, String> errorMap = new HashMap<>();
+        for (var fieldError : bindingResult.getFieldErrors())
+            errorMap.put(fieldError.getField(), fieldError.getDefaultMessage());
+        return new Result(500, "bad parameters", errorMap);
     }
 }
