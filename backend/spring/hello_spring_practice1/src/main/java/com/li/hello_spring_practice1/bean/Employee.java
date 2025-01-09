@@ -39,7 +39,7 @@ public class Employee {
 
 //    @Max(value = 1, message = "gender could only be 0 or 1")
 //    @Min(value = 0, message = "gender could only be 0 or 1")
-    @Gender(message = "gender must be 0 or 1")
+    @Gender(message = "{gender.invalid.message}")
     private Integer gender;
 
     @NotBlank
