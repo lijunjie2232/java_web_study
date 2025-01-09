@@ -69,15 +69,9 @@ public class EmployeeRestController {
 
     @RequestMapping(value = "/employee/valtest", method = RequestMethod.GET)
     public Result getEmployeeValTest(
-            @RequestBody @Valid Employee employee,
-            BindingResult bindingResult
+            @RequestBody @Valid Employee employee
     ) {
-        if (!bindingResult.hasErrors())
-            return Result.ok(employee);
-
-        Map<String, String> errorMap = new HashMap<>();
-        for (var fieldError : bindingResult.getFieldErrors())
-            errorMap.put(fieldError.getField(), fieldError.getDefaultMessage());
-        return new Result(500, "bad parameters", errorMap);
+        return Result.ok(employee);
     }
+
 }

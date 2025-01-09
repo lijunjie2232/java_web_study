@@ -1697,7 +1697,8 @@ public void handle11(int id) {
     - `@NotEmpty`: "not null and size > 0" whick could decorate collection, array, map, string
     - `@NotBlank`: could only decorate string
 
-- `BindingResult`: get errors of `@Valid`
+## `BindingResult`: get errors of `@Valid`
+
     ```java
     @RequestMapping(value = "/employee/valtest", method = RequestMethod.GET)
     public Result getEmployeeValTest(
@@ -1713,3 +1714,19 @@ public void handle11(int id) {
         return new Result(500, "bad parameters", errorMap);
     }
     ```
+
+## global exception handler for `@Valid`
+
+- exception class of `@Valid`: `MethodArgumentNotValidException`
+- use `MethodArgumentNotValidException.getBindingResult()` to get `BindingResult`
+
+```java
+
+@ExceptionHandler(MethodArgumentNotValidException.class)
+public Result handleMethodArgumentNotValidException(MethodArgumentNotValidException e) {
+    Map<String, String> errorMap = new HashMap<>();
+    for (var fieldError : e.getBindingResult().getFieldErrors())
+        errorMap.put(fieldError.getField(), fieldError.getDefaultMessage());
+    return new Result(500, "bad parameters", errorMap);
+}
+```
