@@ -1,5 +1,6 @@
 package com.li.hello_spring_practice1.bean;
 
+import com.li.hello_spring_practice1.annotation.Gender;
 import jakarta.validation.constraints.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -36,8 +37,9 @@ public class Employee {
     @Email(message = "email format error")
     private String email;
 
-    @Max(value = 1, message = "gender could only be 0 or 1")
-    @Min(value = 0, message = "gender could only be 0 or 1")
+//    @Max(value = 1, message = "gender could only be 0 or 1")
+//    @Min(value = 0, message = "gender could only be 0 or 1")
+    @Gender(message = "gender must be 0 or 1")
     private Integer gender;
 
     @NotBlank

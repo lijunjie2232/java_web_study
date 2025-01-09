@@ -1699,21 +1699,22 @@ public void handle11(int id) {
 
 ## `BindingResult`: get errors of `@Valid`
 
-    ```java
-    @RequestMapping(value = "/employee/valtest", method = RequestMethod.GET)
-    public Result getEmployeeValTest(
-            @RequestBody @Valid Employee employee,
-            BindingResult bindingResult
-    ) {
-        if (!bindingResult.hasErrors())
-            return Result.ok(employee);
-    
-        Map<String, String> errorMap = new HashMap<>();
-        for (var fieldError : bindingResult.getFieldErrors())
-            errorMap.put(fieldError.getField(), fieldError.getDefaultMessage());
-        return new Result(500, "bad parameters", errorMap);
-    }
-    ```
+```java
+
+@RequestMapping(value = "/employee/valtest", method = RequestMethod.GET)
+public Result getEmployeeValTest(
+        @RequestBody @Valid Employee employee,
+        BindingResult bindingResult
+) {
+    if (!bindingResult.hasErrors())
+        return Result.ok(employee);
+
+    Map<String, String> errorMap = new HashMap<>();
+    for (var fieldError : bindingResult.getFieldErrors())
+        errorMap.put(fieldError.getField(), fieldError.getDefaultMessage());
+    return new Result(500, "bad parameters", errorMap);
+}
+```
 
 ## global exception handler for `@Valid`
 
@@ -1730,3 +1731,60 @@ public Result handleMethodArgumentNotValidException(MethodArgumentNotValidExcept
     return new Result(500, "bad parameters", errorMap);
 }
 ```
+
+## Custom Validation
+
+- implement `ConstraintValidator<TargetAnnotationName, TargetTypeToBeValidated>`
+    ```java
+    package com.li.hello_spring_practice1.validator;
+    
+    import com.li.hello_spring_practice1.annotation.Gender;
+    import jakarta.validation.ConstraintValidator;
+    import jakarta.validation.ConstraintValidatorContext;
+    
+    public class GenderValidator implements ConstraintValidator<Gender, Integer> {
+    
+        @Override
+        public boolean isValid(Integer value, ConstraintValidatorContext constraintValidatorContext) {
+            return value == 1 || value == 0;
+        }
+    }
+    ```
+
+- create annotation and bind the validator
+
+    ```java
+    package com.li.hello_spring_practice1.annotation;
+    
+    import com.li.hello_spring_practice1.validator.GenderValidator;
+    import jakarta.validation.Constraint;
+    import jakarta.validation.Payload;
+    
+    import java.lang.annotation.Documented;
+    import java.lang.annotation.ElementType;
+    import java.lang.annotation.Retention;
+    import java.lang.annotation.RetentionPolicy;
+    import java.lang.annotation.Target;
+    
+    @Target({ElementType.METHOD, ElementType.FIELD, ElementType.ANNOTATION_TYPE, ElementType.CONSTRUCTOR, ElementType.PARAMETER, ElementType.TYPE_USE})
+    @Retention(RetentionPolicy.RUNTIME)
+    @Documented
+    @Constraint(validatedBy = {GenderValidator.class})
+    public @interface Gender {
+        String message() default "{jakarta.validation.constraints.NotNull.message}";
+    
+        Class<?>[] groups() default {};
+    
+        Class<? extends Payload>[] payload() default {};
+    }
+    
+    ```
+
+- use annotation to valid variable
+    ```java
+    public class Employee {
+        // ...
+        @Gender(message = "gender must be 0 or 1")
+        private Integer gender;
+        // ...
+    ```
