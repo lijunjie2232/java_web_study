@@ -1696,3 +1696,20 @@ public void handle11(int id) {
 - `@NotEmpty` & `@NotBlank`:
     - `@NotEmpty`: "not null and size > 0" whick could decorate collection, array, map, string
     - `@NotBlank`: could only decorate string
+
+- `BindingResult`: get errors of `@Valid`
+    ```java
+    @RequestMapping(value = "/employee/valtest", method = RequestMethod.GET)
+    public Result getEmployeeValTest(
+            @RequestBody @Valid Employee employee,
+            BindingResult bindingResult
+    ) {
+        if (!bindingResult.hasErrors())
+            return Result.ok(employee);
+    
+        Map<String, String> errorMap = new HashMap<>();
+        for (var fieldError : bindingResult.getFieldErrors())
+            errorMap.put(fieldError.getField(), fieldError.getDefaultMessage());
+        return new Result(500, "bad parameters", errorMap);
+    }
+    ```
