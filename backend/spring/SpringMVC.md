@@ -1781,6 +1781,13 @@ public Result handleMethodArgumentNotValidException(MethodArgumentNotValidExcept
     }
     
     ```
+  
+## groupd
+- `jakarta.validation.Valid` not support group
+- `org.springframework.validation.annotation.Validated` support group
+- example
+  - `@Email(message = "email format error", groups = {Update.class})`: only `Update` use `@Email` to validate decorated properties
+
 
 - use annotation to valid variable
     ```java
