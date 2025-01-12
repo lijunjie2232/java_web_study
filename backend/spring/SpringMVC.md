@@ -1806,3 +1806,10 @@ public Result handleMethodArgumentNotValidException(MethodArgumentNotValidExcept
 - set `spring.messages.basename=messages`
 - use i18n as `@Gender(message = "{gender.invalid.message}")`, `gender.invalid.message` is defined in messages_xx.properties
 - returned message will match “Accept-Language” in request header
+
+# classification of java bean
+1. Pojo(Plain Old Java Object): common java bean
+2. Dao(Data Access Object): database access and operate object
+3. TO(Transfer Object): transfer data between layers
+4. VO(Value Object/View Object): package data for presentation or to be returned to client
+
