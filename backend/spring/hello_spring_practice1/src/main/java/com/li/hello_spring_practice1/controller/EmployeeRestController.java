@@ -3,6 +3,7 @@ package com.li.hello_spring_practice1.controller;
 import com.li.hello_spring_practice1.bean.Employee;
 import com.li.hello_spring_practice1.bean.Result;
 import com.li.hello_spring_practice1.service.EmployeeService;
+import com.li.hello_spring_practice1.vo.req.EmployeeAddVo;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.BindingResult;
@@ -70,7 +71,7 @@ public class EmployeeRestController {
 
     @RequestMapping(value = "/employee/valtest", method = RequestMethod.GET)
     public Result getEmployeeValTest(
-            @RequestBody @Validated Employee employee
+            @RequestBody @Validated EmployeeAddVo employee
     ) {
         return Result.ok(employee);
     }

@@ -1808,8 +1808,28 @@ public Result handleMethodArgumentNotValidException(MethodArgumentNotValidExcept
 - returned message will match “Accept-Language” in request header
 
 # classification of java bean
-1. Pojo(Plain Old Java Object): common java bean
-2. Dao(Data Access Object): database access and operate object
-3. TO(Transfer Object): transfer data between layers
-4. VO(Value Object/View Object): package data for presentation or to be returned to client
+1. **Pojo**(Plain Old Java Object): common java bean
+2. **Dao**(Data Access Object): database access and operate object
+3. **TO**(Transfer Object): transfer data between layers
+4. **VO**(Value Object/View Object): package data for presentation or to be returned to client
+   - VO is an class similar to bean
+   - but others like validation could be changed to meet requirement of send and receive data
 
+```yaml
+# project structure
+- src/main/java/[pkg_name]
+    - advice: Exception handler
+    - annotation: Custom annotation
+    - config: Spring configuration class
+    - controller: Controller
+    - dao: Dao
+    - interceptor: Interceptor(拦截器)
+    - service: Service
+    - util: Utility class
+    - vo: View Object
+      - req
+      - resp
+    - validator: Custom validator to be bind to annotation
+    
+    
+```
