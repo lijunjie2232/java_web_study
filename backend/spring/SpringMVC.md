@@ -1,77 +1,80 @@
 <!-- TOC -->
+
 * [Start a Spring MVC Application](#start-a-spring-mvc-application)
-  * [maven dependency](#maven-dependency)
-  * [A Simple Controller](#a-simple-controller)
-    * [`@RequestMapping`](#requestmapping)
-    * [`@Controller`](#controller)
-    * [`@ResponseBody`](#responsebody)
-    * [`@RestController`](#restcontroller)
-    * [Start Application](#start-application)
-    * [url match pattern:](#url-match-pattern)
-    * [params:](#params)
+    * [maven dependency](#maven-dependency)
+    * [A Simple Controller](#a-simple-controller)
+        * [`@RequestMapping`](#requestmapping)
+        * [`@Controller`](#controller)
+        * [`@ResponseBody`](#responsebody)
+        * [`@RestController`](#restcontroller)
+        * [Start Application](#start-application)
+        * [url match pattern:](#url-match-pattern)
+        * [params:](#params)
 * [SpringMVC Request](#springmvc-request)
-  * [direct get request parameter by setting method parameter](#direct-get-request-parameter-by-setting-method-parameter)
-  * [`@RequestParam`](#requestparam)
-  * [use POJO to get parameter](#use-pojo-to-get-parameter)
-  * [`@PathVariable`](#pathvariable)
-  * [`@RequestHeader`](#requestheader)
-  * [`@CookieValue`](#cookievalue)
-  * [POJO for Complex HTML Form](#pojo-for-complex-html-form)
-    * [form](#form)
-    * [example request data](#example-request-data)
-    * [Entity](#entity)
-    * [handle](#handle)
-    * [Output](#output)
-  * [`@RequestBody`](#requestbody)
-  * [File Upload](#file-upload)
-    * [Form](#form-1)
-    * [handle](#handle-1)
-    * [spring file upload option](#spring-file-upload-option)
-  * [HttpEntity](#httpentity)
-    * [Request Body](#request-body)
-    * [Output](#output-1)
-  * [Servlet API](#servlet-api)
-  * [SpringMVC Request 总结](#springmvc-request-总结)
-    * [RequestMapping 函数接收参数类型:](#requestmapping-函数接收参数类型)
-    * [@RequestPart和 @RequestParam的区别](#requestpart和-requestparam的区别)
+    * [direct get request parameter by setting method parameter](#direct-get-request-parameter-by-setting-method-parameter)
+    * [`@RequestParam`](#requestparam)
+    * [use POJO to get parameter](#use-pojo-to-get-parameter)
+    * [`@PathVariable`](#pathvariable)
+    * [`@RequestHeader`](#requestheader)
+    * [`@CookieValue`](#cookievalue)
+    * [POJO for Complex HTML Form](#pojo-for-complex-html-form)
+        * [form](#form)
+        * [example request data](#example-request-data)
+        * [Entity](#entity)
+        * [handle](#handle)
+        * [Output](#output)
+    * [`@RequestBody`](#requestbody)
+    * [File Upload](#file-upload)
+        * [Form](#form-1)
+        * [handle](#handle-1)
+        * [spring file upload option](#spring-file-upload-option)
+    * [HttpEntity](#httpentity)
+        * [Request Body](#request-body)
+        * [Output](#output-1)
+    * [Servlet API](#servlet-api)
+    * [SpringMVC Request 总结](#springmvc-request-总结)
+        * [RequestMapping 函数接收参数类型:](#requestmapping-函数接收参数类型)
+        * [@RequestPart和 @RequestParam的区别](#requestpart和-requestparam的区别)
 * [SpringMVC Response](#springmvc-response)
-  * [Response json data by bean](#response-json-data-by-bean)
-  * [File download](#file-download)
-    * [File Name Encode](#file-name-encode)
-    * [Continuous Download for Large File](#continuous-download-for-large-file)
-      * [Parse of `Range` in Header](#parse-of-range-in-header)
-      * [Use OutputStream of Response](#use-outputstream-of-response)
-      * [Use `InputStreamResource` (return `ResponseEntity<InputStreamResource>`)](#use-inputstreamresource-return-responseentityinputstreamresource)
-  * [Thymeleaf](#thymeleaf)
-    * [dependency](#dependency)
-    * [a simple example](#a-simple-example)
-    * [expression](#expression)
-    * [inner object](#inner-object)
-    * [value](#value)
-    * [iterate](#iterate)
-    * [conditional](#conditional)
-    * [local variable](#local-variable)
-    * [inline expression](#inline-expression)
-    * [template fragment](#template-fragment)
+    * [Response json data by bean](#response-json-data-by-bean)
+    * [File download](#file-download)
+        * [File Name Encode](#file-name-encode)
+        * [Continuous Download for Large File](#continuous-download-for-large-file)
+            * [Parse of `Range` in Header](#parse-of-range-in-header)
+            * [Use OutputStream of Response](#use-outputstream-of-response)
+            * [Use `InputStreamResource` (return
+              `ResponseEntity<InputStreamResource>`)](#use-inputstreamresource-return-responseentityinputstreamresource)
+    * [Thymeleaf](#thymeleaf)
+        * [dependency](#dependency)
+        * [a simple example](#a-simple-example)
+        * [expression](#expression)
+        * [inner object](#inner-object)
+        * [value](#value)
+        * [iterate](#iterate)
+        * [conditional](#conditional)
+        * [local variable](#local-variable)
+        * [inline expression](#inline-expression)
+        * [template fragment](#template-fragment)
 * [RESTful](#restful)
-  * [An Example of RESTful API](#an-example-of-restful-api)
+    * [An Example of RESTful API](#an-example-of-restful-api)
 * [Spring Filter](#spring-filter)
 * [Spring Exception](#spring-exception)
-  * [`@ExceptionHandler`](#exceptionhandler)
-    * [Example](#example)
-  * [`@ControllerAdvice`](#controlleradvice)
-    * [Example](#example-1)
-  * [Exception handling in Project](#exception-handling-in-project)
-    * [a simple business exception class example](#a-simple-business-exception-class-example)
-      * [a enum class to store error code and message](#a-enum-class-to-store-error-code-and-message)
-      * [a business exception class](#a-business-exception-class)
-      * [register the exception handler](#register-the-exception-handler)
-      * [throw the exception in service](#throw-the-exception-in-service)
+    * [`@ExceptionHandler`](#exceptionhandler)
+        * [Example](#example)
+    * [`@ControllerAdvice`](#controlleradvice)
+        * [Example](#example-1)
+    * [Exception handling in Project](#exception-handling-in-project)
+        * [a simple business exception class example](#a-simple-business-exception-class-example)
+            * [a enum class to store error code and message](#a-enum-class-to-store-error-code-and-message)
+            * [a business exception class](#a-business-exception-class)
+            * [register the exception handler](#register-the-exception-handler)
+            * [throw the exception in service](#throw-the-exception-in-service)
 * [Spring Data Validation](#spring-data-validation)
-  * [`BindingResult`: get errors of `@Valid`](#bindingresult-get-errors-of-valid)
-  * [global exception handler for `@Valid`](#global-exception-handler-for-valid)
-  * [Custom Validation](#custom-validation)
+    * [`BindingResult`: get errors of `@Valid`](#bindingresult-get-errors-of-valid)
+    * [global exception handler for `@Valid`](#global-exception-handler-for-valid)
+    * [Custom Validation](#custom-validation)
 * [Internationalization (i18n)](#internationalization-i18n)
+
 <!-- TOC -->
 
 # Start a Spring MVC Application
@@ -1781,12 +1784,14 @@ public Result handleMethodArgumentNotValidException(MethodArgumentNotValidExcept
     }
     
     ```
-  
+
 ## groupd
+
 - `jakarta.validation.Valid` not support group
 - `org.springframework.validation.annotation.Validated` support group
 - example
-  - `@Email(message = "email format error", groups = {Update.class})`: only `Update` use `@Email` to validate decorated properties
+    - `@Email(message = "email format error", groups = {Update.class})`: only `Update` use `@Email` to validate
+      decorated properties
 
 
 - use annotation to valid variable
@@ -1797,23 +1802,27 @@ public Result handleMethodArgumentNotValidException(MethodArgumentNotValidExcept
         private Integer gender;
         // ...
     ```
+
 # Internationalization (i18n)
+
 - add properties:
-  - messages.properties
-  - messages_zh.properties
-  - messages_ja.properties
-  - messages_en.properties
+    - messages.properties
+    - messages_zh.properties
+    - messages_ja.properties
+    - messages_en.properties
 - set `spring.messages.basename=messages`
-- use i18n as `@Gender(message = "{gender.invalid.message}")`, `gender.invalid.message` is defined in messages_xx.properties
+- use i18n as `@Gender(message = "{gender.invalid.message}")`, `gender.invalid.message` is defined in
+  messages_xx.properties
 - returned message will match “Accept-Language” in request header
 
 # classification of java bean
+
 1. **Pojo**(Plain Old Java Object): common java bean
 2. **Dao**(Data Access Object): database access and operate object
 3. **TO**(Transfer Object): transfer data between layers
 4. **VO**(Value Object/View Object): package data for presentation or to be returned to client
-   - VO is an class similar to bean
-   - but others like validation could be changed to meet requirement of send and receive data
+    - VO is an class similar to bean
+    - but others like validation could be changed to meet requirement of send and receive data
 
 ```yaml
 # project structure
@@ -1823,13 +1832,49 @@ public Result handleMethodArgumentNotValidException(MethodArgumentNotValidExcept
     - config: Spring configuration class
     - controller: Controller
     - dao: Dao
+        - impl
     - interceptor: Interceptor(拦截器)
     - service: Service
+        - impl
     - util: Utility class
     - vo: View Object
-      - req
-      - resp
+        - req
+        - resp
     - validator: Custom validator to be bind to annotation
-    
-    
+
+```
+
+- usage of VO:
+```java
+/*
+1. some responsed data need to exclude some properties compares to POJO, in these VO, excluded properties are not to be defined
+2. copy POJO properties to VO by BeanUtils.copyProperties(src, dest), then return VO to client
+ */
+
+public class Employee {
+    String name;
+    String Email;
+    Integer gender;
+    Integer age;
+    // ...
+}
+
+public class EmployeeVO {
+    String name;
+    String Email;
+}
+
+public class EmployeeController {
+    @GetMapping("/employees")
+    public Result getEmployees() {
+        List<Employee> employees = employeeService.getEmployees();
+        List<EmployeeVO> employeeVOs = employees.stream().map(employee -> {
+            EmployeeVO employeeVO = new EmployeeVO();
+            BeanUtils.copyProperties(employee, employeeVO);
+            return employeeVO;
+        }).collect(Collectors.toList());
+        return  Result.ok(employeeVOs);
+    }
+}
+
 ```
