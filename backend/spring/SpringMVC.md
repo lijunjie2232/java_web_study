@@ -76,6 +76,7 @@
     * [groupd](#groupd)
 * [Internationalization (i18n)](#internationalization-i18n)
 * [classification of java bean](#classification-of-java-bean)
+* [API Documentation](#api-documentation)
 
 <!-- TOC -->
 
@@ -1921,6 +1922,9 @@ public class EmployeeController {
     - `@Parameter`: add description to controller method parameter
     - `@Parameters`: include multiple `@Parameter`
     - `@Schema`: add description to beans and fields in bean
+
+- visit `http://127.0.0.1:8080/doc.html` or `http://127.0.0.1:8080/swagger-ui/index.html` to see knife4j or swagger API
+  documentation
 
 ```java
 //...
