@@ -6,7 +6,10 @@ import com.li.hello_spring_practice1.service.EmployeeService;
 import com.li.hello_spring_practice1.vo.req.EmployeeAddVo;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.Parameters;
 import io.swagger.v3.oas.annotations.enums.ParameterIn;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.BindingResult;
@@ -17,23 +20,29 @@ import org.springframework.web.bind.annotation.*;
 import java.util.HashMap;
 import java.util.Map;
 
+@RestController
 @RequestMapping("/restapi/v1")
 // cllow cross origin
 @CrossOrigin(origins = "*")
-@RestController
+@Tag(name = "Employee", description = "Employee API")
 public class EmployeeRestController {
 
     @Autowired
     EmployeeService employeeService;
 
     @Operation(summary = "get user by id")
-    @Parameter(name = "id", description = "employee id", in = ParameterIn.PATH, required = true)
+    @Parameters(
+            {
+                    @Parameter(name = "id", description = "employee id", in = ParameterIn.PATH, required = true)
+            }
+    )
     @RequestMapping(value = "/employee/{id}", method = RequestMethod.GET)
     public Result getEmployee(@PathVariable int id) {
         return new Result(employeeService.getEmployee(id));
     }
 
     //    @RequestMapping(value = "/employee", method = RequestMethod.POST)
+    @Operation(summary = "add user")
     @PostMapping(value = "/employee")
     public Result addEmployee(@RequestBody Employee employee) {
 
