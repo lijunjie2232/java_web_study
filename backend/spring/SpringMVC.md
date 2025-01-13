@@ -1816,12 +1816,13 @@ public Result handleMethodArgumentNotValidException(MethodArgumentNotValidExcept
 
 # classification of java bean
 
-1. **Pojo**(Plain Old Java Object): common java bean
-2. **Dao**(Data Access Object): database access and operate object
+1. **POJO**(Plian Ordinary Java Object): common java bean
+2. **DAO**(Data Access Object): database access and operate object
 3. **TO**(Transfer Object): transfer data between layers
 4. **VO**(Value Object/View Object): package data for presentation or to be returned to client
     - VO is an class similar to bean
     - but others like validation could be changed to meet requirement of send and receive data
+5. **BO**(Business Object): object to store business data temporarily in service layer 
 
 ```yaml
 # project structure
@@ -1877,3 +1878,35 @@ public class EmployeeController {
 }
 
 ```
+
+# API Documentation
+
+- add dependency:
+  ```xml
+  <dependency>
+    <groupId>com.github.xiaoymin</groupId>
+    <artifactId>knife4j-openapi3-jakarta-spring-boot-starter</artifactId>
+    <version>4.4.0</version>
+  </dependency> 
+  ```
+  
+- add configuration to `application.yaml`:
+  ```yaml
+  # springdoc-openapi项目配置
+  springdoc:
+    swagger-ui:
+      path: /swagger-ui.html
+      tags-sorter: alpha
+      operations-sorter: alpha
+    api-docs:
+      path: /v3/api-docs
+    group-configs:
+      - group: 'default'
+        paths-to-match: '/**'
+        packages-to-scan: com.li.hello_spring_practice1.controller
+  # knife4j的增强配置，不需要增强可以不配
+  knife4j:
+    enable: true
+    setting:
+      language: zh_cn
+  ```

@@ -4,6 +4,9 @@ import com.li.hello_spring_practice1.bean.Employee;
 import com.li.hello_spring_practice1.bean.Result;
 import com.li.hello_spring_practice1.service.EmployeeService;
 import com.li.hello_spring_practice1.vo.req.EmployeeAddVo;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.enums.ParameterIn;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.BindingResult;
@@ -23,6 +26,8 @@ public class EmployeeRestController {
     @Autowired
     EmployeeService employeeService;
 
+    @Operation(summary = "get user by id")
+    @Parameter(name = "id", description = "employee id", in = ParameterIn.PATH, required = true)
     @RequestMapping(value = "/employee/{id}", method = RequestMethod.GET)
     public Result getEmployee(@PathVariable int id) {
         return new Result(employeeService.getEmployee(id));
