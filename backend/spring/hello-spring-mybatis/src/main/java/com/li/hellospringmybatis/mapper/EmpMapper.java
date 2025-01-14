@@ -1,9 +1,9 @@
 package com.li.hellospringmybatis.mapper;
 
 import com.li.hellospringmybatis.pojo.Emp;
-import org.springframework.web.bind.annotation.Mapping;
+import org.apache.ibatis.annotations.Mapper;
 
-@Mapping
+@Mapper
 public interface EmpMapper {
-    public Emp getEmpById(Integer id);
+    Emp getEmpById(Integer id);
 }

@@ -12,12 +12,13 @@ spring.datasource.driver-class-name=com.mysql.cj.jdbc.Driver
 package com.li.hellospringmybatis.mapper;
 
 import com.li.hellospringmybatis.pojo.Emp;
-import org.springframework.web.bind.annotation.Mapping;
+import org.apache.ibatis.annotations.Mapper;
 
-@Mapping
+@Mapper
 public interface EmpMapper {
-    public Emp getEmpById(Integer id);
+    Emp getEmpById(Integer id);
 }
+
 ```
 
 - create Mybatis xml configuration file for mapper
@@ -29,5 +30,10 @@ public interface EmpMapper {
         select * from emp where id = #{id}
     </select>
 </mapper>
+```
+
+- config mybatis files path in application.properties
+```properties
+mybatis.mapper-locations=classpath:mapper/**.xml
 ```
 
