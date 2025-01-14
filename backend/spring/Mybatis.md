@@ -1,7 +1,14 @@
+<!-- TOC -->
 
+* [A Simple Mybatis Example](#a-simple-mybatis-example)
+    * [@Mapper](#mapper)
+
+<!-- TOC -->
 
 # A Simple Mybatis Example
-- improt depencencies
+
+- add depencency
+
 ```xml
 
 <dependency>
