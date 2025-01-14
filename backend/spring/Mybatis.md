@@ -1,4 +1,16 @@
+
+
 # A Simple Mybatis Example
+- improt depencencies
+```xml
+
+<dependency>
+    <groupId>org.mybatis.spring.boot</groupId>
+    <artifactId>mybatis-spring-boot-starter-test</artifactId>
+    <version>3.0.4</version>
+    <scope>test</scope>
+</dependency>
+```
 
 - configure datasource as spring boot jdbc
 
