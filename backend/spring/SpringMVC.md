@@ -2007,3 +2007,68 @@ public class Employee {
         PRIMARY KEY (`id`)
     );
     ```
+
+
+## @JsonFormat
+- decorate class or field to change date format
+```java
+package com.li.hello_spring_practice1.bean;
+
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.li.hello_spring_practice1.annotation.Gender;
+import io.swagger.v3.oas.annotations.media.Schema;
+import jakarta.validation.constraints.DecimalMin;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotBlank;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+import java.math.BigDecimal;
+import java.util.Date;
+
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+@Schema(description = "log")
+public class Log {
+    /*
+    for sql table:
+    CREATE TABLE `login`
+    (
+        `id`       int(11)      NOT NULL AUTO_INCREMENT,
+        `username` varchar(255) NOT NULL,
+        `time`     datetime DEFAULT CURRENT_TIMESTAMP,
+        PRIMARY KEY (`id`)
+    );
+     */
+    @Schema(description = "id", example = "1")
+    private int id;
+
+    @Schema(description = "username", example = "li")
+    private String username;
+
+    @Schema(description = "time", example = "2023-05-05 12:12:12")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+9")
+    private Date time;
+
+    public Log(String username) {
+        this.username = username;
+    }
+}
+
+```
+
+- json data returns to client will be like this with `@JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+9")`:
+    ```json
+    {
+        "code": 200,
+        "msg": "ok",
+        "data": {
+            "id": 1,
+            "username": "admin",
+            "time": "2025-01-14 04:46:01"
+        }
+    }
+    ```

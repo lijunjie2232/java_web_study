@@ -23,8 +23,8 @@ public class LogDaoImpl implements LogDao {
 
     @Override
     public void addLog(Log log) {
-        String sql = "insert into log(username, time) values(?, ?)";
-        jdbcTemplate.update(sql, log.getUsername(), log.getTime());
+        String sql = "insert into log (username) values (?)";
+        jdbcTemplate.update(sql, log.getUsername());
     }
 
     @Override

@@ -1,5 +1,6 @@
 package com.li.hello_spring_practice1.bean;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.li.hello_spring_practice1.annotation.Gender;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.DecimalMin;
@@ -30,8 +31,15 @@ public class Log {
      */
     @Schema(description = "id", example = "1")
     private int id;
+
     @Schema(description = "username", example = "li")
     private String username;
+
     @Schema(description = "time", example = "2023-05-05 12:12:12")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+9")
     private Date time;
+
+    public Log(String username) {
+        this.username = username;
+    }
 }

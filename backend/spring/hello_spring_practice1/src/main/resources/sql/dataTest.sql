@@ -1,8 +1,8 @@
 USE `ssm2`;
 
-DROP TABLE IF EXISTS `login`;
+DROP TABLE IF EXISTS `log`;
 
-CREATE TABLE `login`
+CREATE TABLE `log`
 (
     `id`       int(11)      NOT NULL AUTO_INCREMENT,
     `username` varchar(255) NOT NULL,
@@ -11,12 +11,11 @@ CREATE TABLE `login`
 );
 
 # insert multiple rows
-INSERT INTO `login` (`username`)
+INSERT INTO `log` (`username`)
 VALUES ('admin'),
        ('user'),
        ('admin'),
        ('user'),
        ('admin'),
-       ('user'),
        ('admin'),
        ('user');
