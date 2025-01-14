@@ -1994,3 +1994,16 @@ public class Employee {
     private BigDecimal salary;
 }
 ```
+
+# Date Handling
+
+- create sql
+    ```sql
+    CREATE TABLE `login`
+    (
+        `id`       int(11)      NOT NULL AUTO_INCREMENT,
+        `username` varchar(255) NOT NULL,
+        `time`     datetime DEFAULT CURRENT_TIMESTAMP,
+        PRIMARY KEY (`id`)
+    );
+    ```
