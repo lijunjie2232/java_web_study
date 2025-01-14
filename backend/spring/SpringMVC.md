@@ -2072,3 +2072,4 @@ public class Log {
         }
     }
     ```
+- receive time filed in request body should be like: `"2025-01-14 04:46:01"` 
