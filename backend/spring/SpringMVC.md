@@ -2088,8 +2088,8 @@ once request comes, `DispatcherServlet` will do the following things to handle t
 ![SpringMVC.png](SpringMVC.png)
 
 ## DispatcherServlet class properties
-doService -> doDispatch -> doResolveHandlerMethod -> doInvokeHandlerMethod -> doResolveException
 
+doService -> doDispatch -> doResolveHandlerMethod -> doInvokeHandlerMethod -> doResolveException
 
 - MultipartResolver: parse multipart request (multipart/form-data)
 - LocaleResolver: resolve i18n
@@ -2101,98 +2101,147 @@ doService -> doDispatch -> doResolveHandlerMethod -> doInvokeHandlerMethod -> do
 - FlashMapManager: (MVC) resolve flash for forward jsp page
 - List<ViewResolver>: (MVC) resolve view
 
-## `HandlerMapping` is `HashMap<RequestMappingInfo, HandlerMethod>`
+- `HandlerMapping` is `HashMap<RequestMappingInfo, HandlerMethod>`
+- `HandlerExceptionChain` includes a `interceptorList:ArrayList<Interceptor>`
+- `RequestMappingHandlerAdapter`: `HandlerAdapter`的实现类，用于执行`@RequestMapping`请求处理逻辑。
 
-- `HandlerExceptionChain` of each handlerMapping has a HandlerExceptionChain which including a
-  `interceptorList:ArrayList<Interceptor>`
-
+## `HandlerMapping`
 - 作用：用于映射请求到处理器（Controller）。它是 DispatcherServlet 和handler之间的桥梁。
-
+- DispatcherServlet 收到请求后，调用 HandlerMapping 来查找与当前请求匹配的处理器和拦截器链。
 - `RequestMappingHandlerMapping`：最常用的实现类，支持通过 @RequestMapping 注解进行请求映射。
 - `BeanNameUrlHandlerMapping`：根据 Bean 名称映射 URL。
 - `SimpleUrlHandlerMapping`：通过配置文件定义 URL 和处理器之间的映射关系。
-- 流程：DispatcherServlet 收到请求后，调用 HandlerMapping 来查找与当前请求匹配的处理器和拦截器链。
 - 返回 HandlerExecutionChain 对象，包含处理器对象和一系列拦截器。
 
 ## HandlerAdapter
 
 - 作用：适配处理器（Controller）的方法签名，使其能够被 DispatcherServlet 调用。不同类型的处理器可能有不同的方法签名，HandlerAdapter
   提供了一致的接口。
-  类型：
+- DispatcherServlet 获取到处理器对象后，调用 HandlerAdapter 来执行处理器方法。
 - `RequestMappingHandlerAdapter`：最常用的实现类，支持处理带有 @RequestMapping 注解的处理器方法。
-  流程：
-- `DispatcherServlet` 获取到处理器对象后，调用 HandlerAdapter 来执行处理器方法。
-- `HandlerAdapter` 负责解析方法参数、调用方法并处理返回值。
+- 返回 `HandlerAdapter` 负责解析方法参数、调用方法并处理返回值。
 
 ## parameterResolver
 
 ```java
 // org.springframework.web.servlet.DispatcherServlet.doDispatch
 protected void doDispatch(HttpServletRequest request, HttpServletResponse response) throws Exception {
-    HttpServletRequest processedRequest = request;
-    HandlerExecutionChain mappedHandler = null;
-    boolean multipartRequestParsed = false;
-    WebAsyncManager asyncManager = WebAsyncUtils.getAsyncManager(request);
+    HttpServletRequest processedRequest = request; // 初始化请求对象
+    HandlerExecutionChain mappedHandler = null; // 用于存储匹配到的处理器和拦截器链
+    boolean multipartRequestParsed = false; // 标记是否解析了多部分请求（文件上传）
+    WebAsyncManager asyncManager = WebAsyncUtils.getAsyncManager(request); // 获取异步管理器
 
     try {
         try {
-            ModelAndView mv = null;
-            Exception dispatchException = null;
+            ModelAndView mv = null; // 用于存储视图和模型数据
+            Exception dispatchException = null; // 用于捕获异常
 
             try {
+                // 检查并解析多部分请求（如文件上传）
                 processedRequest = this.checkMultipart(request);
                 multipartRequestParsed = processedRequest != request;
+
+                // 查找与当前请求匹配的处理器和拦截器链
                 mappedHandler = this.getHandler(processedRequest);
                 if (mappedHandler == null) {
+                    // 如果没有找到匹配的处理器，调用 noHandlerFound 方法处理
                     this.noHandlerFound(processedRequest, response);
                     return;
                 }
 
+                // 获取适配器来执行匹配到的处理器
                 HandlerAdapter ha = this.getHandlerAdapter(mappedHandler.getHandler());
+
+                // 获取请求方法，并判断是否为 GET 或 HEAD 请求
                 String method = request.getMethod();
                 boolean isGet = HttpMethod.GET.matches(method);
                 if (isGet || HttpMethod.HEAD.matches(method)) {
+                    // 对于 GET 和 HEAD 请求，检查资源是否未修改
                     long lastModified = ha.getLastModified(request, mappedHandler.getHandler());
                     if ((new ServletWebRequest(request, response)).checkNotModified(lastModified) && isGet) {
                         return;
                     }
                 }
 
+                // 执行拦截器的 preHandle 方法
                 if (!mappedHandler.applyPreHandle(processedRequest, response)) {
                     return;
                 }
 
+                // 调用处理器方法，获取返回的 ModelAndView 对象
                 mv = ha.handle(processedRequest, response, mappedHandler.getHandler());
+
+                // 如果异步处理已经开始，则直接返回
                 if (asyncManager.isConcurrentHandlingStarted()) {
                     return;
                 }
 
+                // 如果没有指定视图名称，默认应用视图名称
                 this.applyDefaultViewName(processedRequest, mv);
+
+                // 执行拦截器的 postHandle 方法
                 mappedHandler.applyPostHandle(processedRequest, response, mv);
             } catch (Exception ex) {
+                // 捕获处理器方法中的异常
                 dispatchException = ex;
             } catch (Throwable err) {
+                // 捕获处理器方法中的严重错误
                 dispatchException = new ServletException("Handler dispatch failed: " + err, err);
             }
 
+            // 处理分派结果，包括渲染视图或处理异常
             this.processDispatchResult(processedRequest, response, mappedHandler, mv, dispatchException);
         } catch (Exception ex) {
+            // 捕获在 processDispatchResult 中抛出的异常
             triggerAfterCompletion(processedRequest, response, mappedHandler, ex);
         } catch (Throwable err) {
+            // 捕获在 processDispatchResult 中抛出的严重错误
             triggerAfterCompletion(processedRequest, response, mappedHandler, new ServletException("Handler processing failed: " + err, err));
         }
 
     } finally {
+        // 如果异步处理已经开始
         if (asyncManager.isConcurrentHandlingStarted()) {
             if (mappedHandler != null) {
+                // 执行拦截器的 afterConcurrentHandlingStarted 方法
                 mappedHandler.applyAfterConcurrentHandlingStarted(processedRequest, response);
             }
 
+            // 设置多部分请求已解析标志
             asyncManager.setMultipartRequestParsed(multipartRequestParsed);
         } else if (multipartRequestParsed || asyncManager.isMultipartRequestParsed()) {
+            // 清理多部分请求资源
             this.cleanupMultipart(processedRequest);
         }
 
     }
 }
+
+
+@Nullable
+protected HandlerExecutionChain getHandler(HttpServletRequest request) throws Exception {
+    if (this.handlerMappings != null) {
+        for (HandlerMapping mapping : this.handlerMappings) {
+            HandlerExecutionChain handler = mapping.getHandler(request);
+            if (handler != null) {
+                return handler;
+            }
+        }
+    }
+
+    return null;
+}
+
+protected HandlerAdapter getHandlerAdapter(Object handler) throws ServletException {
+    if (this.handlerAdapters != null) {
+        for (HandlerAdapter adapter : this.handlerAdapters) {
+            if (adapter.supports(handler)) {
+                return adapter;
+            }
+        }
+    }
+
+    throw new ServletException("No adapter for handler [" + handler + "]: The DispatcherServlet configuration needs to include a HandlerAdapter that supports this handler");
+}
+
 ```
