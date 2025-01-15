@@ -2106,6 +2106,7 @@ doService -> doDispatch -> doResolveHandlerMethod -> doInvokeHandlerMethod -> do
 - `RequestMappingHandlerAdapter`: `HandlerAdapter`的实现类，用于执行`@RequestMapping`请求处理逻辑。
 
 ## `HandlerMapping`
+
 - 作用：用于映射请求到处理器（Controller）。它是 DispatcherServlet 和handler之间的桥梁。
 - DispatcherServlet 收到请求后，调用 HandlerMapping 来查找与当前请求匹配的处理器和拦截器链。
 - `RequestMappingHandlerMapping`：最常用的实现类，支持通过 @RequestMapping 注解进行请求映射。
@@ -2121,7 +2122,46 @@ doService -> doDispatch -> doResolveHandlerMethod -> doInvokeHandlerMethod -> do
 - `RequestMappingHandlerAdapter`：最常用的实现类，支持处理带有 @RequestMapping 注解的处理器方法。
 - 返回 `HandlerAdapter` 负责解析方法参数、调用方法并处理返回值。
 
-## parameterResolver
+## Source Code
+
+关键步骤解释
+
+1. 初始化：
+
+    - 初始化请求对象 processedRequest。
+    - 初始化 HandlerExecutionChain 对象 mappedHandler，用于存储匹配到的处理器和拦截器链。
+    - 初始化 multipartRequestParsed 标志，标记是否解析了多部分请求。
+    - 获取 WebAsyncManager 对象，用于管理异步请求。
+
+2. 处理请求：
+
+    - 检查多部分请求：调用 checkMultipart 方法检查是否为多部分请求（如文件上传），并解析多部分请求。
+    - 查找处理器：调用 getHandler 方法查找与当前请求匹配的处理器和拦截器链。如果没有找到匹配的处理器，调用 noHandlerFound
+      方法处理。
+    - 获取适配器：调用 getHandlerAdapter 方法获取适配器，用于执行匹配到的处理器。
+    - 检查缓存：对于 GET 和 HEAD 请求，检查资源是否未修改，以避免不必要的处理。
+    - 执行拦截器：调用拦截器的 preHandle 方法，如果返回 false，则终止请求处理。
+    - 调用处理器方法：通过适配器调用处理器方法，获取返回的 ModelAndView 对象。
+    - 处理异步请求：如果异步处理已经开始，则直接返回。
+    - 应用默认视图名称：如果处理器方法没有指定视图名称，默认应用视图名称。
+    - 执行拦截器：调用拦截器的 postHandle 方法。
+
+3. 异常处理：
+
+    - 捕获处理器方法中的异常，并设置 dispatchException。
+    - 捕获处理器方法中的严重错误，并创建 ServletException 异常。
+    - 调用 processDispatchResult 方法处理分派结果，包括渲染视图或处理异常。
+
+4. 清理资源：
+
+    - 如果异步处理已经开始，执行拦截器的 afterConcurrentHandlingStarted 方法，并设置多部分请求已解析标志。
+    - 如果不是异步处理且解析了多部分请求，清理多部分请求资源。
+
+5. 最终处理：
+
+    - 使用 finally 块确保无论是否发生异常，都能正确清理资源。
+
+![SpringMVC.png](SpringMVC.png)
 
 ```java
 // org.springframework.web.servlet.DispatcherServlet.doDispatch
