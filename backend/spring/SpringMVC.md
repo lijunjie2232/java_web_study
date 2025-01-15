@@ -2260,23 +2260,23 @@ protected void doDispatch(HttpServletRequest request, HttpServletResponse respon
 
 @Nullable
 protected HandlerExecutionChain getHandler(HttpServletRequest request) throws Exception {
-    if (this.handlerMappings != null) {
-        for (HandlerMapping mapping : this.handlerMappings) {
-            HandlerExecutionChain handler = mapping.getHandler(request);
-            if (handler != null) {
-                return handler;
+    if (this.handlerMappings != null) { // 检查是否配置了处理器映射器
+        for (HandlerMapping mapping : this.handlerMappings) { // 遍历所有处理器映射器
+            HandlerExecutionChain handler = mapping.getHandler(request); // 尝试获取与请求匹配的处理器和拦截器链
+            if (handler != null) { // 如果找到匹配的处理器
+                return handler; // 返回处理器和拦截器链
             }
         }
     }
 
-    return null;
+    return null; // 如果没有找到匹配的处理器，返回 null
 }
 
 protected HandlerAdapter getHandlerAdapter(Object handler) throws ServletException {
-    if (this.handlerAdapters != null) {
-        for (HandlerAdapter adapter : this.handlerAdapters) {
-            if (adapter.supports(handler)) {
-                return adapter;
+    if (this.handlerAdapters != null) { // 检查是否配置了处理器适配器
+        for (HandlerAdapter adapter : this.handlerAdapters) { // 遍历所有处理器适配器
+            if (adapter.supports(handler)) { // 检查适配器是否支持当前处理器
+                return adapter; // 返回支持该处理器的适配器
             }
         }
     }
@@ -2284,4 +2284,37 @@ protected HandlerAdapter getHandlerAdapter(Object handler) throws ServletExcepti
     throw new ServletException("No adapter for handler [" + handler + "]: The DispatcherServlet configuration needs to include a HandlerAdapter that supports this handler");
 }
 
+private void processDispatchResult(HttpServletRequest request, HttpServletResponse response,
+                                   @Nullable HandlerExecutionChain mappedHandler,
+                                   @Nullable ModelAndView mv,
+                                   @Nullable Exception exception) throws Exception {
+    boolean errorView = false;
+
+    if (exception != null) { // 如果有异常发生
+        if (exception instanceof ModelAndViewDefiningException) { // 如果是 ModelAndViewDefiningException 异常
+            ModelAndViewDefiningException mavDefiningException = (ModelAndViewDefiningException) exception;
+            this.logger.debug("ModelAndViewDefiningException encountered", exception);
+            mv = mavDefiningException.getModelAndView(); // 使用异常中的 ModelAndView
+        } else {
+            Object handler = mappedHandler != null ? mappedHandler.getHandler() : null;
+            mv = this.processHandlerException(request, response, handler, exception); // 处理其他类型的异常
+            errorView = mv != null; // 标记是否为错误视图
+        }
+    }
+
+    if (mv != null && !mv.wasCleared()) { // 如果有非空且未清除的 ModelAndView
+        this.render(mv, request, response); // 渲染视图
+        if (errorView) { // 如果是错误视图
+            WebUtils.clearErrorRequestAttributes(request); // 清除错误属性
+        }
+    } else if (this.logger.isTraceEnabled()) { // 如果没有视图渲染，记录日志
+        this.logger.trace("No view rendering, null ModelAndView returned.");
+    }
+
+    if (!WebAsyncUtils.getAsyncManager(request).isConcurrentHandlingStarted()) { // 如果不是异步处理
+        if (mappedHandler != null) { // 如果有处理器和拦截器链
+            mappedHandler.triggerAfterCompletion(request, response, (Exception) null); // 触发拦截器的 afterCompletion 方法
+        }
+    }
+}
 ```
