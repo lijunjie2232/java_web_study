@@ -1,82 +1,85 @@
 <!-- TOC -->
+
 * [Start a Spring MVC Application](#start-a-spring-mvc-application)
-  * [maven dependency](#maven-dependency)
-  * [A Simple Controller](#a-simple-controller)
-    * [`@RequestMapping`](#requestmapping)
-    * [`@Controller`](#controller)
-    * [`@ResponseBody`](#responsebody)
-    * [`@RestController`](#restcontroller)
-    * [Start Application](#start-application)
-    * [url match pattern:](#url-match-pattern)
-    * [params:](#params)
+    * [maven dependency](#maven-dependency)
+    * [A Simple Controller](#a-simple-controller)
+        * [`@RequestMapping`](#requestmapping)
+        * [`@Controller`](#controller)
+        * [`@ResponseBody`](#responsebody)
+        * [`@RestController`](#restcontroller)
+        * [Start Application](#start-application)
+        * [url match pattern:](#url-match-pattern)
+        * [params:](#params)
 * [SpringMVC Request](#springmvc-request)
-  * [direct get request parameter by setting method parameter](#direct-get-request-parameter-by-setting-method-parameter)
-  * [`@RequestParam`](#requestparam)
-  * [use POJO to get parameter](#use-pojo-to-get-parameter)
-  * [`@PathVariable`](#pathvariable)
-  * [`@RequestHeader`](#requestheader)
-  * [`@CookieValue`](#cookievalue)
-  * [POJO for Complex HTML Form](#pojo-for-complex-html-form)
-    * [form](#form)
-    * [example request data](#example-request-data)
-    * [Entity](#entity)
-    * [handle](#handle)
-    * [Output](#output)
-  * [`@RequestBody`](#requestbody)
-  * [File Upload](#file-upload)
-    * [Form](#form-1)
-    * [handle](#handle-1)
-    * [spring file upload option](#spring-file-upload-option)
-  * [HttpEntity](#httpentity)
-    * [Request Body](#request-body)
-    * [Output](#output-1)
-  * [Servlet API](#servlet-api)
-  * [SpringMVC Request 总结](#springmvc-request-总结)
-    * [RequestMapping 函数接收参数类型:](#requestmapping-函数接收参数类型)
-    * [@RequestPart和 @RequestParam的区别](#requestpart和-requestparam的区别)
+    * [direct get request parameter by setting method parameter](#direct-get-request-parameter-by-setting-method-parameter)
+    * [`@RequestParam`](#requestparam)
+    * [use POJO to get parameter](#use-pojo-to-get-parameter)
+    * [`@PathVariable`](#pathvariable)
+    * [`@RequestHeader`](#requestheader)
+    * [`@CookieValue`](#cookievalue)
+    * [POJO for Complex HTML Form](#pojo-for-complex-html-form)
+        * [form](#form)
+        * [example request data](#example-request-data)
+        * [Entity](#entity)
+        * [handle](#handle)
+        * [Output](#output)
+    * [`@RequestBody`](#requestbody)
+    * [File Upload](#file-upload)
+        * [Form](#form-1)
+        * [handle](#handle-1)
+        * [spring file upload option](#spring-file-upload-option)
+    * [HttpEntity](#httpentity)
+        * [Request Body](#request-body)
+        * [Output](#output-1)
+    * [Servlet API](#servlet-api)
+    * [SpringMVC Request 总结](#springmvc-request-总结)
+        * [RequestMapping 函数接收参数类型:](#requestmapping-函数接收参数类型)
+        * [@RequestPart和 @RequestParam的区别](#requestpart和-requestparam的区别)
 * [SpringMVC Response](#springmvc-response)
-  * [Response json data by bean](#response-json-data-by-bean)
-  * [File download](#file-download)
-    * [File Name Encode](#file-name-encode)
-    * [Continuous Download for Large File](#continuous-download-for-large-file)
-      * [Parse of `Range` in Header](#parse-of-range-in-header)
-      * [Use OutputStream of Response](#use-outputstream-of-response)
-      * [Use `InputStreamResource` (return `ResponseEntity<InputStreamResource>`)](#use-inputstreamresource-return-responseentityinputstreamresource)
-  * [Thymeleaf](#thymeleaf)
-    * [dependency](#dependency)
-    * [a simple example](#a-simple-example)
-    * [expression](#expression)
-    * [inner object](#inner-object)
-    * [value](#value)
-    * [iterate](#iterate)
-    * [conditional](#conditional)
-    * [local variable](#local-variable)
-    * [inline expression](#inline-expression)
-    * [template fragment](#template-fragment)
+    * [Response json data by bean](#response-json-data-by-bean)
+    * [File download](#file-download)
+        * [File Name Encode](#file-name-encode)
+        * [Continuous Download for Large File](#continuous-download-for-large-file)
+            * [Parse of `Range` in Header](#parse-of-range-in-header)
+            * [Use OutputStream of Response](#use-outputstream-of-response)
+            * [Use `InputStreamResource` (return
+              `ResponseEntity<InputStreamResource>`)](#use-inputstreamresource-return-responseentityinputstreamresource)
+    * [Thymeleaf](#thymeleaf)
+        * [dependency](#dependency)
+        * [a simple example](#a-simple-example)
+        * [expression](#expression)
+        * [inner object](#inner-object)
+        * [value](#value)
+        * [iterate](#iterate)
+        * [conditional](#conditional)
+        * [local variable](#local-variable)
+        * [inline expression](#inline-expression)
+        * [template fragment](#template-fragment)
 * [RESTful](#restful)
-  * [An Example of RESTful API](#an-example-of-restful-api)
+    * [An Example of RESTful API](#an-example-of-restful-api)
 * [Spring Filter](#spring-filter)
 * [Spring Exception](#spring-exception)
-  * [`@ExceptionHandler`](#exceptionhandler)
-    * [Example](#example)
-  * [`@ControllerAdvice`](#controlleradvice)
-    * [Example](#example-1)
-  * [Exception handling in Project](#exception-handling-in-project)
-    * [a simple business exception class example](#a-simple-business-exception-class-example)
-      * [a enum class to store error code and message](#a-enum-class-to-store-error-code-and-message)
-      * [a business exception class](#a-business-exception-class)
-      * [register the exception handler](#register-the-exception-handler)
-      * [throw the exception in service](#throw-the-exception-in-service)
+    * [`@ExceptionHandler`](#exceptionhandler)
+        * [Example](#example)
+    * [`@ControllerAdvice`](#controlleradvice)
+        * [Example](#example-1)
+    * [Exception handling in Project](#exception-handling-in-project)
+        * [a simple business exception class example](#a-simple-business-exception-class-example)
+            * [a enum class to store error code and message](#a-enum-class-to-store-error-code-and-message)
+            * [a business exception class](#a-business-exception-class)
+            * [register the exception handler](#register-the-exception-handler)
+            * [throw the exception in service](#throw-the-exception-in-service)
 * [Spring Data Validation](#spring-data-validation)
-  * [`BindingResult`: get errors of `@Valid`](#bindingresult-get-errors-of-valid)
-  * [global exception handler for `@Valid`](#global-exception-handler-for-valid)
-  * [Custom Validation](#custom-validation)
-  * [groupd](#groupd)
+    * [`BindingResult`: get errors of `@Valid`](#bindingresult-get-errors-of-valid)
+    * [global exception handler for `@Valid`](#global-exception-handler-for-valid)
+    * [Custom Validation](#custom-validation)
+    * [groupd](#groupd)
 * [Internationalization (i18n)](#internationalization-i18n)
 * [classification of java bean](#classification-of-java-bean)
 * [API Documentation](#api-documentation)
 * [Date Handling](#date-handling)
-  * [@JsonFormat](#jsonformat)
+    * [@JsonFormat](#jsonformat)
+
 <!-- TOC -->
 
 # Start a Spring MVC Application
@@ -1478,6 +1481,10 @@ MyHandlerInterceptor afterCompletion
 
 # Spring Exception
 
+- in exception handler method returning:
+    - if return string, spring will process as mvc view name
+    - if return object, spring will process as json data
+
 ## `@ExceptionHandler`
 
 - declare a method to handle exception
@@ -2007,9 +2014,10 @@ public class Employee {
     );
     ```
 
-
 ## @JsonFormat
+
 - decorate class or field to change date format
+
 ```java
 package com.li.hello_spring_practice1.bean;
 
@@ -2071,4 +2079,120 @@ public class Log {
         }
     }
     ```
-- receive time filed in request body should be like: `"2025-01-14 04:46:01"` 
+- receive time filed in request body should be like: `"2025-01-14 04:46:01"`
+
+# Spring MVC theory
+
+once request comes, `DispatcherServlet` will do the following things to handle the request
+
+![SpringMVC.png](SpringMVC.png)
+
+## DispatcherServlet class properties
+doService -> doDispatch -> doResolveHandlerMethod -> doInvokeHandlerMethod -> doResolveException
+
+
+- MultipartResolver: parse multipart request (multipart/form-data)
+- LocaleResolver: resolve i18n
+- ThemeResolver: (MVC) resolve theme
+- List<HandlerMapping>: resolve path mapping controller method
+- List<HandlerAdapter>: resolve controller method (reflection)
+- List<HandlerExceptionResolver>: resolve exception
+- RequestToViewNameTranslator: (MVC) resolve view name
+- FlashMapManager: (MVC) resolve flash for forward jsp page
+- List<ViewResolver>: (MVC) resolve view
+
+## `HandlerMapping` is `HashMap<RequestMappingInfo, HandlerMethod>`
+
+- `HandlerExceptionChain` of each handlerMapping has a HandlerExceptionChain which including a
+  `interceptorList:ArrayList<Interceptor>`
+
+- 作用：用于映射请求到处理器（Controller）。它是 DispatcherServlet 和handler之间的桥梁。
+
+- `RequestMappingHandlerMapping`：最常用的实现类，支持通过 @RequestMapping 注解进行请求映射。
+- `BeanNameUrlHandlerMapping`：根据 Bean 名称映射 URL。
+- `SimpleUrlHandlerMapping`：通过配置文件定义 URL 和处理器之间的映射关系。
+- 流程：DispatcherServlet 收到请求后，调用 HandlerMapping 来查找与当前请求匹配的处理器和拦截器链。
+- 返回 HandlerExecutionChain 对象，包含处理器对象和一系列拦截器。
+
+## HandlerAdapter
+
+- 作用：适配处理器（Controller）的方法签名，使其能够被 DispatcherServlet 调用。不同类型的处理器可能有不同的方法签名，HandlerAdapter
+  提供了一致的接口。
+  类型：
+- `RequestMappingHandlerAdapter`：最常用的实现类，支持处理带有 @RequestMapping 注解的处理器方法。
+  流程：
+- `DispatcherServlet` 获取到处理器对象后，调用 HandlerAdapter 来执行处理器方法。
+- `HandlerAdapter` 负责解析方法参数、调用方法并处理返回值。
+
+## parameterResolver
+
+```java
+// org.springframework.web.servlet.DispatcherServlet.doDispatch
+protected void doDispatch(HttpServletRequest request, HttpServletResponse response) throws Exception {
+    HttpServletRequest processedRequest = request;
+    HandlerExecutionChain mappedHandler = null;
+    boolean multipartRequestParsed = false;
+    WebAsyncManager asyncManager = WebAsyncUtils.getAsyncManager(request);
+
+    try {
+        try {
+            ModelAndView mv = null;
+            Exception dispatchException = null;
+
+            try {
+                processedRequest = this.checkMultipart(request);
+                multipartRequestParsed = processedRequest != request;
+                mappedHandler = this.getHandler(processedRequest);
+                if (mappedHandler == null) {
+                    this.noHandlerFound(processedRequest, response);
+                    return;
+                }
+
+                HandlerAdapter ha = this.getHandlerAdapter(mappedHandler.getHandler());
+                String method = request.getMethod();
+                boolean isGet = HttpMethod.GET.matches(method);
+                if (isGet || HttpMethod.HEAD.matches(method)) {
+                    long lastModified = ha.getLastModified(request, mappedHandler.getHandler());
+                    if ((new ServletWebRequest(request, response)).checkNotModified(lastModified) && isGet) {
+                        return;
+                    }
+                }
+
+                if (!mappedHandler.applyPreHandle(processedRequest, response)) {
+                    return;
+                }
+
+                mv = ha.handle(processedRequest, response, mappedHandler.getHandler());
+                if (asyncManager.isConcurrentHandlingStarted()) {
+                    return;
+                }
+
+                this.applyDefaultViewName(processedRequest, mv);
+                mappedHandler.applyPostHandle(processedRequest, response, mv);
+            } catch (Exception ex) {
+                dispatchException = ex;
+            } catch (Throwable err) {
+                dispatchException = new ServletException("Handler dispatch failed: " + err, err);
+            }
+
+            this.processDispatchResult(processedRequest, response, mappedHandler, mv, dispatchException);
+        } catch (Exception ex) {
+            triggerAfterCompletion(processedRequest, response, mappedHandler, ex);
+        } catch (Throwable err) {
+            triggerAfterCompletion(processedRequest, response, mappedHandler, new ServletException("Handler processing failed: " + err, err));
+        }
+
+    } finally {
+        if (asyncManager.isConcurrentHandlingStarted()) {
+            if (mappedHandler != null) {
+                mappedHandler.applyAfterConcurrentHandlingStarted(processedRequest, response);
+            }
+
+            asyncManager.setMultipartRequestParsed(multipartRequestParsed);
+        } else if (multipartRequestParsed || asyncManager.isMultipartRequestParsed()) {
+            this.cleanupMultipart(processedRequest);
+        }
+
+    }
+}
+```
