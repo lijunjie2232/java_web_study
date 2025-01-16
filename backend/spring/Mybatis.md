@@ -42,15 +42,15 @@ import java.util.List;
 
 @Mapper
 public interface EmpMapper {
-  Emp getEmpById(Integer id);
+    Emp getEmpById(Integer id);
 
-  void addEmp(Emp emp);
+    void addEmp(Emp emp);
 
-  List<Emp> getEmps();
+    List<Emp> getEmps();
 
-  void deleteEmpById(Integer id);
+    void deleteEmpById(Integer id);
 
-  void updateEmp(Emp emp);
+    void updateEmp(Emp emp);
 }
 
 
@@ -63,31 +63,31 @@ public interface EmpMapper {
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="com.li.hellospringmybatis.mapper.EmpMapper">
-  <insert id="addEmp">
-    insert into `emp` (`name`, `age`, `salary`)
-    values (#{name}, #{age}, #{salary})
-  </insert>
-  <delete id="deleteEmpById">
-    delete
-    from `emp`
-    where id = #{id}
-  </delete>
-  <select id="getEmpById" resultType="com.li.hellospringmybatis.pojo.Emp">
-    select *
-    from `emp`
-    where id = #{id}
-  </select>
-  <select id="getEmps" resultType="com.li.hellospringmybatis.pojo.Emp">
-    select *
-    from `emp`
-  </select>
-  <update id="updateEmp">
-    update `emp`
-    set `name`   = #{name},
-    `age`    = #{age},
-    `salary` = #{salary}
-    where id = #{id}
-  </update>
+    <insert id="addEmp">
+        insert into `emp` (`name`, `age`, `salary`)
+        values (#{name}, #{age}, #{salary})
+    </insert>
+    <delete id="deleteEmpById">
+        delete
+        from `emp`
+        where id = #{id}
+    </delete>
+    <select id="getEmpById" resultType="com.li.hellospringmybatis.pojo.Emp">
+        select *
+        from `emp`
+        where id = #{id}
+    </select>
+    <select id="getEmps" resultType="com.li.hellospringmybatis.pojo.Emp">
+        select *
+        from `emp`
+    </select>
+    <update id="updateEmp">
+        update `emp`
+        set `name` = #{name},
+        `age` = #{age},
+        `salary` = #{salary}
+        where id = #{id}
+    </update>
 </mapper>
 ```
 
@@ -116,24 +116,32 @@ class HelloSpringMybatisApplicationTests {
     @Test
     void EmpMapperTest() {
 //		get by id test
-		System.out.println(empMapper.getEmpById(1));
+        System.out.println(empMapper.getEmpById(1));
 //		get all test
-		List<Emp> emps = empMapper.getEmps();
-		System.out.println(emps);
+        List<Emp> emps = empMapper.getEmps();
+        System.out.println(emps);
 //		add test
-		empMapper.addEmp(new Emp("小明", 18, new BigDecimal(10000)));
-		emps = empMapper.getEmps();
-		System.out.println(emps);
+        empMapper.addEmp(new Emp("小明", 18, new BigDecimal(10000)));
+        emps = empMapper.getEmps();
+        System.out.println(emps);
 //		delete test
-		empMapper.deleteEmpById(emps.size());
-		emps = empMapper.getEmps();
-		System.out.println(emps);
+        empMapper.deleteEmpById(emps.size());
+        emps = empMapper.getEmps();
+        System.out.println(emps);
 //		update test
-		Emp emp = empMapper.getEmpById(emps.size());
-		System.out.println(emp);
-		emp.setSalary(emp.getSalary().add(new BigDecimal(1000)));
-		empMapper.updateEmp(emp);
-		System.out.println(empMapper.getEmpById(emps.size()));
+        Emp emp = empMapper.getEmpById(emps.size());
+        System.out.println(emp);
+        emp.setSalary(emp.getSalary().add(new BigDecimal(1000)));
+        empMapper.updateEmp(emp);
+        System.out.println(empMapper.getEmpById(emps.size()));
     }
 }
 ```
+
+# show sql in log
+
+- 设置 MyBatis 日志级别为 DEBUG: `logging.level.org.mybatis=DEBUG`
+
+- 或者更具体地设置 MyBatis 映射器的日志级别(`com.li.hellospringmybatis.mapper` is the package name of mappers):
+  `logging.level.com.li.hellospringmybatis.mapper=DEBUG`
+
