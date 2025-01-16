@@ -38,10 +38,21 @@ package com.li.hellospringmybatis.mapper;
 import com.li.hellospringmybatis.pojo.Emp;
 import org.apache.ibatis.annotations.Mapper;
 
+import java.util.List;
+
 @Mapper
 public interface EmpMapper {
-    Emp getEmpById(Integer id);
+  Emp getEmpById(Integer id);
+
+  void addEmp(Emp emp);
+
+  List<Emp> getEmps();
+
+  void deleteEmpById(Integer id);
+
+  void updateEmp(Emp emp);
 }
+
 
 ```
 
@@ -94,7 +105,7 @@ package com.li.hellospringmybatis;
 import com.li.hellospringmybatis.mapper.EmpMapper;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;[SpringMVC.md](SpringMVC.md)
+import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
 class HelloSpringMybatisApplicationTests {
@@ -103,9 +114,26 @@ class HelloSpringMybatisApplicationTests {
     EmpMapper empMapper;
 
     @Test
-    void testEmpMapper() {
-        System.out.println(empMapper.getEmpById(1));
+    void EmpMapperTest() {
+//		get by id test
+		System.out.println(empMapper.getEmpById(1));
+//		get all test
+		List<Emp> emps = empMapper.getEmps();
+		System.out.println(emps);
+//		add test
+		empMapper.addEmp(new Emp("小明", 18, new BigDecimal(10000)));
+		emps = empMapper.getEmps();
+		System.out.println(emps);
+//		delete test
+		empMapper.deleteEmpById(emps.size());
+		emps = empMapper.getEmps();
+		System.out.println(emps);
+//		update test
+		Emp emp = empMapper.getEmpById(emps.size());
+		System.out.println(emp);
+		emp.setSalary(emp.getSalary().add(new BigDecimal(1000)));
+		empMapper.updateEmp(emp);
+		System.out.println(empMapper.getEmpById(emps.size()));
     }
-
 }
 ```

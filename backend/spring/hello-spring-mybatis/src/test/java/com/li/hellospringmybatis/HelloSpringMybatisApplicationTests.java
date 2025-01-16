@@ -17,8 +17,8 @@ class HelloSpringMybatisApplicationTests {
 
 	@Test
 	void EmpMapperTest() {
-////		get by id test
-//		System.out.println(empMapper.getEmpById(1));
+//		get by id test
+		System.out.println(empMapper.getEmpById(1));
 ////		get all test
 //		List<Emp> emps = empMapper.getEmps();
 //		System.out.println(emps);
