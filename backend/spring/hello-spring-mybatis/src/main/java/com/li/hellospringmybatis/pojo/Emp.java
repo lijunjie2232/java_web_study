@@ -26,4 +26,9 @@ public class Emp {
     private Integer age;
     private BigDecimal salary;
 
+    public Emp(String name, Integer age, BigDecimal salary) {
+        this.name = name;
+        this.age = age;
+        this.salary = salary;
+    }
 }

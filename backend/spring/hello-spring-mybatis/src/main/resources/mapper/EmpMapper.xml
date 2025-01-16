@@ -1,9 +1,29 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="com.li.hellospringmybatis.mapper.EmpMapper">
+    <insert id="addEmp">
+        insert into `emp` (`name`, `age`, `salary`)
+        values (#{name}, #{age}, #{salary})
+    </insert>
+    <delete id="deleteEmpById">
+        delete
+        from `emp`
+        where id = #{id}
+    </delete>
     <select id="getEmpById" resultType="com.li.hellospringmybatis.pojo.Emp">
         select *
-        from emp
+        from `emp`
         where id = #{id}
     </select>
+    <select id="getEmps" resultType="com.li.hellospringmybatis.pojo.Emp">
+        select *
+        from `emp`
+    </select>
+    <update id="updateEmp">
+        update `emp`
+        set `name`   = #{name},
+            `age`    = #{age},
+            `salary` = #{salary}
+        where id = #{id}
+    </update>
 </mapper>
