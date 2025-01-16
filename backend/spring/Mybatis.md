@@ -1,8 +1,7 @@
 <!-- TOC -->
-
 * [A Simple Mybatis Example](#a-simple-mybatis-example)
-    * [@Mapper](#mapper)
-
+  * [@Mapper](#mapper)
+* [show sql in log](#show-sql-in-log)
 <!-- TOC -->
 
 # A Simple Mybatis Example
