@@ -1,7 +1,9 @@
 <!-- TOC -->
+
 * [A Simple Mybatis Example](#a-simple-mybatis-example)
-  * [@Mapper](#mapper)
+    * [@Mapper](#mapper)
 * [show sql in log](#show-sql-in-log)
+
 <!-- TOC -->
 
 # A Simple Mybatis Example
@@ -145,9 +147,12 @@ class HelloSpringMybatisApplicationTests {
   `logging.level.com.li.hellospringmybatis.mapper=DEBUG`
 
 # useGeneratedKeys & keyProperty
+
 - `useGeneratedKeys=true` will enable getting auto-increment id after insert
 - `keyProperty="id"` will set the auto-increment id to the property named `id`
+
 ```xml
+
 <insert id="addEmp" useGeneratedKeys="true" keyProperty="id">
     insert into `emp` (`name`, `age`, `salary`)
     values (#{name}, #{age}, #{salary})
@@ -155,11 +160,16 @@ class HelloSpringMybatisApplicationTests {
 ```
 
 # camel case to underscore
+
 - `mybatis.configuration.map-underscore-to-camel-case=true` to enable camel case to underscore
 
 # `#{}` and `${}` in mybatis config sql
-- `#{}` is used as pre-compile method sql pattern, it will be replaced by `?` in sql 
+
+- `#{}` is used as pre-compile method sql pattern, it will be replaced by `?` in sql
 - `${}` is used as string concatenation, it will concat to sql contents
+
+- `${}` could not protect sql injection, the easiest way for `${}` check is ban the space in variable, re pattern could
+  be used to.
 
 - table name and col name could only use `${}`: `select ${colName} from ${tableName} where id = #{id}` 
 
