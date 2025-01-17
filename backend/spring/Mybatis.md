@@ -153,3 +153,7 @@ class HelloSpringMybatisApplicationTests {
     values (#{name}, #{age}, #{salary})
 </insert>
 ```
+
+# camel case to underscore
+- `mybatis.configuration.map-underscore-to-camel-case=true` to enable camel case to underscore
+
