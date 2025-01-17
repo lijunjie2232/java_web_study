@@ -171,5 +171,40 @@ class HelloSpringMybatisApplicationTests {
 - `${}` could not protect sql injection, the easiest way for `${}` check is ban the space in variable, re pattern could
   be used to.
 
-- table name and col name could only use `${}`: `select ${colName} from ${tableName} where id = #{id}` 
+- table name and col name could only use `${}`: `select ${colName} from ${tableName} where id = #{id}`
 
+# @Param
+
+- **if parameters decorated by `@Param("xxx")`, using `xxx` or `xxx.xxxx` is the only way to get it and its properties"
+  **
+- case 1 (basic type):
+  ```java
+  public User getUserById(@Param("id") int id, @Param("name") String name);
+  ```
+  ```xml
+  
+  <select id="getUserById" resultType="User">
+      SELECT * FROM users WHERE id = #{id} AND name = #{name}
+  </select>
+  ```
+- case 2 (Map or Object):
+  ```java
+  public User addUser(@Param("user") User u);
+  public User addUser(@Param("user") Map<String, Object> u);
+  ```
+  ```xml
+  <select id="addUser" resultType="User">
+      INSERT INTO users (id, name, age) VALUES (#{user.id}, #{user.name}, #{user.age})
+  </select>
+  ```
+
+- case 3 (List):
+  ```java
+  public User xxx(@Param("indexes") List<Integer> ids);
+  ```
+  ```xml
+  
+  <select id="xxx" resultType="User">
+      SELECT * FROM users WHERE id = #{indexes[0]}
+  </select>
+  ```
