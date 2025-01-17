@@ -144,3 +144,12 @@ class HelloSpringMybatisApplicationTests {
 - 或者更具体地设置 MyBatis 映射器的日志级别(`com.li.hellospringmybatis.mapper` is the package name of mappers):
   `logging.level.com.li.hellospringmybatis.mapper=DEBUG`
 
+# useGeneratedKeys & keyProperty
+- `useGeneratedKeys=true` will enable getting auto-increment id after insert
+- `keyProperty="id"` will set the auto-increment id to the property named `id`
+```xml
+<insert id="addEmp" useGeneratedKeys="true" keyProperty="id">
+    insert into `emp` (`name`, `age`, `salary`)
+    values (#{name}, #{age}, #{salary})
+</insert>
+```
