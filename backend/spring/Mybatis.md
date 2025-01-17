@@ -58,7 +58,7 @@ public interface EmpMapper {
 ```
 
 - create Mybatis xml configuration file for mapper
-- !!! if name in sql not the same as bean, use alias in sql select
+- !!! if name in sql not the same as bean, use alias in sql select or [resultMap](#resultMap)
 
 ```xml
 <?xml version="1.0" encoding="UTF-8" ?>
@@ -182,7 +182,6 @@ class HelloSpringMybatisApplicationTests {
   public User getUserById(@Param("id") int id, @Param("name") String name);
   ```
   ```xml
-  
   <select id="getUserById" resultType="User">
       SELECT * FROM users WHERE id = #{id} AND name = #{name}
   </select>
@@ -200,11 +199,62 @@ class HelloSpringMybatisApplicationTests {
 
 - case 3 (List):
   ```java
-  public User xxx(@Param("indexes") List<Integer> ids);
+  User xxx(@Param("indexes") List<Integer> ids);
   ```
   ```xml
-  
   <select id="xxx" resultType="User">
       SELECT * FROM users WHERE id = #{indexes[0]}
   </select>
   ```
+
+# returnType
+
+## return List
+
+- if return list, use the type of objects in list as `resultType`
+
+```java
+public List<User> getAllUsers();
+```
+
+```xml
+
+<select id="getAllUsers" resultType="com.example.User">
+    SELECT * FROM users
+</select>
+```
+
+## return Map
+
+- if return Map, use Map as `resultType` and `@MapKey` to specify the key of Map:
+
+```java
+
+@Select("SELECT * FROM users")
+@MapKey("id")
+Map<Integer, User> getUsersById();
+```
+
+```xml
+
+<select id="getUsersById" resultType="com.example.User">
+    SELECT * FROM users
+</select>
+```
+
+# resultMap
+
+```xml
+
+<mapper namespace="xxx">
+    <resultMap id="userResultMap" type="com.example.User">
+        <id property="id" column="user_id"/>
+        <result property="name" column="user_name"/>
+        <result property="email" column="user_email"/>
+    </resultMap>
+
+    <select id="getUserById" resultMap="userResultMap">
+        SELECT user_id, user_name, user_email FROM users WHERE user_id = #{id}
+    </select>
+</mapper>
+```
