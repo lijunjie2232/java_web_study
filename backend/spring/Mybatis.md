@@ -227,7 +227,8 @@ public List<User> getAllUsers();
 ## return Map
 
 - if return Map, use `@MapKey` to specify the key of Map
-- if `resultType=java.util.Map`, the return type is `Map<???, Map>` even if method return type is `Map<???, User>`, the User is a `HashMap`
+- if `resultType=java.util.Map`, the return type is `Map<???, Map>` even if method return type is `Map<???, User>`,
+  the "User" is a `HashMap` and exception will threw
 - if `resultType=xxx.xx.x.pojo.User`, the return type is `Map<???, User>`
 
 ```java
