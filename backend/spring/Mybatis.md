@@ -1,9 +1,17 @@
 <!-- TOC -->
-
 * [A Simple Mybatis Example](#a-simple-mybatis-example)
-    * [@Mapper](#mapper)
+  * [@Mapper](#mapper)
 * [show sql in log](#show-sql-in-log)
-
+* [useGeneratedKeys & keyProperty](#usegeneratedkeys--keyproperty)
+* [camel case to underscore](#camel-case-to-underscore)
+* [`#{}` and `${}` in mybatis config sql](#-and--in-mybatis-config-sql)
+* [@Param](#param)
+* [returnType](#returntype)
+  * [return List](#return-list)
+  * [return Map](#return-map)
+* [resultMap](#resultmap)
+  * [association](#association)
+  * [collection](#collection)
 <!-- TOC -->
 
 # A Simple Mybatis Example
