@@ -157,3 +157,9 @@ class HelloSpringMybatisApplicationTests {
 # camel case to underscore
 - `mybatis.configuration.map-underscore-to-camel-case=true` to enable camel case to underscore
 
+# `#{}` and `${}` in mybatis config sql
+- `#{}` is used as pre-compile method sql pattern, it will be replaced by `?` in sql 
+- `${}` is used as string concatenation, it will concat to sql contents
+
+- table name and col name could only use `${}`: `select ${colName} from ${tableName} where id = #{id}` 
+

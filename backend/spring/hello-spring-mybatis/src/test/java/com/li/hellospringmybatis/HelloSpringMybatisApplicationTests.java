@@ -22,23 +22,23 @@ class HelloSpringMybatisApplicationTests {
 //		get all test
 		List<Emp> emps = empMapper.getEmps();
 		System.out.println(emps);
-//		add test
-		Emp emp = new Emp("test", 20, new BigDecimal(1000));
-		empMapper.addEmp(emp);
-		System.out.println(emp);
-		System.out.println(emp.getId());
-		emps = empMapper.getEmps();
-		System.out.println(emps);
-//		delete test
-		empMapper.deleteEmpById(emp.getId());
-		emps = empMapper.getEmps();
-		System.out.println(emps);
-//		update test
-		emp = empMapper.getEmpById(emps.size());
-		System.out.println(emp);
-		emp.setSalary(emp.getSalary().add(new BigDecimal(1000)));
-		empMapper.updateEmp(emp);
-		System.out.println(empMapper.getEmpById(emps.size()));
+////		add test
+//		Emp emp = new Emp("test", 20, new BigDecimal(1000));
+//		empMapper.addEmp(emp);
+//		System.out.println(emp);
+//		System.out.println(emp.getId());
+//		emps = empMapper.getEmps();
+//		System.out.println(emps);
+////		delete test
+//		empMapper.deleteEmpById(emp.getId());
+//		emps = empMapper.getEmps();
+//		System.out.println(emps);
+////		update test
+//		emp = empMapper.getEmpById(emps.size());
+//		System.out.println(emp);
+//		emp.setSalary(emp.getSalary().add(new BigDecimal(1000)));
+//		empMapper.updateEmp(emp);
+//		System.out.println(empMapper.getEmpById(emps.size()));
 	}
 
 	@Test
