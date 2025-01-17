@@ -233,7 +233,6 @@ public List<User> getAllUsers();
 
 ```java
 
-@Select("SELECT * FROM users")
 @MapKey("id")
 Map<Integer, User> getUsersById();
 ```
@@ -258,6 +257,96 @@ Map<Integer, User> getUsersById();
 
     <select id="getUserById" resultMap="userResultMap">
         SELECT user_id, user_name, user_email FROM users WHERE user_id = #{id}
+    </select>
+</mapper>
+```
+
+## association
+
+- 作用：用于映射一对一（1:1）的关系。
+- 格式：在 <resultMap> 中使用 <association> 标签来定义关联对象的映射规则。
+- 应用场景：适用于一个对象包含另一个对象的情况，例如用户和其地址。
+
+```java
+public class User {
+    private Integer id;
+    private String name;
+    private Address address; // 一对一关联
+    // getters and setters
+}
+
+public class Address {
+    private Integer id;
+    private String street;
+    private String city;
+    // getters and setters
+}
+```
+
+```xml
+
+<mapper namespace="xxx">
+    <resultMap id="userResultMap" type="com.example.User">
+        <id property="id" column="user_id"/>
+        <result property="name" column="user_name"/>
+        <association property="address" javaType="com.example.Address">
+            <id property="id" column="address_id"/>
+            <result property="street" column="address_street"/>
+            <result property="city" column="address_city"/>
+        </association>
+    </resultMap>
+
+    <select id="getUserById" resultMap="userResultMap">
+        SELECT u.id AS user_id, u.name AS user_name,
+        a.id AS address_id, a.street AS address_street, a.city AS address_city
+        FROM users u
+        LEFT JOIN addresses a ON u.address_id = a.id
+        WHERE u.id = #{id}
+    </select>
+</mapper>
+```
+
+## collection
+
+- 作用：用于映射一对多（1:N）或多对多（N:N）的关系。
+- 格式：在 <resultMap> 中使用 <collection> 标签来定义集合属性的映射规则。
+- 应用场景：适用于一个对象包含多个其他对象的情况，例如订单和订单项。
+
+```java
+public class Order {
+    private Integer id;
+    private String orderNumber;
+    private List<OrderItem> items; // 一对多关联
+    // getters and setters
+}
+
+public class OrderItem {
+    private Integer id;
+    private String itemName;
+    private BigDecimal price;
+    // getters and setters
+}
+```
+
+```xml
+
+<mapper namespace="xxx">
+    <resultMap id="orderResultMap" type="com.example.Order">
+        <id property="id" column="order_id"/>
+        <result property="orderNumber" column="order_number"/>
+        <collection property="items" ofType="com.example.OrderItem">
+            <id property="id" column="item_id"/>
+            <result property="itemName" column="item_name"/>
+            <result property="price" column="item_price"/>
+        </collection>
+    </resultMap>
+
+    <select id="getOrderById" resultMap="orderResultMap">
+        SELECT o.id AS order_id, o.order_number AS order_number,
+        i.id AS item_id, i.item_name AS item_name, i.price AS item_price
+        FROM orders o
+        LEFT JOIN order_items i ON o.id = i.order_id
+        WHERE o.id = #{id}
     </select>
 </mapper>
 ```
