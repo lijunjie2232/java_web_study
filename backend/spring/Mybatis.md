@@ -359,6 +359,68 @@ public class OrderItem {
 </mapper>
 ``` 
 
+## Example
+### POJO
+```java
+// OrderItem.java
+package com.li.hellospringmybatis.pojo;
+
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+public class OrderItem {
+  private Integer id;
+  private Integer orderId;
+  //    private Integer goodsId;
+  private Goods goods;
+  private Integer quantity;
+  private Double price;
+}
+```
+```java
+// GoodsMapper.java
+package com.li.hellospringmybatis.mapper;
+
+import com.li.hellospringmybatis.pojo.Goods;
+import org.apache.ibatis.annotations.Mapper;
+
+import java.util.List;
+
+@Mapper
+public interface GoodsMapper {
+  List<Goods> findAllGoods();
+  Goods findGoodsById(Integer id);
+  void insertGoods(Goods goods);
+  void updateGoods(Goods goods);
+  void deleteGoods(Integer id);
+}
+```
+```java
+// OrderItemMapper.java
+package com.li.hellospringmybatis.mapper;
+
+import com.li.hellospringmybatis.pojo.OrderItem;
+import org.apache.ibatis.annotations.Mapper;
+
+import java.util.List;
+
+@Mapper
+public interface OrderItemMapper {
+    List<OrderItem> findAllOrderItems();
+    OrderItem findOrderItemById(Integer id);
+    List<OrderItem> findOrderItemsByOrderId(Integer orderId);
+    void insertOrderItem(OrderItem orderItem);
+    void updateOrderItem(OrderItem orderItem);
+    void deleteOrderItem(Integer id);
+}
+```
+
+
+
 
 # MyBatis DTD
 根据 MyBatis 的 DTD 规范，resultMap 的子元素必须按照特定的顺序排列。正确的顺序是：
