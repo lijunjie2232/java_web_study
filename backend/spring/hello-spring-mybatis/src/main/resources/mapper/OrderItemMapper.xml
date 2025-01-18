@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.li.hellospringmybatis.mapper.OrderItemMapper">
+
+    <resultMap id="orderItemResultMap" type="com.li.hellospringmybatis.pojo.OrderItem">
+        <id property="id" column="id"/>
+        <result property="orderId" column="order_id"/>
+        <result property="goodsId" column="goods_id"/>
+        <result property="quantity" column="quantity"/>
+        <result property="price" column="price"/>
+    </resultMap>
+
+    <select id="findAllOrderItems" resultMap="orderItemResultMap">
+        SELECT * FROM order_item
+    </select>
+
+    <select id="findOrderItemById" resultMap="orderItemResultMap">
+        SELECT * FROM order_item WHERE id = #{id}
+    </select>
+
+    <select id="findOrderItemsByOrderId" resultMap="orderItemResultMap">
+        SELECT * FROM order_item WHERE order_id = #{orderId}
+    </select>
+
+    <insert id="insertOrderItem" parameterType="com.li.hellospringmybatis.pojo.OrderItem">
+        INSERT INTO order_item (order_id, goods_id, quantity, price)
+        VALUES (#{orderId}, #{goodsId}, #{quantity}, #{price})
+    </insert>
+
+    <update id="updateOrderItem" parameterType="com.li.hellospringmybatis.pojo.OrderItem">
+        UPDATE order_item
+        SET order_id = #{orderId},
+            goods_id = #{goodsId},
+            quantity = #{quantity},
+            price = #{price}
+        WHERE id = #{id}
+    </update>
+
+    <delete id="deleteOrderItem" parameterType="int">
+        DELETE FROM order_item WHERE id = #{id}
+    </delete>
+
+</mapper>

@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.li.hellospringmybatis.mapper.OrderMapper">
+
+    <resultMap id="orderResultMap" type="com.li.hellospringmybatis.pojo.Order">
+        <id property="id" column="order_id"/>
+        <result property="userId" column="user_id"/>
+        <result property="orderDate" column="order_date"/>
+        <collection property="orderItems" ofType="com.li.hellospringmybatis.pojo.OrderItem">
+            <id property="id" column="order_item_id"/>
+            <result property="orderId" column="order_id"/>
+            <result property="goodsId" column="goods_id"/>
+            <result property="quantity" column="quantity"/>
+            <result property="price" column="price"/>
+        </collection>
+    </resultMap>
+
+    <select id="findAllOrders" resultMap="orderResultMap">
+        SELECT
+            o.id AS order_id,
+            o.user_id,
+            o.order_date,
+            oi.id AS order_item_id,
+            oi.goods_id,
+            oi.quantity,
+            oi.price
+        FROM `order` o
+                 LEFT JOIN order_item oi ON o.id = oi.order_id
+    </select>
+
+    <select id="findOrderById" resultMap="orderResultMap">
+        SELECT o.id  AS order_id,
+               o.user_id,
+               o.order_date,
+               oi.id AS order_item_id,
+               oi.goods_id,
+               oi.quantity,
+               oi.price
+        FROM `order` o
+                 LEFT JOIN order_item oi ON o.id = oi.order_id
+        WHERE o.id = #{id}
+    </select>
+
+    <select id="findOrderByUser" resultMap="orderResultMap">
+        SELECT
+            o.id AS order_id,
+            o.user_id,
+            o.order_date,
+            oi.id AS order_item_id,
+            oi.goods_id,
+            oi.quantity,
+            oi.price
+        FROM `order` o
+                 LEFT JOIN order_item oi ON o.id = oi.order_id
+        WHERE o.user_id = #{id}
+    </select>
+
+    <insert id="insertOrder" parameterType="com.li.hellospringmybatis.pojo.Order">
+        INSERT INTO `order` (user_id, order_date)
+        VALUES (#{userId}, #{orderDate})
+    </insert>
+
+    <update id="updateOrder" parameterType="com.li.hellospringmybatis.pojo.Order">
+        UPDATE `order`
+        SET user_id = #{userId},
+            order_date = #{orderDate}
+        WHERE id = #{id}
+    </update>
+
+    <delete id="deleteOrder" parameterType="int">
+        DELETE FROM `order` WHERE id = #{id}
+    </delete>
+
+</mapper>
