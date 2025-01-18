@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.li.hellospringmybatis.mapper.UserMapper">
+
+    <resultMap id="userResultMap" type="com.li.hellospringmybatis.pojo.User">
+        <id property="id" column="id"/>
+        <result property="username" column="username"/>
+        <result property="password" column="password"/>
+        <result property="email" column="email"/>
+    </resultMap>
+
+    <select id="findAllUsers" resultMap="userResultMap">
+        SELECT *
+        FROM user
+    </select>
+
+    <select id="findUserById" resultMap="userResultMap">
+        SELECT *
+        FROM user
+        WHERE id = #{id}
+    </select>
+
+    <insert id="insertUser" parameterType="com.li.hellospringmybatis.pojo.User">
+        INSERT INTO user (username, password, email)
+        VALUES (#{username}, #{password}, #{email})
+    </insert>
+
+    <update id="updateUser" parameterType="com.li.hellospringmybatis.pojo.User">
+        UPDATE user
+        SET username = #{username},
+            password = #{password},
+            email    = #{email}
+        WHERE id = #{id}
+    </update>
+
+    <delete id="deleteUser" parameterType="int">
+        DELETE
+        FROM user
+        WHERE id = #{id}
+    </delete>
+
+</mapper>
