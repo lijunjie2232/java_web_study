@@ -358,3 +358,13 @@ public class OrderItem {
     </select>
 </mapper>
 ``` 
+
+
+# MyBatis DTD
+根据 MyBatis 的 DTD 规范，resultMap 的子元素必须按照特定的顺序排列。正确的顺序是：
+1. constructor?
+2. id*
+3. result*
+4. association*
+5. collection*
+6. discriminator?
