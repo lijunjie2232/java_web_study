@@ -418,8 +418,255 @@ public interface OrderItemMapper {
     void deleteOrderItem(Integer id);
 }
 ```
+### Mapper
+#### OrderItemMapper
+```java
+package com.li.hellospringmybatis.mapper;
 
+import com.li.hellospringmybatis.pojo.OrderItem;
+import org.apache.ibatis.annotations.Mapper;
 
+import java.util.List;
+
+@Mapper
+public interface OrderItemMapper {
+    List<OrderItem> findAllOrderItems();
+    OrderItem findOrderItemById(Integer id);
+    List<OrderItem> findOrderItemsByOrderId(Integer orderId);
+    void insertOrderItem(OrderItem orderItem);
+    void updateOrderItem(OrderItem orderItem);
+    void deleteOrderItem(Integer id);
+}
+
+```
+```xml
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.li.hellospringmybatis.mapper.OrderItemMapper">
+
+    <resultMap id="orderItemResultMap" type="com.li.hellospringmybatis.pojo.OrderItem">
+        <id property="id" column="id"/>
+        <result property="orderId" column="order_id"/>
+<!--        <result property="goodsId" column="goods_id"/>-->
+        <result property="quantity" column="quantity"/>
+        <result property="price" column="price"/>
+        <association property="goods" javaType="com.li.hellospringmybatis.pojo.Goods">
+            <id property="id" column="goods_id"/>
+            <result property="name" column="goods_name"/>
+            <result property="description" column="goods_description"/>
+            <result property="price" column="goods_price"/>
+            <result property="stock" column="goods_stock"/>
+        </association>
+    </resultMap>
+
+    <select id="findAllOrderItems" resultMap="orderItemResultMap">
+        SELECT
+            oi.id,
+            oi.order_id,
+            oi.goods_id,
+            oi.quantity,
+            oi.price,
+            g.id AS goods_id,
+            g.name AS goods_name,
+            g.description AS goods_description,
+            g.price AS goods_price,
+            g.stock AS goods_stock
+        FROM order_item oi
+                 JOIN goods g ON oi.goods_id = g.id
+    </select>
+
+    <select id="findOrderItemById" resultMap="orderItemResultMap">
+        SELECT oi.id,
+               oi.order_id,
+               oi.goods_id,
+               oi.quantity,
+               oi.price,
+               g.id AS goods_id,
+               g.name        AS goods_name,
+               g.description AS goods_description,
+               g.price       AS goods_price,
+               g.stock       AS goods_stock
+        FROM order_item oi
+                 JOIN goods g ON oi.goods_id = g.id
+        WHERE oi.id = #{id}
+    </select>
+
+    <select id="findOrderItemsByOrderId" resultMap="orderItemResultMap">
+        SELECT oi.id,
+               oi.order_id,
+               oi.goods_id,
+               oi.quantity,
+               oi.price,
+               g.id          AS goods_id,
+               g.name        AS goods_name,
+               g.description AS goods_description,
+               g.price       AS goods_price,
+               g.stock       AS goods_stock
+        FROM order_item oi
+                 JOIN goods g ON oi.goods_id = g.id
+        WHERE oi.order_id = #{orderId}
+    </select>
+
+    <insert id="insertOrderItem" parameterType="com.li.hellospringmybatis.pojo.OrderItem">
+        INSERT INTO order_item (order_id, goods_id, quantity, price)
+        VALUES (#{orderId}, #{goods.id}, #{quantity}, #{price})
+    </insert>
+
+    <update id="updateOrderItem" parameterType="com.li.hellospringmybatis.pojo.OrderItem">
+        UPDATE order_item
+        SET order_id = #{orderId},
+            goods_id = #{goods.id},
+            quantity = #{quantity},
+            price    = #{price}
+        WHERE id = #{id}
+    </update>
+
+    <delete id="deleteOrderItem" parameterType="int">
+        DELETE FROM order_item WHERE id = #{id}
+    </delete>
+
+</mapper>
+```
+
+#### OrderMapper
+
+```java
+package com.li.hellospringmybatis.mapper;
+
+import com.li.hellospringmybatis.pojo.Order;
+import com.li.hellospringmybatis.pojo.User;
+import org.apache.ibatis.annotations.Mapper;
+
+import java.util.List;
+
+@Mapper
+public interface OrderMapper {
+    List<Order> findAllOrders();
+    Order findOrderById(Integer id);
+    void insertOrder(Order order);
+    void updateOrder(Order order);
+    void deleteOrder(Integer id);
+    List<Order> findOrderByUser(User user);
+}
+```
+
+```xml
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.li.hellospringmybatis.mapper.OrderMapper">
+
+    <!-- 定义 Goods 的 resultMap -->
+    <resultMap id="goodsResultMap" type="com.li.hellospringmybatis.pojo.Goods">
+        <id property="id" column="goods_id"/>
+        <result property="name" column="goods_name"/>
+        <result property="description" column="goods_description"/>
+        <result property="price" column="goods_price"/>
+        <result property="stock" column="goods_stock"/>
+    </resultMap>
+
+    <!-- 定义 OrderItem 的 resultMap -->
+    <resultMap id="orderItemResultMap" type="com.li.hellospringmybatis.pojo.OrderItem">
+        <id property="id" column="order_item_id"/>
+        <result property="orderId" column="order_id"/>
+        <result property="quantity" column="quantity"/>
+        <result property="price" column="price"/>
+        <association property="goods" resultMap="goodsResultMap"/>
+    </resultMap>
+
+    <!-- 定义 Order 的 resultMap -->
+    <resultMap id="orderResultMap" type="com.li.hellospringmybatis.pojo.Order">
+        <id property="id" column="order_id"/>
+        <result property="userId" column="user_id"/>
+        <result property="orderDate" column="order_date"/>
+        <collection property="orderItems" ofType="com.li.hellospringmybatis.pojo.OrderItem"
+                    resultMap="orderItemResultMap"/>
+    </resultMap>
+
+    <!-- 查询所有订单 -->
+    <select id="findAllOrders" resultMap="orderResultMap">
+        SELECT o.id          AS order_id,
+               o.user_id,
+               o.order_date,
+               oi.id         AS order_item_id,
+               oi.goods_id,
+               oi.quantity,
+               oi.price,
+               g.name        AS goods_name,
+               g.description AS goods_description,
+               g.price       AS goods_price,
+               g.stock       AS goods_stock
+        FROM `order` o
+                 LEFT JOIN order_item oi ON o.id = oi.order_id
+                 LEFT JOIN goods g ON oi.goods_id = g.id
+    </select>
+
+    <!-- 根据订单 ID 查询订单 -->
+    <select id="findOrderById" resultMap="orderResultMap">
+        SELECT o.id          AS order_id,
+               o.user_id,
+               o.order_date,
+               oi.id         AS order_item_id,
+               oi.goods_id,
+               oi.quantity,
+               oi.price,
+               g.name        AS goods_name,
+               g.description AS goods_description,
+               g.price       AS goods_price,
+               g.stock       AS goods_stock
+        FROM `order` o
+                 LEFT JOIN order_item oi ON o.id = oi.order_id
+                 LEFT JOIN goods g ON oi.goods_id = g.id
+        WHERE o.id = #{id}
+    </select>
+
+    <!-- 根据用户 ID 查询订单 -->
+    <select id="findOrderByUser" resultMap="orderResultMap">
+        SELECT o.id          AS order_id,
+               o.user_id,
+               o.order_date,
+               oi.id         AS order_item_id,
+               oi.goods_id,
+               oi.quantity,
+               oi.price,
+               g.name        AS goods_name,
+               g.description AS goods_description,
+               g.price       AS goods_price,
+               g.stock       AS goods_stock
+        FROM `order` o
+                 LEFT JOIN order_item oi ON o.id = oi.order_id
+                 LEFT JOIN goods g ON oi.goods_id = g.id
+        WHERE o.user_id = #{id}
+    </select>
+
+    <!-- 插入订单 -->
+    <insert id="insertOrder" parameterType="com.li.hellospringmybatis.pojo.Order">
+        INSERT INTO `order` (user_id, order_date)
+        VALUES (#{userId}, #{orderDate})
+    </insert>
+
+    <!-- 更新订单 -->
+    <update id="updateOrder" parameterType="com.li.hellospringmybatis.pojo.Order">
+        UPDATE `order`
+        SET user_id    = #{userId},
+            order_date = #{orderDate}
+        WHERE id = #{id}
+    </update>
+
+    <!-- 删除订单 -->
+    <delete id="deleteOrder" parameterType="int">
+        DELETE
+        FROM `order`
+        WHERE id = #{id}
+    </delete>
+
+</mapper>
+```
 
 
 # MyBatis DTD
