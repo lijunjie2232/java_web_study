@@ -5,41 +5,56 @@
 
 <mapper namespace="com.li.hellospringmybatis.mapper.UserMapper">
 
+    <resultMap id="emailResultMap" type="com.li.hellospringmybatis.pojo.Email">
+        <id property="address" column="email_address"/>
+        <result property="type" column="email_type"/>
+    </resultMap>
+
     <resultMap id="userResultMap" type="com.li.hellospringmybatis.pojo.User">
         <id property="id" column="id"/>
         <result property="username" column="username"/>
         <result property="password" column="password"/>
-        <result property="email" column="email"/>
+        <association property="email" resultMap="emailResultMap">
+            <id property="address" column="email"/>
+        </association>
     </resultMap>
 
     <select id="findAllUsers" resultMap="userResultMap">
-        SELECT *
-        FROM user
+        SELECT
+            u.id,
+            u.username,
+            u.password,
+            u.email AS email_address,
+            'personal' AS email_type -- 假设所有邮箱类型为 personal
+        FROM user u
     </select>
 
     <select id="findUserById" resultMap="userResultMap">
-        SELECT *
-        FROM user
-        WHERE id = #{id}
+        SELECT
+            u.id,
+            u.username,
+            u.password,
+            u.email AS email_address,
+            'personal' AS email_type -- 假设所有邮箱类型为 personal
+        FROM user u
+        WHERE u.id = #{id}
     </select>
 
     <insert id="insertUser" parameterType="com.li.hellospringmybatis.pojo.User">
         INSERT INTO user (username, password, email)
-        VALUES (#{username}, #{password}, #{email})
+        VALUES (#{username}, #{password}, #{email.address})
     </insert>
 
     <update id="updateUser" parameterType="com.li.hellospringmybatis.pojo.User">
         UPDATE user
         SET username = #{username},
             password = #{password},
-            email    = #{email}
+            email = #{email.address}
         WHERE id = #{id}
     </update>
 
     <delete id="deleteUser" parameterType="int">
-        DELETE
-        FROM user
-        WHERE id = #{id}
+        DELETE FROM user WHERE id = #{id}
     </delete>
 
 </mapper>

@@ -1,6 +1,8 @@
 package com.li.hellospringmybatis;
 
 import com.li.hellospringmybatis.mapper.EmpMapper;
+import com.li.hellospringmybatis.mapper.OrderMapper;
+import com.li.hellospringmybatis.mapper.UserMapper;
 import com.li.hellospringmybatis.pojo.Emp;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,6 +16,12 @@ class HelloSpringMybatisApplicationTests {
 
 	@Autowired
 	EmpMapper empMapper;
+
+	@Autowired
+	UserMapper userMapper;
+
+	@Autowired
+	OrderMapper orderMapper;
 
 	@Test
 	void EmpMapperTest() {
@@ -39,6 +47,16 @@ class HelloSpringMybatisApplicationTests {
 //		emp.setSalary(emp.getSalary().add(new BigDecimal(1000)));
 //		empMapper.updateEmp(emp);
 //		System.out.println(empMapper.getEmpById(emps.size()));
+	}
+
+	@Test
+	void UserMapperTest() {
+		System.out.println(userMapper.findAllUsers());
+	}
+
+	@Test
+	void OrderMapperTest() {
+		System.out.println(orderMapper.findAllOrders());
 	}
 
 	@Test

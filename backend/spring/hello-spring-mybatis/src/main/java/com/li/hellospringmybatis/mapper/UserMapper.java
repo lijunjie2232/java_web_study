@@ -1,6 +1,5 @@
 package com.li.hellospringmybatis.mapper;
 
-import com.li.hellospringmybatis.pojo.Order;
 import com.li.hellospringmybatis.pojo.User;
 import org.apache.ibatis.annotations.Mapper;
 
