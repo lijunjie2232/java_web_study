@@ -1,17 +1,19 @@
 <!-- TOC -->
+
 * [A Simple Mybatis Example](#a-simple-mybatis-example)
-  * [@Mapper](#mapper)
+    * [@Mapper](#mapper)
 * [show sql in log](#show-sql-in-log)
 * [useGeneratedKeys & keyProperty](#usegeneratedkeys--keyproperty)
 * [camel case to underscore](#camel-case-to-underscore)
 * [`#{}` and `${}` in mybatis config sql](#-and--in-mybatis-config-sql)
 * [@Param](#param)
 * [returnType](#returntype)
-  * [return List](#return-list)
-  * [return Map](#return-map)
+    * [return List](#return-list)
+    * [return Map](#return-map)
 * [resultMap](#resultmap)
-  * [association](#association)
-  * [collection](#collection)
+    * [association](#association)
+    * [collection](#collection)
+
 <!-- TOC -->
 
 # A Simple Mybatis Example
@@ -360,7 +362,9 @@ public class OrderItem {
 ``` 
 
 ## Example
+
 ### POJO
+
 ```java
 // OrderItem.java
 package com.li.hellospringmybatis.pojo;
@@ -373,14 +377,15 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class OrderItem {
-  private Integer id;
-  private Integer orderId;
-  //    private Integer goodsId;
-  private Goods goods;
-  private Integer quantity;
-  private Double price;
+    private Integer id;
+    private Integer orderId;
+    //    private Integer goodsId;
+    private Goods goods;
+    private Integer quantity;
+    private Double price;
 }
 ```
+
 ```java
 // GoodsMapper.java
 package com.li.hellospringmybatis.mapper;
@@ -392,13 +397,18 @@ import java.util.List;
 
 @Mapper
 public interface GoodsMapper {
-  List<Goods> findAllGoods();
-  Goods findGoodsById(Integer id);
-  void insertGoods(Goods goods);
-  void updateGoods(Goods goods);
-  void deleteGoods(Integer id);
+    List<Goods> findAllGoods();
+
+    Goods findGoodsById(Integer id);
+
+    void insertGoods(Goods goods);
+
+    void updateGoods(Goods goods);
+
+    void deleteGoods(Integer id);
 }
 ```
+
 ```java
 // OrderItemMapper.java
 package com.li.hellospringmybatis.mapper;
@@ -411,15 +421,23 @@ import java.util.List;
 @Mapper
 public interface OrderItemMapper {
     List<OrderItem> findAllOrderItems();
+
     OrderItem findOrderItemById(Integer id);
+
     List<OrderItem> findOrderItemsByOrderId(Integer orderId);
+
     void insertOrderItem(OrderItem orderItem);
+
     void updateOrderItem(OrderItem orderItem);
+
     void deleteOrderItem(Integer id);
 }
 ```
+
 ### Mapper
+
 #### OrderItemMapper
+
 ```java
 package com.li.hellospringmybatis.mapper;
 
@@ -431,14 +449,20 @@ import java.util.List;
 @Mapper
 public interface OrderItemMapper {
     List<OrderItem> findAllOrderItems();
+
     OrderItem findOrderItemById(Integer id);
+
     List<OrderItem> findOrderItemsByOrderId(Integer orderId);
+
     void insertOrderItem(OrderItem orderItem);
+
     void updateOrderItem(OrderItem orderItem);
+
     void deleteOrderItem(Integer id);
 }
 
 ```
+
 ```xml
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper
@@ -450,7 +474,7 @@ public interface OrderItemMapper {
     <resultMap id="orderItemResultMap" type="com.li.hellospringmybatis.pojo.OrderItem">
         <id property="id" column="id"/>
         <result property="orderId" column="order_id"/>
-<!--        <result property="goodsId" column="goods_id"/>-->
+        <!--        <result property="goodsId" column="goods_id"/>-->
         <result property="quantity" column="quantity"/>
         <result property="price" column="price"/>
         <association property="goods" javaType="com.li.hellospringmybatis.pojo.Goods">
@@ -464,49 +488,49 @@ public interface OrderItemMapper {
 
     <select id="findAllOrderItems" resultMap="orderItemResultMap">
         SELECT
-            oi.id,
-            oi.order_id,
-            oi.goods_id,
-            oi.quantity,
-            oi.price,
-            g.id AS goods_id,
-            g.name AS goods_name,
-            g.description AS goods_description,
-            g.price AS goods_price,
-            g.stock AS goods_stock
+        oi.id,
+        oi.order_id,
+        oi.goods_id,
+        oi.quantity,
+        oi.price,
+        g.id AS goods_id,
+        g.name AS goods_name,
+        g.description AS goods_description,
+        g.price AS goods_price,
+        g.stock AS goods_stock
         FROM order_item oi
-                 JOIN goods g ON oi.goods_id = g.id
+        JOIN goods g ON oi.goods_id = g.id
     </select>
 
     <select id="findOrderItemById" resultMap="orderItemResultMap">
         SELECT oi.id,
-               oi.order_id,
-               oi.goods_id,
-               oi.quantity,
-               oi.price,
-               g.id AS goods_id,
-               g.name        AS goods_name,
-               g.description AS goods_description,
-               g.price       AS goods_price,
-               g.stock       AS goods_stock
+        oi.order_id,
+        oi.goods_id,
+        oi.quantity,
+        oi.price,
+        g.id AS goods_id,
+        g.name AS goods_name,
+        g.description AS goods_description,
+        g.price AS goods_price,
+        g.stock AS goods_stock
         FROM order_item oi
-                 JOIN goods g ON oi.goods_id = g.id
+        JOIN goods g ON oi.goods_id = g.id
         WHERE oi.id = #{id}
     </select>
 
     <select id="findOrderItemsByOrderId" resultMap="orderItemResultMap">
         SELECT oi.id,
-               oi.order_id,
-               oi.goods_id,
-               oi.quantity,
-               oi.price,
-               g.id          AS goods_id,
-               g.name        AS goods_name,
-               g.description AS goods_description,
-               g.price       AS goods_price,
-               g.stock       AS goods_stock
+        oi.order_id,
+        oi.goods_id,
+        oi.quantity,
+        oi.price,
+        g.id AS goods_id,
+        g.name AS goods_name,
+        g.description AS goods_description,
+        g.price AS goods_price,
+        g.stock AS goods_stock
         FROM order_item oi
-                 JOIN goods g ON oi.goods_id = g.id
+        JOIN goods g ON oi.goods_id = g.id
         WHERE oi.order_id = #{orderId}
     </select>
 
@@ -518,9 +542,9 @@ public interface OrderItemMapper {
     <update id="updateOrderItem" parameterType="com.li.hellospringmybatis.pojo.OrderItem">
         UPDATE order_item
         SET order_id = #{orderId},
-            goods_id = #{goods.id},
-            quantity = #{quantity},
-            price    = #{price}
+        goods_id = #{goods.id},
+        quantity = #{quantity},
+        price = #{price}
         WHERE id = #{id}
     </update>
 
@@ -545,10 +569,15 @@ import java.util.List;
 @Mapper
 public interface OrderMapper {
     List<Order> findAllOrders();
+
     Order findOrderById(Integer id);
+
     void insertOrder(Order order);
+
     void updateOrder(Order order);
+
     void deleteOrder(Integer id);
+
     List<Order> findOrderByUser(User user);
 }
 ```
@@ -590,57 +619,57 @@ public interface OrderMapper {
 
     <!-- 查询所有订单 -->
     <select id="findAllOrders" resultMap="orderResultMap">
-        SELECT o.id          AS order_id,
-               o.user_id,
-               o.order_date,
-               oi.id         AS order_item_id,
-               oi.goods_id,
-               oi.quantity,
-               oi.price,
-               g.name        AS goods_name,
-               g.description AS goods_description,
-               g.price       AS goods_price,
-               g.stock       AS goods_stock
+        SELECT o.id AS order_id,
+        o.user_id,
+        o.order_date,
+        oi.id AS order_item_id,
+        oi.goods_id,
+        oi.quantity,
+        oi.price,
+        g.name AS goods_name,
+        g.description AS goods_description,
+        g.price AS goods_price,
+        g.stock AS goods_stock
         FROM `order` o
-                 LEFT JOIN order_item oi ON o.id = oi.order_id
-                 LEFT JOIN goods g ON oi.goods_id = g.id
+        LEFT JOIN order_item oi ON o.id = oi.order_id
+        LEFT JOIN goods g ON oi.goods_id = g.id
     </select>
 
     <!-- 根据订单 ID 查询订单 -->
     <select id="findOrderById" resultMap="orderResultMap">
-        SELECT o.id          AS order_id,
-               o.user_id,
-               o.order_date,
-               oi.id         AS order_item_id,
-               oi.goods_id,
-               oi.quantity,
-               oi.price,
-               g.name        AS goods_name,
-               g.description AS goods_description,
-               g.price       AS goods_price,
-               g.stock       AS goods_stock
+        SELECT o.id AS order_id,
+        o.user_id,
+        o.order_date,
+        oi.id AS order_item_id,
+        oi.goods_id,
+        oi.quantity,
+        oi.price,
+        g.name AS goods_name,
+        g.description AS goods_description,
+        g.price AS goods_price,
+        g.stock AS goods_stock
         FROM `order` o
-                 LEFT JOIN order_item oi ON o.id = oi.order_id
-                 LEFT JOIN goods g ON oi.goods_id = g.id
+        LEFT JOIN order_item oi ON o.id = oi.order_id
+        LEFT JOIN goods g ON oi.goods_id = g.id
         WHERE o.id = #{id}
     </select>
 
     <!-- 根据用户 ID 查询订单 -->
     <select id="findOrderByUser" resultMap="orderResultMap">
-        SELECT o.id          AS order_id,
-               o.user_id,
-               o.order_date,
-               oi.id         AS order_item_id,
-               oi.goods_id,
-               oi.quantity,
-               oi.price,
-               g.name        AS goods_name,
-               g.description AS goods_description,
-               g.price       AS goods_price,
-               g.stock       AS goods_stock
+        SELECT o.id AS order_id,
+        o.user_id,
+        o.order_date,
+        oi.id AS order_item_id,
+        oi.goods_id,
+        oi.quantity,
+        oi.price,
+        g.name AS goods_name,
+        g.description AS goods_description,
+        g.price AS goods_price,
+        g.stock AS goods_stock
         FROM `order` o
-                 LEFT JOIN order_item oi ON o.id = oi.order_id
-                 LEFT JOIN goods g ON oi.goods_id = g.id
+        LEFT JOIN order_item oi ON o.id = oi.order_id
+        LEFT JOIN goods g ON oi.goods_id = g.id
         WHERE o.user_id = #{id}
     </select>
 
@@ -653,8 +682,8 @@ public interface OrderMapper {
     <!-- 更新订单 -->
     <update id="updateOrder" parameterType="com.li.hellospringmybatis.pojo.Order">
         UPDATE `order`
-        SET user_id    = #{userId},
-            order_date = #{orderDate}
+        SET user_id = #{userId},
+        order_date = #{orderDate}
         WHERE id = #{id}
     </update>
 
@@ -668,9 +697,72 @@ public interface OrderMapper {
 </mapper>
 ```
 
+## Template of ResultMap
+
+- resultMap (id / type)
+    - id (property / column)
+    - result (property / column)
+    - association (property / [resultMap | javaType])
+    - collection (property / ofType / [resultMap | javaType])
+
+```xml
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.example.mapper.YourMapper">
+
+    <!-- 定义嵌套对象的 resultMap -->
+    <resultMap id="nestedObjectResultMap" type="com.example.pojo.NestedObject">
+        <id property="id" column="nested_id"/>
+        <result property="name" column="nested_name"/>
+        <!-- 其他属性 -->
+    </resultMap>
+
+    <!-- 定义集合对象的 resultMap -->
+    <resultMap id="collectionObjectResultMap" type="com.example.pojo.CollectionObject">
+        <id property="id" column="collection_id"/>
+        <result property="name" column="collection_name"/>
+        <!-- 其他属性 -->
+    </resultMap>
+
+    <!-- 主 resultMap -->
+    <resultMap id="mainResultMap" type="com.example.pojo.MainObject">
+        <id property="id" column="main_id"/>
+        <result property="name" column="main_name"/>
+        <!-- 其他属性 -->
+
+        <!-- 嵌套对象 association -->
+        <association property="nestedObject" resultMap="nestedObjectResultMap"/>
+
+        <!-- 集合对象 collection -->
+        <collection property="collectionObjects" ofType="com.example.pojo.CollectionObject"
+                    resultMap="collectionObjectResultMap"/>
+    </resultMap>
+
+    <!-- 查询语句 -->
+    <select id="selectMainObject" resultMap="mainResultMap">
+        SELECT
+        m.id AS main_id,
+        m.name AS main_name,
+        n.id AS nested_id,
+        n.name AS nested_name,
+        c.id AS collection_id,
+        c.name AS collection_name
+        FROM main_table m
+        LEFT JOIN nested_table n ON m.id = n.main_id
+        LEFT JOIN collection_table c ON m.id = c.main_id
+    </select>
+
+</mapper>
+
+```
 
 # MyBatis DTD
+
 根据 MyBatis 的 DTD 规范，resultMap 的子元素必须按照特定的顺序排列。正确的顺序是：
+
 1. constructor?
 2. id*
 3. result*
