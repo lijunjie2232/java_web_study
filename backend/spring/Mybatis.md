@@ -1,19 +1,24 @@
 <!-- TOC -->
-
 * [A Simple Mybatis Example](#a-simple-mybatis-example)
-    * [@Mapper](#mapper)
+  * [@Mapper](#mapper)
 * [show sql in log](#show-sql-in-log)
 * [useGeneratedKeys & keyProperty](#usegeneratedkeys--keyproperty)
 * [camel case to underscore](#camel-case-to-underscore)
 * [`#{}` and `${}` in mybatis config sql](#-and--in-mybatis-config-sql)
 * [@Param](#param)
 * [returnType](#returntype)
-    * [return List](#return-list)
-    * [return Map](#return-map)
+  * [return List](#return-list)
+  * [return Map](#return-map)
 * [resultMap](#resultmap)
-    * [association](#association)
-    * [collection](#collection)
-
+  * [association](#association)
+  * [collection](#collection)
+  * [Example](#example)
+    * [POJO](#pojo)
+    * [Mapper](#mapper-1)
+      * [OrderItemMapper](#orderitemmapper)
+      * [OrderMapper](#ordermapper)
+  * [Template of ResultMap](#template-of-resultmap)
+* [MyBatis DTD](#mybatis-dtd)
 <!-- TOC -->
 
 # A Simple Mybatis Example
@@ -705,7 +710,7 @@ public interface OrderMapper {
     - association (property / [resultMap | javaType])
     - collection (property / ofType / [resultMap | javaType])
 
-```xml
+```
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
@@ -756,7 +761,6 @@ public interface OrderMapper {
     </select>
 
 </mapper>
-
 ```
 
 # MyBatis DTD
