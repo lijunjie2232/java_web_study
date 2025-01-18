@@ -1,9 +1,12 @@
 package com.li.hellospringmybatis;
 
 import com.li.hellospringmybatis.mapper.EmpMapper;
+import com.li.hellospringmybatis.mapper.OrderItemMapper;
 import com.li.hellospringmybatis.mapper.OrderMapper;
 import com.li.hellospringmybatis.mapper.UserMapper;
 import com.li.hellospringmybatis.pojo.Emp;
+import com.li.hellospringmybatis.pojo.Order;
+import com.li.hellospringmybatis.pojo.OrderItem;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -22,6 +25,9 @@ class HelloSpringMybatisApplicationTests {
 
 	@Autowired
 	OrderMapper orderMapper;
+
+	@Autowired
+	OrderItemMapper orderItemMapper;
 
 	@Test
 	void EmpMapperTest() {
@@ -56,7 +62,15 @@ class HelloSpringMybatisApplicationTests {
 
 	@Test
 	void OrderMapperTest() {
-		System.out.println(orderMapper.findAllOrders());
+//		System.out.println(orderMapper.findAllOrders());
+		Order order = orderMapper.findOrderById(1);
+		System.out.println(order);
+		System.out.println(orderMapper.findOrderByUser(userMapper.findUserById(1)));
+	}
+
+	@Test
+	void OrderItemMapperTest() {
+		System.out.println(orderItemMapper.findAllOrderItems());
 	}
 
 	@Test

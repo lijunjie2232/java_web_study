@@ -8,34 +8,77 @@
     <resultMap id="orderItemResultMap" type="com.li.hellospringmybatis.pojo.OrderItem">
         <id property="id" column="id"/>
         <result property="orderId" column="order_id"/>
-        <result property="goodsId" column="goods_id"/>
+<!--        <result property="goodsId" column="goods_id"/>-->
         <result property="quantity" column="quantity"/>
         <result property="price" column="price"/>
+        <association property="goods" javaType="com.li.hellospringmybatis.pojo.Goods">
+            <id property="id" column="goods_id"/>
+            <result property="name" column="goods_name"/>
+            <result property="description" column="goods_description"/>
+            <result property="price" column="goods_price"/>
+            <result property="stock" column="goods_stock"/>
+        </association>
     </resultMap>
 
     <select id="findAllOrderItems" resultMap="orderItemResultMap">
-        SELECT * FROM order_item
+        SELECT
+            oi.id,
+            oi.order_id,
+            oi.goods_id,
+            oi.quantity,
+            oi.price,
+            g.id AS goods_id,
+            g.name AS goods_name,
+            g.description AS goods_description,
+            g.price AS goods_price,
+            g.stock AS goods_stock
+        FROM order_item oi
+                 JOIN goods g ON oi.goods_id = g.id
     </select>
 
     <select id="findOrderItemById" resultMap="orderItemResultMap">
-        SELECT * FROM order_item WHERE id = #{id}
+        SELECT oi.id,
+               oi.order_id,
+               oi.goods_id,
+               oi.quantity,
+               oi.price,
+               g.id AS goods_id,
+               g.name        AS goods_name,
+               g.description AS goods_description,
+               g.price       AS goods_price,
+               g.stock       AS goods_stock
+        FROM order_item oi
+                 JOIN goods g ON oi.goods_id = g.id
+        WHERE oi.id = #{id}
     </select>
 
     <select id="findOrderItemsByOrderId" resultMap="orderItemResultMap">
-        SELECT * FROM order_item WHERE order_id = #{orderId}
+        SELECT oi.id,
+               oi.order_id,
+               oi.goods_id,
+               oi.quantity,
+               oi.price,
+               g.id          AS goods_id,
+               g.name        AS goods_name,
+               g.description AS goods_description,
+               g.price       AS goods_price,
+               g.stock       AS goods_stock
+        FROM order_item oi
+                 JOIN goods g ON oi.goods_id = g.id
+        WHERE oi.order_id = #{orderId}
     </select>
 
     <insert id="insertOrderItem" parameterType="com.li.hellospringmybatis.pojo.OrderItem">
         INSERT INTO order_item (order_id, goods_id, quantity, price)
-        VALUES (#{orderId}, #{goodsId}, #{quantity}, #{price})
+        VALUES (#{orderId}, #{goods.id}, #{quantity}, #{price})
     </insert>
 
     <update id="updateOrderItem" parameterType="com.li.hellospringmybatis.pojo.OrderItem">
         UPDATE order_item
         SET order_id = #{orderId},
-            goods_id = #{goodsId},
+            goods_id = #{goods.id},
             quantity = #{quantity},
-            price = #{price}
+            price    = #{price}
         WHERE id = #{id}
     </update>
 

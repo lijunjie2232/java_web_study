@@ -12,7 +12,6 @@
         <collection property="orderItems" ofType="com.li.hellospringmybatis.pojo.OrderItem">
             <id property="id" column="order_item_id"/>
             <result property="orderId" column="order_id"/>
-            <result property="goodsId" column="goods_id"/>
             <result property="quantity" column="quantity"/>
             <result property="price" column="price"/>
         </collection>
