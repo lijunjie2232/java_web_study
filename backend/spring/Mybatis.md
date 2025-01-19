@@ -18,7 +18,9 @@
       * [OrderItemMapper](#orderitemmapper)
       * [OrderMapper](#ordermapper)
   * [Template of ResultMap](#template-of-resultmap)
+* [分步查询](#分步查询)
 * [MyBatis DTD](#mybatis-dtd)
+* [Query by Step](#query-by-step)
 <!-- TOC -->
 
 # A Simple Mybatis Example
