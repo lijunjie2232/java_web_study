@@ -1,12 +1,7 @@
 package com.li.hellospringmybatis;
 
-import com.li.hellospringmybatis.mapper.EmpMapper;
-import com.li.hellospringmybatis.mapper.OrderItemMapper;
-import com.li.hellospringmybatis.mapper.OrderMapper;
-import com.li.hellospringmybatis.mapper.UserMapper;
-import com.li.hellospringmybatis.pojo.Emp;
-import com.li.hellospringmybatis.pojo.Order;
-import com.li.hellospringmybatis.pojo.OrderItem;
+import com.li.hellospringmybatis.mapper.*;
+import com.li.hellospringmybatis.pojo.*;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -28,6 +23,9 @@ class HelloSpringMybatisApplicationTests {
 
 	@Autowired
 	OrderItemMapper orderItemMapper;
+
+	@Autowired
+	OrderUserMapper orderUserMapper;
 
 	@Test
 	void EmpMapperTest() {
@@ -66,6 +64,18 @@ class HelloSpringMybatisApplicationTests {
 		Order order = orderMapper.findOrderById(1);
 		System.out.println(order);
 		System.out.println(orderMapper.findOrderByUser(userMapper.findUserById(1)));
+	}
+
+	@Test
+	void  OrderUserMapperTest() {
+		User user = orderUserMapper.getUserById(1);
+		List<Order> orders = orderUserMapper.getOrderByUser(user);
+		List<OrderItem> orderItems = orderUserMapper.getOrderItemByOrder(orders.get(0));
+		Goods goods = orderUserMapper.getGoodsById(1);
+		System.out.println(user);
+		System.out.println(orders);
+		System.out.println(orderItems);
+		System.out.println(goods);
 	}
 
 	@Test

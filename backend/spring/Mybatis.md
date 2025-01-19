@@ -708,7 +708,7 @@ public interface OrderMapper {
     - id (property / column)
     - result (property / column)
     - association (property / [resultMap | javaType])
-    - collection (property / ofType / [resultMap | javaType])
+    - collection (property / ofType / [resultMap])
 
 ```
 <?xml version="1.0" encoding="UTF-8" ?>
@@ -762,6 +762,9 @@ public interface OrderMapper {
 
 </mapper>
 ```
+
+# 分步查询
+
 
 # MyBatis DTD
 
