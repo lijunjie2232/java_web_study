@@ -823,5 +823,18 @@ public interface OrderMapper {
 ```
 
 ```java
+package com.li.hellospringmybatis.mapper;
+
+// ...
+
+@Mapper
+public interface OrderUserMapper {
+
+    Goods getGoodsById(int id);
+
+    List<OrderItem> getOrderItemByOrder(int id);
+
+    List<Order> getUserAndOrderByStep(int id);
+}
 
 ```
