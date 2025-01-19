@@ -12,9 +12,11 @@ import java.util.List;
 public interface OrderUserMapper {
     User getUserById(int id);
 
-    List<Order> getOrderByUser(User user);
+    List<Order> getOrderByUser(int id);
 
-    List<OrderItem> getOrderItemByOrder(Order order);
+    List<OrderItem> getOrderItemByOrder(int id);
 
     Goods getGoodsById(int id);
+
+    List<Order> getUserAndOrderByStep(int id);
 }
