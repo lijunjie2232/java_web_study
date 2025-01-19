@@ -69,14 +69,17 @@ class HelloSpringMybatisApplicationTests {
 	@Test
 	void  OrderUserMapperTest() {
 		User user = orderUserMapper.getUserById(1);
-		List<Order> orders = orderUserMapper.getOrderByUser(user.getId());
-		List<OrderItem> orderItems = orderUserMapper.getOrderItemByOrder(orders.get(0).getId());
-		Goods goods = orderUserMapper.getGoodsById(1);
-		System.out.println(user);
-		System.out.println(orders);
-		System.out.println(orderItems);
-		System.out.println(goods);
-		System.out.println(orderUserMapper.getUserAndOrderByStep(user.getId()));
+//		List<Order> orders = orderUserMapper.getOrderByUser(user.getId());
+//		List<OrderItem> orderItems = orderUserMapper.getOrderItemByOrder(orders.get(0).getId());
+//		Goods goods = orderUserMapper.getGoodsById(1);
+//		System.out.println(user);
+//		System.out.println(orders);
+//		System.out.println(orderItems);
+//		System.out.println(goods);
+//		System.out.println(orderUserMapper.getUserAndOrderByStep(user.getId()));
+		List<Order> orders = orderUserMapper.getUserAndOrderByStep(user.getId());
+		System.out.println(orders.get(0).getId());
+		System.out.println(orders.get(0).getOrderItems());
 	}
 
 	@Test

@@ -840,3 +840,22 @@ public interface OrderUserMapper {
 }
 
 ```
+
+- Query by Step must check to avoid circle query: **the last `select` must define `resultType` property instead of `resultMap`**
+
+# lazy loading
+only when you use `select` to query, the lazy loading will be triggered
+- configure to properties file:
+```properties
+mybatis.configuration.lazy-loading-enabled=true
+mybatis.configuration.aggressive-lazy-loading=false
+```
+
+```java
+@Test
+public void lazyLoadTest(){
+    List<Order> orders = orderUserMapper.getUserAndOrderByStep(0);// do first select
+    System.out.println(orders.get(0).getId());
+    System.out.println(orders.get(0).getOrderItems());// do reast select
+}
+```
