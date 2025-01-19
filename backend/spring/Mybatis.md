@@ -776,3 +776,52 @@ public interface OrderMapper {
 4. association*
 5. collection*
 6. discriminator?
+
+
+# Query by Step
+- at `<collection>` or `<association>` tag, use select to specify mapper method and column to specify passed in column as parameter
+```xml
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.li.hellospringmybatis.mapper.OrderUserMapper">
+    <resultMap id="StepOrderRM" type="com.li.hellospringmybatis.pojo.Order">
+        <id column="id" property="id"/>
+        <result column="user_id" property="userId"/>
+        <collection property="orderItems" ofType="com.li.hellospringmybatis.pojo.OrderItem"
+                    select="com.li.hellospringmybatis.mapper.OrderUserMapper.getOrderItemByOrder"
+                    column="{id=id,}">
+        </collection>
+    </resultMap>
+
+    <resultMap id="StepOrderItemRM" type="com.li.hellospringmybatis.pojo.OrderItem">
+
+        <id column="id" property="id"/>
+        <result column="order_id" property="orderId"/>
+        <result column="quantity" property="quantity"/>
+        <result column="price" property="price"/>
+        <association property="goods" javaType="com.li.hellospringmybatis.pojo.Goods"
+                     select="com.li.hellospringmybatis.mapper.OrderUserMapper.getGoodsById"
+                     column="{id=goods_id,}">
+        </association>
+    </resultMap>
+    <select id="getGoodsById" resultType="com.li.hellospringmybatis.pojo.Goods">
+        SELECT *
+        FROM `goods`
+        WHERE `id` = #{id}
+    </select>
+    <select id="getOrderItemByOrder" resultMap="StepOrderItemRM">
+        SELECT *
+        FROM `order_item`
+        WHERE `order_id` = #{id}
+    </select>
+    <select id="getUserAndOrderByStep" resultMap="StepOrderRM">
+        SELECT *
+        FROM `order`
+        WHERE `id` = #{id}
+    </select>
+</mapper>
+```
+
+```java
+
+```
