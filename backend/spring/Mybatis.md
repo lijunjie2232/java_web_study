@@ -919,3 +919,24 @@ public void lazyLoadTest() {
 </update>
 ```
 
+- `<trim>`
+  - `<trim prefix="where">` if inner sql is not empty, add `where` to the front
+  - `<trim prefixOverrides="and">` if inner sql begin with `and`, remove it
+```xml
+
+<select id="getEmpByNameAndSalaryByTrim" resultType="com.li.hellospringmybatis.pojo.Emp">
+    select *
+    from `emp`
+    <trim prefix="where" prefixOverrides="and || or">
+        <if test="name != null">
+            `name` = #{name}
+        </if>
+        <if test="salaryMin != null">
+            and `salary` &gt;= #{salaryMin}
+        </if>
+        <if test="salaryMax != null">
+            and `salary` &lt;= #{salaryMax}
+        </if>
+    </trim>
+</select>
+```

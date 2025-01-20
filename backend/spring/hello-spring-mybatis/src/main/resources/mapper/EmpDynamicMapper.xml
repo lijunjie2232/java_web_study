@@ -34,7 +34,7 @@
     <select id="getEmpByNameAndSalaryByTrim" resultType="com.li.hellospringmybatis.pojo.Emp">
         select *
         from `emp`
-        <trim prefix="where" prefixOverrides="and">
+        <trim prefix="where" prefixOverrides="and || or">
             <if test="name != null">
                 `name` = #{name}
             </if>
