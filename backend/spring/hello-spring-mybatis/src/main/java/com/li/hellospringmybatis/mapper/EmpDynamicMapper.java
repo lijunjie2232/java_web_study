@@ -28,4 +28,8 @@ public interface EmpDynamicMapper {
     List<Emp> getEmpByIds(@Param("ids") List<Integer> ids);
 
     void updateEmpByNameAndSalary(Emp emp);
+
+    void updateEmpBatch(@Param("emps") List<Emp> emps);
+
+    void insertEmpBatch(@Param("emps") List<Emp> emps);
 }

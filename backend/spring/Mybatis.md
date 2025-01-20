@@ -876,6 +876,7 @@ public void lazyLoadTest() {
 # Dynamic SQL
 
 ## `<if>` and `<where>`
+
     - `<if>` will apply inner sql if test is true
     - `<where>` will remove the first `and` and remove the last `where` to make the sql correct
 
@@ -920,8 +921,10 @@ public void lazyLoadTest() {
 ```
 
 ## `<trim>`
-  - `<trim prefix="where">` if inner sql is not empty, add `where` to the front
-  - `<trim prefixOverrides="and">` if inner sql begin with `and`, remove it
+
+- `<trim prefix="where">` if inner sql is not empty, add `where` to the front
+- `<trim prefixOverrides="and">` if inner sql begin with `and`, remove it
+
 ```xml
 
 <select id="getEmpByNameAndSalaryByTrim" resultType="com.li.hellospringmybatis.pojo.Emp">
@@ -940,10 +943,13 @@ public void lazyLoadTest() {
     </trim>
 </select>
 ```
+
 ## `<choose>` / `<when>` / `<otherwise>`
+
 - `<choose>` is like `if...else if...else`
 - `<when>` is like `if`
 - `<otherwise>` is like `else`
+
 ```xml
 
 <select id="getEmpByNameAndSalaryChoose" resultType="com.li.hellospringmybatis.pojo.Emp">
@@ -966,15 +972,19 @@ public void lazyLoadTest() {
     </where>
 </select>
 ```
+
 ## `<foreach>`
-- <text style="color:orange">**item**</text>：当前元素的别名，可以在循环体中使用。
-- <text style="color:orange">**index**</text>：当前元素的索引，可选。
-- <text style="color:orange">**collection**</text>：要遍历的集合，可以是 List、Set 或数组。
-- <text style="color:orange">**open**</text>：循环开始时的字符串，例如 (。
-- <text style="color:orange">**separator**</text>：每个元素之间的分隔符，例如 ,。
-- <text style="color:orange">**close**</text>：循环结束时的字符串，例如 )。
-- <text style="color:orange">**separatorFirst**</text>：第一个元素之前的分隔符，可选。
-- <text style="color:orange">**separatorLast**</text>：最后一个元素之后的分隔符，可选。
+
+- parameters:
+    - <text style="color:orange">**item**</text>：当前元素的别名，可以在循环体中使用。
+    - <text style="color:orange">**index**</text>：当前元素的索引，可选。
+    - <text style="color:orange">**collection**</text>：要遍历的集合，可以是 List、Set 或数组。
+    - <text style="color:orange">**open**</text>：循环开始时的字符串，例如 (。
+    - <text style="color:orange">**separator**</text>：每个元素之间的分隔符，例如 ,。
+    - <text style="color:orange">**close**</text>：循环结束时的字符串，例如 )。
+    - <text style="color:orange">**separatorFirst**</text>：第一个元素之前的分隔符，可选。
+    - <text style="color:orange">**separatorLast**</text>：最后一个元素之后的分隔符，可选。
+
 ```xml
 
 <foreach item="item" index="index" collection="collection"
@@ -982,6 +992,7 @@ public void lazyLoadTest() {
     #{item}
 </foreach>
 ```
+
 ```xml
 
 <select id="getEmpByIds" resultType="com.li.hellospringmybatis.pojo.Emp">
@@ -993,6 +1004,7 @@ public void lazyLoadTest() {
     </where>
 </select>
 ```
+
 ```xml
 
 <select id="getEmpNames" resultType="String">
@@ -1003,4 +1015,28 @@ public void lazyLoadTest() {
     </foreach>
     )
 </select>
+```
+
+- <text style="color:red">to enable batch update（enable multiple sql in one line separated by ";"）, `allowMultiQueries`
+  must be set to true in jdbc url</text>
+
+```xml
+
+<update id="updateEmpBatch">
+    <foreach collection="emps" item="emp" separator=";">
+        update `emp`
+        <set>
+            <if test="emp.name != null">
+                `name` = #{emp.name},
+            </if>
+            <if test="emp.salary != null">
+                `salary` = #{emp.salary},
+            </if>
+            <if test="emp.age != null">
+                `age` = #{emp.age},
+            </if>
+        </set>
+        where `id` = #{emp.id}
+    </foreach>
+</update>
 ```

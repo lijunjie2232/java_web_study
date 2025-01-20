@@ -97,7 +97,17 @@ class HelloSpringMybatisApplicationTests {
 //        System.out.println(empDynamicMapper.getEmpByNameAndSalaryByTrim(null, BigDecimal.valueOf(100), null));
 //        System.out.println(empDynamicMapper.getEmpByNameAndSalaryChoose("test", BigDecimal.valueOf(100), null));
 //        System.out.println(empDynamicMapper.getEmpByNameAndSalaryChoose(null, BigDecimal.valueOf(100), null));
-        System.out.println(empDynamicMapper.getEmpByIds(List.of(1, 2, 3)));
+//        System.out.println(empDynamicMapper.getEmpByIds(List.of(1, 2, 3)));
+//        System.out.println(empDynamicMapper.getEmpByIds(List.of()));
+//        empDynamicMapper.insertEmpBatch(List.of(
+//                        new Emp("test1", 20, BigDecimal.valueOf(1000)),
+//                        new Emp("test2", 20, BigDecimal.valueOf(1000))
+//                )
+//        );
+        empDynamicMapper.updateEmpBatch(List.of(
+                new Emp(6, "test1", 20, BigDecimal.valueOf(10000)),
+                new Emp(7, "test2", 20, BigDecimal.valueOf(10000))
+        ));
     }
 
     @Test

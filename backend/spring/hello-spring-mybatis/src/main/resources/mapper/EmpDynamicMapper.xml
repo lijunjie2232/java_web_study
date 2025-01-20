@@ -1,6 +1,12 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="com.li.hellospringmybatis.mapper.EmpDynamicMapper">
+    <insert id="insertEmpBatch">
+        insert into `emp`(`name`, `age`, `salary`)
+        <foreach collection="emps" item="emp" separator="," open="values">
+            (#{emp.name}, #{emp.age}, #{emp.salary})
+        </foreach>
+    </insert>
     <update id="updateEmpByNameAndSalary">
         update `emp`
         <set>
@@ -8,13 +14,30 @@
                 `name` = #{name},
             </if>
             <if test="salary != null">
-                `salary` = #{salary}
+                `salary` = #{salary},
             </if>
             <if test="age != null">
-                `age` = #{age}
+                `age` = #{age},
             </if>
         </set>
         where `id` = #{id}
+    </update>
+    <update id="updateEmpBatch">
+        <foreach collection="emps" item="emp" separator=";">
+            update `emp`
+            <set>
+                <if test="emp.name != null">
+                    `name` = #{emp.name},
+                </if>
+                <if test="emp.salary != null">
+                    `salary` = #{emp.salary},
+                </if>
+                <if test="emp.age != null">
+                    `age` = #{emp.age},
+                </if>
+            </set>
+            where `id` = #{emp.id}
+        </foreach>
     </update>
     <select id="getEmpByNameAndSalary" resultType="com.li.hellospringmybatis.pojo.Emp">
         select *
