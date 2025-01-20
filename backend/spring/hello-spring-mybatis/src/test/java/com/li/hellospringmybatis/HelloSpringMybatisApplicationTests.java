@@ -92,7 +92,9 @@ class HelloSpringMybatisApplicationTests {
 
     @Test
     void EmpDynamicMapperTest() {
-        System.out.println(empDynamicMapper.getEmpByNameAndSalary(null, BigDecimal.valueOf(100), null));
+//        System.out.println(empDynamicMapper.getEmpByNameAndSalary(null, BigDecimal.valueOf(100), null));
+        empDynamicMapper.updateEmpByNameAndSalary(new Emp(1, null, null, BigDecimal.valueOf(10000)));
+
     }
 
     @Test

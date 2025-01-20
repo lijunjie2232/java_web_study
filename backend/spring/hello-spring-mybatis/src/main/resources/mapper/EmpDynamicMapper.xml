@@ -1,6 +1,21 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
 <mapper namespace="com.li.hellospringmybatis.mapper.EmpDynamicMapper">
+    <update id="updateEmpByNameAndSalary">
+        update `emp`
+        <set>
+            <if test="name != null">
+                `name` = #{name},
+            </if>
+            <if test="salary != null">
+                `salary` = #{salary}
+            </if>
+            <if test="age != null">
+                `age` = #{age}
+            </if>
+        </set>
+        where `id` = #{id}
+    </update>
     <select id="getEmpByNameAndSalary" resultType="com.li.hellospringmybatis.pojo.Emp">
         select *
         from `emp`
@@ -15,5 +30,20 @@
                 `salary` &lt;= #{salaryMax}
             </if>
         </where>
+    </select>
+    <select id="getEmpByNameAndSalaryByTrim" resultType="com.li.hellospringmybatis.pojo.Emp">
+        select *
+        from `emp`
+        <trim prefix="where" prefixOverrides="and">
+            <if test="name != null">
+                `name` = #{name}
+            </if>
+            <if test="salaryMin != null">
+                and `salary` &gt;= #{salaryMin}
+            </if>
+            <if test="salaryMax != null">
+                and `salary` &lt;= #{salaryMax}
+            </if>
+        </trim>
     </select>
 </mapper>

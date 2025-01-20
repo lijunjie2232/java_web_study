@@ -28,7 +28,7 @@
 # Tips
 
 1. in sql of mybatis xml, `<` and `>` must be replaced with `&lt;` and `&gt;`
-   - `where salary &lt;= 10000` instead of `where salary <= 10000`
+    - `where salary &lt;= 10000` instead of `where salary <= 10000`
 
 # A Simple Mybatis Example
 
@@ -874,23 +874,48 @@ public void lazyLoadTest() {
 ```
 
 # Dynamic SQL
+
 - `<if>` and `<where>`
-  - `<if>` will apply inner sql if test is true
-  - `<where>` will remove the first `and` and remove the last `where` to make the sql correct
+    - `<if>` will apply inner sql if test is true
+    - `<where>` will remove the first `and` and remove the last `where` to make the sql correct
+
 ```xml
+
 <select id="getEmpByNameAndSalary" resultType="com.li.hellospringmybatis.pojo.Emp">
-  select *
-  from `emp`
-  <where>
-    <if test="name != null">
-      `name` = #{name}
-    </if>
-    <if test="salaryMin != null">
-      `salary` &gt;= #{salaryMin}
-    </if>
-    <if test="salaryMax != null">
-      `salary` &lt;= #{salaryMax}
-    </if>
-  </where>
+    select *
+    from `emp`
+    <where>
+        <if test="name != null">
+            `name` = #{name}
+        </if>
+        <if test="salaryMin != null">
+            `salary` &gt;= #{salaryMin}
+        </if>
+        <if test="salaryMax != null">
+            `salary` &lt;= #{salaryMax}
+        </if>
+    </where>
 </select>
 ```
+
+- `<set>`
+
+```xml
+
+<update id="updateEmpByNameAndSalary">
+    update `emp`
+    <set>
+        <if test="name != null">
+            `name` = #{name},
+        </if>
+        <if test="salary != null">
+            `salary` = #{salary}
+        </if>
+        <if test="age != null">
+            `age` = #{age}
+        </if>
+    </set>
+    where `id` = #{id}
+</update>
+```
+
