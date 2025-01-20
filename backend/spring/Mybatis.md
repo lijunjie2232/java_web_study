@@ -30,6 +30,15 @@
 1. in sql of mybatis xml, `<` and `>` must be replaced with `&lt;` and `&gt;`
     - `where salary &lt;= 10000` instead of `where salary <= 10000`
 
+   | origin character | escaped character |
+      |------------------|-------------------|
+   | `<`              | `&lt;`            |
+   | `>`              | `&gt;`            |
+   | `&`              | `&amp;`           |
+   | `'`              | `&apos;`          |
+   | `"`              | `&quot;`          |
+   | `\`              | `&bsol;`          |
+
 # A Simple Mybatis Example
 
 - add depencency
@@ -1039,4 +1048,54 @@ public void lazyLoadTest() {
         where `id` = #{emp.id}
     </foreach>
 </update>
+```
+
+## `<sql>`
+
+- `<sql>` is used to define a sql piece, which can be reused in other sql
+
+```xml
+
+<mapper>
+    <sql id="empColumns">
+        `id`, `name`, `age`, `salary`
+    </sql>
+    <select id="getEmpById" resultType="com.li.hellospringmybatis.pojo.Emp">
+        select
+        <include refid="empColumns"/>
+        from `emp`
+        where `id` = #{id}
+    </select>
+
+    <select id="getAllEmps" resultType="com.li.hellospringmybatis.pojo.Emp">
+        select
+        <include refid="empColumns"/>
+        from `emp`
+    </select>
+
+</mapper>
+```
+
+- `<sql>` with parameter
+    - use `${xxx}` at sql inner `<sql>` to set parameter `xxx`
+    - use `<property name="xxx" value="e"/>` inner `<include>` to set value of `xxx` is `e`
+
+```xml
+
+<mapper>
+    <sql id="empColumnsWithAlias">
+        ${alias}.`id` as emp_id,
+        ${alias}.`name` as emp_name,
+        ${alias}.`age` as emp_age,
+        ${alias}.`salary` as emp_salary
+    </sql>
+    <select id="getEmpByIdWithAlias" resultType="com.li.hellospringmybatis.pojo.Emp">
+        select
+        <include refid="empColumnsWithAlias">
+            <property name="alias" value="e"/>
+        </include>
+        from `emp` e
+        where e.`id` = #{id}
+    </select>
+</mapper>
 ```
