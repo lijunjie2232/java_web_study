@@ -97,7 +97,7 @@ class HelloSpringMybatisApplicationTests {
 //        System.out.println(empDynamicMapper.getEmpByNameAndSalaryByTrim(null, BigDecimal.valueOf(100), null));
 //        System.out.println(empDynamicMapper.getEmpByNameAndSalaryChoose("test", BigDecimal.valueOf(100), null));
 //        System.out.println(empDynamicMapper.getEmpByNameAndSalaryChoose(null, BigDecimal.valueOf(100), null));
-
+        System.out.println(empDynamicMapper.getEmpByIds(List.of(1, 2, 3)));
     }
 
     @Test

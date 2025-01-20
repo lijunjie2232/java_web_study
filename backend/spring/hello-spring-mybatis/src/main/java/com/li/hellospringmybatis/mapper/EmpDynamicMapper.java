@@ -25,5 +25,7 @@ public interface EmpDynamicMapper {
             @Param("salaryMax") BigDecimal salaryMax
     );
 
+    List<Emp> getEmpByIds(@Param("ids") List<Integer> ids);
+
     void updateEmpByNameAndSalary(Emp emp);
 }

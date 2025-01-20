@@ -65,4 +65,12 @@
             </choose>
         </where>
     </select>
+    <select id="getEmpByIds" resultType="com.li.hellospringmybatis.pojo.Emp">
+        select * from `emp`
+        <where>
+            <foreach collection="ids" item="id" separator="or">
+                `id` = #{id}
+            </foreach>
+        </where>
+    </select>
 </mapper>

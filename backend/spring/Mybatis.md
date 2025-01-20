@@ -966,4 +966,41 @@ public void lazyLoadTest() {
     </where>
 </select>
 ```
+## `<foreach>`
+- <text style="color:orange">**item**</text>：当前元素的别名，可以在循环体中使用。
+- <text style="color:orange">**index**</text>：当前元素的索引，可选。
+- <text style="color:orange">**collection**</text>：要遍历的集合，可以是 List、Set 或数组。
+- <text style="color:orange">**open**</text>：循环开始时的字符串，例如 (。
+- <text style="color:orange">**separator**</text>：每个元素之间的分隔符，例如 ,。
+- <text style="color:orange">**close**</text>：循环结束时的字符串，例如 )。
+- <text style="color:orange">**separatorFirst**</text>：第一个元素之前的分隔符，可选。
+- <text style="color:orange">**separatorLast**</text>：最后一个元素之后的分隔符，可选。
+```xml
 
+<foreach item="item" index="index" collection="collection"
+         open="(" separator="," close=")">
+    #{item}
+</foreach>
+```
+```xml
+
+<select id="getEmpByIds" resultType="com.li.hellospringmybatis.pojo.Emp">
+    select * from `emp`
+    <where>
+        <foreach collection="ids" item="id" separator="or">
+            `id` = #{id}
+        </foreach>
+    </where>
+</select>
+```
+```xml
+
+<select id="getEmpNames" resultType="String">
+    select group_concat(
+    <foreach item="id" index="index" collection="list"
+             separator=", " separatorFirst="'" separatorLast="'">
+        (select `name` from `emp` where `id` = #{id})
+    </foreach>
+    )
+</select>
+```
