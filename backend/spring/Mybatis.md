@@ -875,7 +875,7 @@ public void lazyLoadTest() {
 
 # Dynamic SQL
 
-- `<if>` and `<where>`
+## `<if>` and `<where>`
     - `<if>` will apply inner sql if test is true
     - `<where>` will remove the first `and` and remove the last `where` to make the sql correct
 
@@ -898,7 +898,7 @@ public void lazyLoadTest() {
 </select>
 ```
 
-- `<set>`
+## `<set>`
 
 ```xml
 
@@ -919,7 +919,7 @@ public void lazyLoadTest() {
 </update>
 ```
 
-- `<trim>`
+## `<trim>`
   - `<trim prefix="where">` if inner sql is not empty, add `where` to the front
   - `<trim prefixOverrides="and">` if inner sql begin with `and`, remove it
 ```xml
@@ -940,3 +940,30 @@ public void lazyLoadTest() {
     </trim>
 </select>
 ```
+## `<choose>` / `<when>` / `<otherwise>`
+- `<choose>` is like `if...else if...else`
+- `<when>` is like `if`
+- `<otherwise>` is like `else`
+```xml
+
+<select id="getEmpByNameAndSalaryChoose" resultType="com.li.hellospringmybatis.pojo.Emp">
+    select * from `emp`
+    <where>
+        <choose>
+            <when test="name != null">
+                `name` = #{name}
+            </when>
+            <when test="salaryMin != null">
+                `salary` &gt;= #{salaryMin}
+            </when>
+            <when test="salaryMax != null">
+                `salary` &lt;= #{salaryMax}
+            </when>
+            <otherwise>
+                `id` = 1
+            </otherwise>
+        </choose>
+    </where>
+</select>
+```
+

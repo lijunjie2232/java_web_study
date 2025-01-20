@@ -19,6 +19,11 @@ public interface EmpDynamicMapper {
             @Param("salaryMin") BigDecimal salaryMin,
             @Param("salaryMax") BigDecimal salaryMax
     );
+    List<Emp> getEmpByNameAndSalaryChoose(
+            @Param("name") String name,
+            @Param("salaryMin") BigDecimal salaryMin,
+            @Param("salaryMax") BigDecimal salaryMax
+    );
 
     void updateEmpByNameAndSalary(Emp emp);
 }

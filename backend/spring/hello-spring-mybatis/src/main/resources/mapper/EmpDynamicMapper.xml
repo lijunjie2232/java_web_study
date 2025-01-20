@@ -46,4 +46,23 @@
             </if>
         </trim>
     </select>
+    <select id="getEmpByNameAndSalaryChoose" resultType="com.li.hellospringmybatis.pojo.Emp">
+        select * from `emp`
+        <where>
+            <choose>
+                <when test="name != null">
+                    `name` = #{name}
+                </when>
+                <when test="salaryMin != null">
+                    `salary` &gt;= #{salaryMin}
+                </when>
+                <when test="salaryMax != null">
+                    `salary` &lt;= #{salaryMax}
+                </when>
+                <otherwise>
+                    `id` = 1
+                </otherwise>
+            </choose>
+        </where>
+    </select>
 </mapper>
