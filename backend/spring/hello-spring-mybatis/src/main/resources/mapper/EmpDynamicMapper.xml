@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.li.hellospringmybatis.mapper.EmpDynamicMapper">
+    <select id="getEmpByNameAndSalary" resultType="com.li.hellospringmybatis.pojo.Emp">
+        select *
+        from `emp`
+        <where>
+            <if test="name != null">
+                `name` = #{name}
+            </if>
+            <if test="salaryMin != null">
+                `salary` &gt;= #{salaryMin}
+            </if>
+            <if test="salaryMax != null">
+                `salary` &lt;= #{salaryMax}
+            </if>
+        </where>
+    </select>
+</mapper>

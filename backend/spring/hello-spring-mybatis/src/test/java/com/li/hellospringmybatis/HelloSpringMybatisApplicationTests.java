@@ -12,28 +12,31 @@ import java.util.List;
 @SpringBootTest
 class HelloSpringMybatisApplicationTests {
 
-	@Autowired
-	EmpMapper empMapper;
+    @Autowired
+    EmpMapper empMapper;
 
-	@Autowired
-	UserMapper userMapper;
+    @Autowired
+    UserMapper userMapper;
 
-	@Autowired
-	OrderMapper orderMapper;
+    @Autowired
+    OrderMapper orderMapper;
 
-	@Autowired
-	OrderItemMapper orderItemMapper;
+    @Autowired
+    OrderItemMapper orderItemMapper;
 
-	@Autowired
-	OrderUserMapper orderUserMapper;
+    @Autowired
+    OrderUserMapper orderUserMapper;
 
-	@Test
-	void EmpMapperTest() {
+    @Autowired
+    EmpDynamicMapper empDynamicMapper;
+
+    @Test
+    void EmpMapperTest() {
 //		get by id test
-		System.out.println(empMapper.getEmpById(1));
+        System.out.println(empMapper.getEmpById(1));
 //		get all test
-		List<Emp> emps = empMapper.getEmps();
-		System.out.println(emps);
+        List<Emp> emps = empMapper.getEmps();
+        System.out.println(emps);
 ////		add test
 //		Emp emp = new Emp("test", 20, new BigDecimal(1000));
 //		empMapper.addEmp(emp);
@@ -51,24 +54,24 @@ class HelloSpringMybatisApplicationTests {
 //		emp.setSalary(emp.getSalary().add(new BigDecimal(1000)));
 //		empMapper.updateEmp(emp);
 //		System.out.println(empMapper.getEmpById(emps.size()));
-	}
+    }
 
-	@Test
-	void UserMapperTest() {
-		System.out.println(userMapper.findAllUsers());
-	}
+    @Test
+    void UserMapperTest() {
+        System.out.println(userMapper.findAllUsers());
+    }
 
-	@Test
-	void OrderMapperTest() {
+    @Test
+    void OrderMapperTest() {
 //		System.out.println(orderMapper.findAllOrders());
-		Order order = orderMapper.findOrderById(1);
-		System.out.println(order);
-		System.out.println(orderMapper.findOrderByUser(userMapper.findUserById(1)));
-	}
+        Order order = orderMapper.findOrderById(1);
+        System.out.println(order);
+        System.out.println(orderMapper.findOrderByUser(userMapper.findUserById(1)));
+    }
 
-	@Test
-	void  OrderUserMapperTest() {
-		User user = orderUserMapper.getUserById(1);
+    @Test
+    void OrderUserMapperTest() {
+        User user = orderUserMapper.getUserById(1);
 //		List<Order> orders = orderUserMapper.getOrderByUser(user.getId());
 //		List<OrderItem> orderItems = orderUserMapper.getOrderItemByOrder(orders.get(0).getId());
 //		Goods goods = orderUserMapper.getGoodsById(1);
@@ -77,18 +80,23 @@ class HelloSpringMybatisApplicationTests {
 //		System.out.println(orderItems);
 //		System.out.println(goods);
 //		System.out.println(orderUserMapper.getUserAndOrderByStep(user.getId()));
-		List<Order> orders = orderUserMapper.getUserAndOrderByStep(user.getId());
-		System.out.println(orders.get(0).getId());
-		System.out.println(orders.get(0).getOrderItems());
-	}
+        List<Order> orders = orderUserMapper.getUserAndOrderByStep(user.getId());
+        System.out.println(orders.get(0).getId());
+        System.out.println(orders.get(0).getOrderItems());
+    }
 
-	@Test
-	void OrderItemMapperTest() {
-		System.out.println(orderItemMapper.findAllOrderItems());
-	}
+    @Test
+    void OrderItemMapperTest() {
+        System.out.println(orderItemMapper.findAllOrderItems());
+    }
 
-	@Test
-	void contextLoads() {
-	}
+    @Test
+    void EmpDynamicMapperTest() {
+        System.out.println(empDynamicMapper.getEmpByNameAndSalary(null, BigDecimal.valueOf(100), null));
+    }
+
+    @Test
+    void contextLoads() {
+    }
 
 }

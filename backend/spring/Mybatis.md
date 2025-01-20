@@ -1,27 +1,34 @@
 <!-- TOC -->
+
 * [A Simple Mybatis Example](#a-simple-mybatis-example)
-  * [@Mapper](#mapper)
+    * [@Mapper](#mapper)
 * [show sql in log](#show-sql-in-log)
 * [useGeneratedKeys & keyProperty](#usegeneratedkeys--keyproperty)
 * [camel case to underscore](#camel-case-to-underscore)
 * [`#{}` and `${}` in mybatis config sql](#-and--in-mybatis-config-sql)
 * [@Param](#param)
 * [returnType](#returntype)
-  * [return List](#return-list)
-  * [return Map](#return-map)
+    * [return List](#return-list)
+    * [return Map](#return-map)
 * [resultMap](#resultmap)
-  * [association](#association)
-  * [collection](#collection)
-  * [Example](#example)
-    * [POJO](#pojo)
-    * [Mapper](#mapper-1)
-      * [OrderItemMapper](#orderitemmapper)
-      * [OrderMapper](#ordermapper)
-  * [Template of ResultMap](#template-of-resultmap)
+    * [association](#association)
+    * [collection](#collection)
+    * [Example](#example)
+        * [POJO](#pojo)
+        * [Mapper](#mapper-1)
+            * [OrderItemMapper](#orderitemmapper)
+            * [OrderMapper](#ordermapper)
+    * [Template of ResultMap](#template-of-resultmap)
 * [分步查询](#分步查询)
 * [MyBatis DTD](#mybatis-dtd)
 * [Query by Step](#query-by-step)
+
 <!-- TOC -->
+
+# Tips
+
+1. in sql of mybatis xml, `<` and `>` must be replaced with `&lt;` and `&gt;`
+   - `where salary &lt;= 10000` instead of `where salary <= 10000`
 
 # A Simple Mybatis Example
 
@@ -767,7 +774,6 @@ public interface OrderMapper {
 
 # 分步查询
 
-
 # MyBatis DTD
 
 根据 MyBatis 的 DTD 规范，resultMap 的子元素必须按照特定的顺序排列。正确的顺序是：
@@ -779,9 +785,11 @@ public interface OrderMapper {
 5. collection*
 6. discriminator?
 
-
 # Query by Step
-- at `<collection>` or `<association>` tag, use select to specify mapper method and column to specify passed in column as parameter
+
+- at `<collection>` or `<association>` tag, use select to specify mapper method and column to specify passed in column
+  as parameter
+
 ```xml
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
@@ -841,21 +849,48 @@ public interface OrderUserMapper {
 
 ```
 
-- Query by Step must check to avoid circle query: **the last `select` must define `resultType` property instead of `resultMap`**
+- Query by Step must check to avoid circle query: **the last `select` must define `resultType` property instead
+  of `resultMap`**
 
 # lazy loading
+
 only when you use `select` to query, the lazy loading will be triggered
+
 - configure to properties file:
+
 ```properties
 mybatis.configuration.lazy-loading-enabled=true
 mybatis.configuration.aggressive-lazy-loading=false
 ```
 
 ```java
+
 @Test
-public void lazyLoadTest(){
+public void lazyLoadTest() {
     List<Order> orders = orderUserMapper.getUserAndOrderByStep(0);// do first select
     System.out.println(orders.get(0).getId());
     System.out.println(orders.get(0).getOrderItems());// do reast select
 }
+```
+
+# Dynamic SQL
+- `<if>` and `<where>`
+  - `<if>` will apply inner sql if test is true
+  - `<where>` will remove the first `and` and remove the last `where` to make the sql correct
+```xml
+<select id="getEmpByNameAndSalary" resultType="com.li.hellospringmybatis.pojo.Emp">
+  select *
+  from `emp`
+  <where>
+    <if test="name != null">
+      `name` = #{name}
+    </if>
+    <if test="salaryMin != null">
+      `salary` &gt;= #{salaryMin}
+    </if>
+    <if test="salaryMax != null">
+      `salary` &lt;= #{salaryMax}
+    </if>
+  </where>
+</select>
 ```
