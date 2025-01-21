@@ -40,7 +40,7 @@
     - `where salary &lt;= 10000` instead of `where salary <= 10000`
 
    | origin character | escaped character |
-         |------------------|-------------------|
+                  |------------------|-------------------|
    | `<`              | `&lt;`            |
    | `>`              | `&gt;`            |
    | `&`              | `&amp;`           |
@@ -1144,4 +1144,11 @@ public void lazyLoadTest() {
 - 二级缓存（可选）：
     - 如果启用了二级缓存并且当前查询符合条件，则可以直接从缓存中获取结果而无需再次访问数据库。需要注意的是，只有当没有发生过任何修改操作时才会命中缓存。
 
+# Mybatis Interceptor
+
+- MyBatis 拦截器主要作用于以下四个接口方法：
+    1. Executor：负责执行 SQL 语句。
+    2. StatementHandler：处理 JDBC Statement，包括 PreparedStatement 和 CallableStatement。
+    3. ParameterHandler：负责将参数设置到 PreparedStatement 中。
+    4. ResultSetHandler：负责从 ResultSet 中读取数据并映射为 Java 对象。
 
