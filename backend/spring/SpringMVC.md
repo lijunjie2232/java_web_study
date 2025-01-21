@@ -82,7 +82,7 @@
   * [HandlerMapping](#handlermapping)
   * [HandlerAdapter](#handleradapter)
   * [Source Code](#source-code)
-<!-- TOC -->
+  <!-- TOC -->
 
 # Start a Spring MVC Application
 
@@ -1354,7 +1354,7 @@ public class MVCController {
     <div class="hint" th:remove="none">
         <p>none<span> ^</span></p>
     </div>
-
+    
     <!--all-but-first：除第一个子项以外，删除其它所有子项-->
     <div class="hint" th:remove="all-but-first">
         <p>all-but-first1<span> %</span></p>
@@ -2319,4 +2319,20 @@ private void processDispatchResult(HttpServletRequest request, HttpServletRespon
         }
     }
 }
+```
+
+
+
+```java
+Practice CRUD
+1、技术栈：
+SpringBoot+Spring+SpringMvc+MyBatis
+2、要求：
+1）、员工表CRUD
+2）、基本CRUD+分页查询
+3）、RESTfuL风格
+4）、数据校验
+5）、全局统一异常处理（业务异常、校验异常）
+6）、引入vo分层模型
+7）、引入swagger文档
 ```
