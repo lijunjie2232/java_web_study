@@ -1116,3 +1116,32 @@ public void lazyLoadTest() {
 - cache is invalidated when transaction is committed or rolled back
 - use `<cache/>` inner mapper tag, any query in this mapper result will shared into level 2 cache even in transaction
 - if cache by set `<cache/>`, result object must be `serializable`
+
+# Mybatis Theory
+
+![Mybatis.png](Mybatis.png)
+
+- 读取配置文件：
+    - MyBatis 通过 mybatis-config.xml 或者 Spring Boot 配置文件中的相关属性来初始化环境。这包括数据源、事务管理器、映射文件路径等。
+- 创建 SqlSessionFactory：
+    - 使用 MyBatis 的 SqlSessionFactoryBuilder 来构建 SqlSessionFactory。这个工厂类负责创建 SqlSession 实例。
+    - 在 Spring 环境中，通常由 SqlSessionFactoryBean 来完成这一工作。
+- 获取 SqlSession：
+    - 每次执行数据库操作时，都会从 SqlSessionFactory 中获取一个 SqlSession 对象。SqlSession 是 MyBatis
+      提供的一个接口，它封装了与数据库交互的所有方法（如 insert, update, delete, select）。
+- 解析 Mapper 文件：
+    - 当应用程序启动时，MyBatis 会扫描指定路径下的所有 Mapper XML 文件，并将这些文件中的 SQL 语句和映射关系缓存起来。
+    - 如果使用的是注解方式，则直接解析注解定义的 SQL 和映射规则。
+- 动态 SQL 处理：
+    - 对于包含动态 SQL 元素（如 <if>, <choose>, <foreach> 等）的查询，MyBatis 会在运行时根据传入参数动态生成最终的 SQL 语句。
+- SQL 执行：
+    - 将生成好的 SQL 传递给 JDBC 进行实际的数据访问操作。对于查询操作，结果集会被转换为 Java 对象；而对于增删改操作，则返回受影响的行数。
+- 结果映射：
+    - 根据 Mapper 文件中定义的结果映射（resultMap），将查询结果集中的每一行数据映射到相应的 Java 对象属性上。
+    - 如果启用了驼峰命名转换功能，还会自动处理字段名大小写的差异问题。
+- 关闭资源：
+    - 完成数据库操作后，确保正确关闭 SqlSession 以释放连接资源。在 Spring 管理下，通常不需要手动管理，因为框架会自动处理。
+- 二级缓存（可选）：
+    - 如果启用了二级缓存并且当前查询符合条件，则可以直接从缓存中获取结果而无需再次访问数据库。需要注意的是，只有当没有发生过任何修改操作时才会命中缓存。
+
+
