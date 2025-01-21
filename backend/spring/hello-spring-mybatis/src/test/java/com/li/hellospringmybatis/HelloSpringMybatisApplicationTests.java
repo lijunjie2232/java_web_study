@@ -2,6 +2,7 @@ package com.li.hellospringmybatis;
 
 import com.li.hellospringmybatis.mapper.*;
 import com.li.hellospringmybatis.pojo.*;
+import com.li.hellospringmybatis.service.EmpService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -29,6 +30,9 @@ class HelloSpringMybatisApplicationTests {
 
     @Autowired
     EmpDynamicMapper empDynamicMapper;
+
+    @Autowired
+    EmpService empService;
 
     @Test
     void EmpMapperTest() {
@@ -108,6 +112,11 @@ class HelloSpringMybatisApplicationTests {
                 new Emp(6, "test1", 20, BigDecimal.valueOf(10000)),
                 new Emp(7, "test2", 20, BigDecimal.valueOf(10000))
         ));
+    }
+
+    @Test
+    void pageHelperTest(){
+        System.out.println(empService.getEmps(2, 5));
     }
 
     @Test

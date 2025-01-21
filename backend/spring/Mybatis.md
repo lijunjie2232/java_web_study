@@ -40,7 +40,7 @@
     - `where salary &lt;= 10000` instead of `where salary <= 10000`
 
    | origin character | escaped character |
-                  |------------------|-------------------|
+                     |------------------|-------------------|
    | `<`              | `&lt;`            |
    | `>`              | `&gt;`            |
    | `&`              | `&amp;`           |
@@ -1152,3 +1152,48 @@ public void lazyLoadTest() {
     3. ParameterHandler：负责将参数设置到 PreparedStatement 中。
     4. ResultSetHandler：负责从 ResultSet 中读取数据并映射为 Java 对象。
 
+## PageHelper(Mybatis Interceptor Example)
+
+### import dependency
+
+```xml
+<!-- https://mvnrepository.com/artifact/com.github.pagehelper/pagehelper -->
+<dependency>
+    <groupId>com.github.pagehelper</groupId>
+    <artifactId>pagehelper</artifactId>
+    <version>6.1.0</version>
+</dependency>
+```
+
+### configuration
+
+```java
+package com.li.hellospringmybatis.config;
+
+import com.github.pagehelper.PageInterceptor;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+
+@Configuration
+public class MyBatisConfig {
+    @Bean
+    PageInterceptor pageInterceptor() {
+        PageInterceptor pageInterceptor = new PageInterceptor();
+        Properties properties = new Properties();
+        properties.setProperty("reasonable", "true");
+        pageInterceptor.setProperties(properties);
+        return pageInterceptor;
+    }
+}
+```
+
+### usage
+
+```java
+public PageInfo<Emp> getEmps(int pageNum, int pageSize) {
+    PageHelper.startPage(pageNum, pageSize);
+    List<Emp> emps = empMapper.getEmps();
+    PageInfo<Emp> pageInfo = new PageInfo<>(emps);
+    return pageInfo;
+}
+```
