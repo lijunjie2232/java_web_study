@@ -1,35 +1,37 @@
 <!-- TOC -->
+
 * [Tips](#tips)
 * [A Simple Mybatis Example](#a-simple-mybatis-example)
-  * [@Mapper](#mapper)
+    * [@Mapper](#mapper)
 * [show sql in log](#show-sql-in-log)
 * [useGeneratedKeys & keyProperty](#usegeneratedkeys--keyproperty)
 * [camel case to underscore](#camel-case-to-underscore)
 * [`#{}` and `${}` in mybatis config sql](#-and--in-mybatis-config-sql)
 * [@Param](#param)
 * [returnType](#returntype)
-  * [return List](#return-list)
-  * [return Map](#return-map)
+    * [return List](#return-list)
+    * [return Map](#return-map)
 * [resultMap](#resultmap)
-  * [association](#association)
-  * [collection](#collection)
-  * [Example](#example)
-    * [POJO](#pojo)
-    * [Mapper](#mapper-1)
-      * [OrderItemMapper](#orderitemmapper)
-      * [OrderMapper](#ordermapper)
-  * [Template of ResultMap](#template-of-resultmap)
+    * [association](#association)
+    * [collection](#collection)
+    * [Example](#example)
+        * [POJO](#pojo)
+        * [Mapper](#mapper-1)
+            * [OrderItemMapper](#orderitemmapper)
+            * [OrderMapper](#ordermapper)
+    * [Template of ResultMap](#template-of-resultmap)
 * [分步查询](#分步查询)
 * [MyBatis DTD](#mybatis-dtd)
 * [Query by Step](#query-by-step)
 * [lazy loading](#lazy-loading)
 * [Dynamic SQL](#dynamic-sql)
-  * [`<if>` and `<where>`](#if-and-where)
-  * [`<set>`](#set)
-  * [`<trim>`](#trim)
-  * [`<choose>` / `<when>` / `<otherwise>`](#choose--when--otherwise)
-  * [`<foreach>`](#foreach)
-  * [`<sql>`](#sql)
+    * [`<if>` and `<where>`](#if-and-where)
+    * [`<set>`](#set)
+    * [`<trim>`](#trim)
+    * [`<choose>` / `<when>` / `<otherwise>`](#choose--when--otherwise)
+    * [`<foreach>`](#foreach)
+    * [`<sql>`](#sql)
+
 <!-- TOC -->
 
 # Tips
@@ -38,7 +40,7 @@
     - `where salary &lt;= 10000` instead of `where salary <= 10000`
 
    | origin character | escaped character |
-      |------------------|-------------------|
+         |------------------|-------------------|
    | `<`              | `&lt;`            |
    | `>`              | `&gt;`            |
    | `&`              | `&amp;`           |
@@ -1106,3 +1108,11 @@ public void lazyLoadTest() {
     </select>
 </mapper>
 ```
+
+# Mybatis Cache
+
+- cache data in a transaction
+- cache will be invalidated once update/delete/insert happens
+- cache is invalidated when transaction is committed or rolled back
+- use `<cache/>` inner mapper tag, any query in this mapper result will shared into level 2 cache even in transaction
+- if cache by set `<cache/>`, result object must be `serializable`
