@@ -1197,3 +1197,21 @@ public PageInfo<Emp> getEmps(int pageNum, int pageSize) {
     return pageInfo;
 }
 ```
+
+
+# `@MapperScan`
+- `@MapperScan` 是 Spring Boot 中用于自动扫描并加载 Mapper 接口和实现类的注解。它允许您通过指定包名来扫描 Mapper 接口和实现类，并自动注册到 Spring 容器中。
+- target package: `com.li.hellospringmybatis.mapper`, in this package, all the interfaces must be mappers
+```java
+package com.li.hellospringmybatis.config;
+
+import com.github.pagehelper.PageInterceptor;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+
+@MapperScan("com.li.hellospringmybatis.mapper")
+@Configuration
+public class MyBatisConfig {
+    // ...
+}
+```
