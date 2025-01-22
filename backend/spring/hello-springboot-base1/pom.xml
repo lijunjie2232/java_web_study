@@ -9,10 +9,10 @@
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
     <groupId>com.li</groupId>
-    <artifactId>hello-spring-boot</artifactId>
+    <artifactId>hello-springboot-base1</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <name>hello-spring-boot</name>
-    <description>hello-spring-boot</description>
+    <name>hello-springboot-base1</name>
+    <description>hello-springboot-base1</description>
     <url/>
     <licenses>
         <license/>
@@ -32,12 +32,11 @@
     <dependencies>
         <dependency>
             <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-web</artifactId>
+            <artifactId>spring-boot-starter-data-jdbc</artifactId>
         </dependency>
         <dependency>
-            <groupId>org.mybatis.spring.boot</groupId>
-            <artifactId>mybatis-spring-boot-starter</artifactId>
-            <version>3.0.4</version>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-web</artifactId>
         </dependency>
 
         <dependency>
@@ -56,10 +55,9 @@
             <scope>test</scope>
         </dependency>
         <dependency>
-            <groupId>org.mybatis.spring.boot</groupId>
-            <artifactId>mybatis-spring-boot-starter-test</artifactId>
-            <version>3.0.4</version>
-            <scope>test</scope>
+            <groupId>com.alibaba</groupId>
+            <artifactId>druid</artifactId>
+            <version>1.2.24</version>
         </dependency>
     </dependencies>
 
