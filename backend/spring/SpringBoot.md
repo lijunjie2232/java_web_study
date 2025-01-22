@@ -50,6 +50,8 @@ logging.level.org.springframework.boot.autoconfigure=DEBUG
 Spring Boot 的自动配置机制是其核心特性之一，它通过一系列复杂的类和注解来实现。理解其工作原理有助于更好地掌握如何自定义和调试自动配置。以下是
 Spring Boot 自动配置的主要组成部分及其在源码中的实现。
 
+![SpringBoot-AutoConfiguration.png](SpringBoot-AutoConfiguration.png)
+
 ### 1. **`@SpringBootApplication` 注解**
 
 `@SpringBootApplication` 是 Spring Boot 应用程序中最常用的注解，它实际上是以下三个注解的组合：
