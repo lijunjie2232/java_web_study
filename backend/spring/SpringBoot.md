@@ -499,7 +499,8 @@ public class LogTest {
 
 ## log level
 - default log level is `info`
-- change log level in `application.properties` by setting `logging.level.root=debug`
+- change default log level in `application.properties` by setting `logging.level.root=debug`
+- change log level for specific package by setting `logging.level.com.li.hellospringbootbase1=debug`
 
 - spring log level:
   - trace
