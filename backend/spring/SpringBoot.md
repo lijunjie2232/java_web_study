@@ -429,6 +429,7 @@ public class MyAutoConfiguration {
   ```
 
 ## Programming Method
+
 ```java
 package com.li.hellospringbootbase1;
 
@@ -468,7 +469,9 @@ public class HelloSpringbootBase1Application {
 ```
 
 # Log
+
 ## A Simple Logging Example
+
 ```java
 package com.li.hellospringbootbase1;
 
@@ -482,10 +485,10 @@ import org.springframework.boot.test.context.SpringBootTest;
 @Slf4j
 public class LogTest {
 
-//    Logger log = LoggerFactory.getLogger(LogTest.class);// = @Slf4j
+    //    Logger log = LoggerFactory.getLogger(LogTest.class);// = @Slf4j
     @Test
     void logTest() {
-        
+
 
         log.trace("trace");
         log.debug("debug");
@@ -498,24 +501,123 @@ public class LogTest {
 ```
 
 ## log level
+
 - default log level is `info`
 - change default log level in `application.properties` by setting `logging.level.root=debug`
 - change log level for specific package by setting `logging.level.com.li.hellospringbootbase1=debug`
 
 ### spring log level:
-  - trace
-  - debug
-  - info
-  - warn
-  - error
-  - fatal
-  - off
+
+- trace
+- debug
+- info
+- warn
+- error
+- fatal
+- off
 
 ## logging group
+
 ```properties
 logging.group.group-name=com.li.hellospringbootbase1.service,com.li.hellospringbootbase1.dao
 logging.level.group-name=debug
 ```
 
 ## Output log to file
+
 - set `logging.file.name` **or** `logging.file.path` in spring properties
+- `logging.file.path=[directory path]`
+- `logging.file.name=[log file path]`
+- `logging.file.name` has higher priority than `logging.file.path`
+
+## log archive and split to chunks
+
+- logback
+
+```xml
+<!--logback-spring.xml-->
+<configuration>
+    <!-- 定义日志文件路径和文件名 -->
+    <property name="LOG_PATH" value="logs"/>
+    <property name="LOG_FILE" value="my-application.log"/>
+
+    <appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <!-- 当前日志文件路径 -->
+        <file>${LOG_PATH}/${LOG_FILE}</file>
+        <encoder>
+            <pattern>%d{yyyy-MM-dd HH:mm:ss} - %msg%n</pattern>
+        </encoder>
+
+        <!-- 滚动策略 -->
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <!-- 归档日志文件路径和命名模式 -->
+            <fileNamePattern>${LOG_PATH}/my-application-%d{yyyy-MM-dd}.%i.log.gz</fileNamePattern>
+            <!-- 最大历史日志文件数量 -->
+            <maxHistory>30</maxHistory>
+            <!-- 按大小分割日志文件 -->
+            <timeBasedFileNamingAndTriggeringPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
+                <maxFileSize>10MB</maxFileSize>
+            </timeBasedFileNamingAndTriggeringPolicy>
+        </rollingPolicy>
+    </appender>
+
+    <root level="INFO">
+        <appender-ref ref="FILE"/>
+    </root>
+</configuration>
+
+```
+
+- log4j2
+```xml
+<!--log4j2-spring.xml -->
+<Configuration status="WARN">
+    <Properties>
+        <Property name="LOG_PATH">${sys:LOG_PATH}</Property>
+        <Property name="LOG_FILE">${sys:LOG_FILE}</Property>
+        <Property name="LOG_MAX_SIZE">${sys:LOG_MAX_SIZE}</Property>
+        <Property name="LOG_MAX_HISTORY">${sys:LOG_MAX_HISTORY}</Property>
+    </Properties>
+
+    <Appenders>
+        <RollingFile name="RollingFile" fileName="${LOG_PATH}/${LOG_FILE}"
+                     filePattern="${LOG_PATH}/my-application-%d{yyyy-MM-dd}-%i.log.gz">
+            <PatternLayout>
+                <Pattern>%d{yyyy-MM-dd HH:mm:ss} - %msg%n</Pattern>
+            </PatternLayout>
+            <Policies>
+                <TimeBasedTriggeringPolicy/>
+                <SizeBasedTriggeringPolicy size="${LOG_MAX_SIZE}"/>
+            </Policies>
+            <DefaultRolloverStrategy max="${LOG_MAX_HISTORY}"/>
+        </RollingFile>
+    </Appenders>
+
+    <Loggers>
+        <Root level="info">
+            <AppenderRef ref="RollingFile"/>
+        </Root>
+    </Loggers>
+</Configuration>
+
+```
+
+- spring properties
+
+```properties
+# log archive filename pattern
+logging.logback.rollingpolicy.file-name-pattern=${LOG_FILE}.%d{yyyy-MM-dd}.%i.gz
+# if clean history log archive
+logging.logback.rollingpolicy.clean-history-on-start=true
+# max size of single log archive file
+logging.logback.rollingpolicy.max-file-size=10MB
+# max size of total log archives, 0B is no limit
+logging.logback.rollingpolicy.total-size-cap=300MB
+# reserve days of history log archives
+logging.logback.rollingpolicy.max-history=30
+```
+
+## string format in log
+```java
+
+```

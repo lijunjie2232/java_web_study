@@ -10,7 +10,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 @Slf4j
 public class LogTest {
 
-//    Logger log = LoggerFactory.getLogger(LogTest.class);
+    //    Logger log = LoggerFactory.getLogger(LogTest.class);
     @Test
     void logTest() {
 
@@ -20,5 +20,10 @@ public class LogTest {
         log.info("info");
         log.warn("warn");
         log.error("error");
+
+        int a = 1;
+        log.info("abc.a={}", a++);
+        log.info("abc.a={}", a++);
+        log.info("abc.a={}", a++);
     }
 }
