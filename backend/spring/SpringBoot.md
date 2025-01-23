@@ -500,3 +500,12 @@ public class LogTest {
 ## log level
 - default log level is `info`
 - change log level in `application.properties` by setting `logging.level.root=debug`
+
+- spring log level:
+  - trace
+  - debug
+  - info
+  - warn
+  - error
+  - fatal
+  - off
