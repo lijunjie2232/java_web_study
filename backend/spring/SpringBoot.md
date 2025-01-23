@@ -1,18 +1,20 @@
 <!-- TOC -->
+
 * [Spring Boot auto configuration](#spring-boot-auto-configuration)
-  * [example: change default data source](#example-change-default-data-source)
-  * [启用调试日志](#启用调试日志)
-  * [Spring Boot 自动配置的源码解析](#spring-boot-自动配置的源码解析)
-    * [1. **`@SpringBootApplication` 注解**](#1-springbootapplication-注解)
-    * [2. **`@EnableAutoConfiguration` 注解**](#2-enableautoconfiguration-注解)
-      * [2.1 `@AutoConfigurationPackage`](#21-autoconfigurationpackage)
-      * [2.2 `AutoConfigurationImportSelector`](#22-autoconfigurationimportselector)
-    * [3. **`spring.factories` 文件**](#3-springfactories-文件)
-    * [4. **条件注解**](#4-条件注解)
-    * [5. **`@AutoConfigureAfter` 和 `@AutoConfigureBefore`**](#5-autoconfigureafter-和-autoconfigurebefore)
-    * [6. **自动配置报告**](#6-自动配置报告)
-    * [7. **排除自动配置类**](#7-排除自动配置类)
-    * [8. **自定义自动配置类**](#8-自定义自动配置类)
+    * [example: change default data source](#example-change-default-data-source)
+    * [启用调试日志](#启用调试日志)
+    * [Spring Boot 自动配置的源码解析](#spring-boot-自动配置的源码解析)
+        * [1. **`@SpringBootApplication` 注解**](#1-springbootapplication-注解)
+        * [2. **`@EnableAutoConfiguration` 注解**](#2-enableautoconfiguration-注解)
+            * [2.1 `@AutoConfigurationPackage`](#21-autoconfigurationpackage)
+            * [2.2 `AutoConfigurationImportSelector`](#22-autoconfigurationimportselector)
+        * [3. **`spring.factories` 文件**](#3-springfactories-文件)
+        * [4. **条件注解**](#4-条件注解)
+        * [5. **`@AutoConfigureAfter` 和 `@AutoConfigureBefore`**](#5-autoconfigureafter-和-autoconfigurebefore)
+        * [6. **自动配置报告**](#6-自动配置报告)
+        * [7. **排除自动配置类**](#7-排除自动配置类)
+        * [8. **自定义自动配置类**](#8-自定义自动配置类)
+
 <!-- TOC -->
 
 # Spring Boot auto configuration
@@ -247,7 +249,9 @@ org.springframework.boot.autoconfigure.EnableAutoConfiguration=com.example.Redis
 ```
 
 # @ConfigurationProperties
+
 - Bind Bean properties with Spring Boot Properties
+
 ```properties
 abc.a=a
 abc.b=b
@@ -272,4 +276,227 @@ public class MyAutoConfiguration {
 
 ```
 
+# @EnableConfigurationProperties
 
+- annotate spring boot application class with `@EnableConfigurationProperties(xxx.class)`
+  to add xxx.class to spring context and enable `@ConfigurationProperties` in xxx.class
+  if xxx.class is not annotated with `@Component`
+
+在Spring Boot应用程序中，`application.properties` 或 `application.yml` 文件用于配置各种属性。以下是一些常用的配置项及其用途：
+
+# 常用的 `application.properties` 配置项
+
+## 服务器配置
+
+- **服务器端口**
+  ```properties
+  server.port=8080
+  ```
+
+
+- **服务器上下文路径**
+  ```properties
+  server.servlet.context-path=/myapp
+  ```
+
+
+- **最大线程数**
+  ```properties
+  server.tomcat.max-threads=200
+  ```
+
+
+- **连接超时时间**
+  ```properties
+  server.connection-timeout=20000
+  ```
+
+## 应用程序配置
+
+- **应用程序名称**
+  ```properties
+  spring.application.name=my-application
+  ```
+
+
+- **激活的配置文件**
+  ```properties
+  spring.profiles.active=dev
+  ```
+
+#### 数据源配置
+
+- **JDBC URL**
+  ```properties
+  spring.datasource.url=jdbc:mysql://localhost:3306/mydb
+  ```
+
+
+- **用户名和密码**
+  ```properties
+  spring.datasource.username=root
+  spring.datasource.password=root
+  ```
+
+
+- **驱动类名**
+  ```properties
+  spring.datasource.driver-class-name=com.mysql.cj.jdbc.Driver
+  ```
+
+
+- **连接池配置**
+  ```properties
+  spring.datasource.hikari.maximum-pool-size=10
+  spring.datasource.hikari.minimum-idle=5
+  spring.datasource.hikari.idle-timeout=30000
+  spring.datasource.hikari.max-lifetime=1800000
+  ```
+
+## 日志配置
+
+- **日志级别**
+  ```properties
+  logging.level.root=INFO
+  logging.level.org.springframework.web=DEBUG
+  logging.level.com.example.demo=TRACE
+  ```
+
+
+- **日志文件路径**
+  ```properties
+  logging.file.name=app.log
+  ```
+
+## 安全配置
+
+- **启用安全**
+  ```properties
+  spring.security.enabled=true
+  ```
+
+
+- **默认用户名和密码**
+  ```properties
+  spring.security.user.name=user
+  spring.security.user.password=password
+  ```
+
+## 模板引擎配置
+
+- **Thymeleaf 缓存**
+  ```properties
+  spring.thymeleaf.cache=false
+  ```
+
+
+- **模板文件路径**
+  ```properties
+  spring.thymeleaf.prefix=classpath:/templates/
+  spring.thymeleaf.suffix=.html
+  ```
+
+## 静态资源配置
+
+- **静态资源路径**
+  ```properties
+  spring.resources.static-locations=classpath:/static/,classpath:/public/,classpath:/resources/,classpath:/META-INF/resources/
+  ```
+
+## 跨域配置
+
+- **允许的来源**
+  ```properties
+  spring.mvc.cors.allowed-origins=http://example.com
+  ```
+
+
+- **允许的方法**
+  ```properties
+  spring.mvc.cors.allowed-methods=GET,POST,PUT,DELETE,OPTIONS
+  ```
+
+
+- **允许的头信息**
+  ```properties
+  spring.mvc.cors.allowed-headers=*
+  ```
+
+
+- **是否允许凭证**
+  ```properties
+  spring.mvc.cors.allow-credentials=true
+  ```
+
+## Programming Method
+```java
+package com.li.hellospringbootbase1;
+
+import org.springframework.boot.Banner;
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.builder.SpringApplicationBuilder;
+import org.springframework.core.env.Environment;
+
+import java.io.PrintStream;
+
+@SpringBootApplication
+public class HelloSpringbootBase1Application {
+
+    public static void main(String[] args) {
+
+//        method 1
+        SpringApplication.run(HelloSpringbootBase1Application.class, args);
+//        method 2
+        SpringApplication springApplication = new SpringApplication(HelloSpringbootBase1Application.class);
+        springApplication.setLazyInitialization(true);
+        springApplication.setBannerMode(Banner.Mode.OFF);
+        springApplication.setEnvironment(null);
+        springApplication.run(args);
+//        method 3
+        SpringApplicationBuilder builder = new SpringApplicationBuilder();
+        builder
+                .sources(HelloSpringbootBase1Application.class)
+                .bannerMode(Banner.Mode.OFF)
+                .environment(null)
+                .lazyInitialization(true)
+                .run(args);
+
+    }
+
+}
+```
+
+# Log
+## A Simple Logging Example
+```java
+package com.li.hellospringbootbase1;
+
+import lombok.extern.slf4j.Slf4j;
+import org.junit.jupiter.api.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.boot.test.context.SpringBootTest;
+
+@SpringBootTest
+@Slf4j
+public class LogTest {
+
+//    Logger log = LoggerFactory.getLogger(LogTest.class);// = @Slf4j
+    @Test
+    void logTest() {
+        
+
+        log.trace("trace");
+        log.debug("debug");
+        log.info("info");
+        log.warn("warn");
+        log.error("error");
+    }
+}
+
+```
+
+## log level
+- default log level is `info`
+- change log level in `application.properties` by setting `logging.level.root=debug`
