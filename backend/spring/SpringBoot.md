@@ -502,7 +502,7 @@ public class LogTest {
 - change default log level in `application.properties` by setting `logging.level.root=debug`
 - change log level for specific package by setting `logging.level.com.li.hellospringbootbase1=debug`
 
-- spring log level:
+### spring log level:
   - trace
   - debug
   - info
@@ -510,3 +510,12 @@ public class LogTest {
   - error
   - fatal
   - off
+
+## logging group
+```properties
+logging.group.group-name=com.li.hellospringbootbase1.service,com.li.hellospringbootbase1.dao
+logging.level.group-name=debug
+```
+
+## Output log to file
+- set `logging.file.name` **or** `logging.file.path` in spring properties
