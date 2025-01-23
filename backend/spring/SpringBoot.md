@@ -541,11 +541,17 @@ logging.level.group-name=debug
     <property name="LOG_PATH" value="logs"/>
     <property name="LOG_FILE" value="my-application.log"/>
 
+    <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>%d{yyyy-MM-dd HH:mm:ss} - %msg%n</pattern>
+        </encoder>
+    </appender>
+
     <appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
         <!-- 当前日志文件路径 -->
         <file>${LOG_PATH}/${LOG_FILE}</file>
         <encoder>
-            <pattern>%d{yyyy-MM-dd HH:mm:ss} - %msg%n</pattern>
+            <pattern>%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level - %msg%n</pattern>
         </encoder>
 
         <!-- 滚动策略 -->
@@ -569,6 +575,7 @@ logging.level.group-name=debug
 ```
 
 - log4j2
+
 ```xml
 <!--log4j2-spring.xml -->
 <Configuration status="WARN">
@@ -618,6 +625,42 @@ logging.logback.rollingpolicy.max-history=30
 ```
 
 ## string format in log
+
 ```java
+void logTest() {
+    int a = 1;
+    log.info("abc.a={}", a);
+}
+```
+
+## change to log4j2
+
+- exclusion `spring-boot-starter-logging` in `spring-boot-starter-web`
+- add `spring-boot-starter-log4j2`
+
+```xml
+
+<dependencies>
+    <!-- 其他依赖 -->
+
+    <dependency>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-web</artifactId>
+        <exclusions>
+            <exclusion>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-starter-logging</artifactId>
+            </exclusion>
+        </exclusions>
+    </dependency>
+
+    <!-- 添加Log4j2依赖 -->
+    <dependency>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-log4j2</artifactId>
+    </dependency>
+
+    <!-- 其他依赖 -->
+</dependencies>
 
 ```
