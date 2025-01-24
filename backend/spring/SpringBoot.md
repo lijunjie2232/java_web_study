@@ -700,3 +700,25 @@ void logTest() {
 - `spring.profiles.include=xxx1,xxx2` to include xxx1 and xxx2 environments whatever the current environment is
 - `spring.profiles.groups.xx[0]=xxx1` and `spring.profiles.groups.xx[1]=xxx2` to group xxx1 and xxx2 environments as xxx
   group, then `spring.profiles.active=xx` will activate xxx1 and xxx2 environments
+
+## Outer properties
+
+- all valid outer `application.properties` path:
+    ```
+    - deploy_dir
+        - config
+            - xxx
+                - application.properties
+            - application.properties
+        - app.jar
+        - application.properties
+    ```
+
+- priority of properties:
+    - (outer) config/xxx/application.properties (highest)
+    - (outer) config/application.properties
+    - (outer) application.properties
+    - (inner) app.jar/application.properties (lowest)
+    - properties in <text style="color:orange">inner activated</text> environments have <text style="color:red">
+      higher</text> priority than <text style="color:orange">outer default</text> properties
+
