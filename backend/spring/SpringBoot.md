@@ -79,7 +79,7 @@ spring.datasource.type=com.alibaba.druid.pool.DruidDataSource
 
 ## 启用调试日志
 
-- 在 `application.properties` 或 `application.yaml` 中添加以下配置以启用更多的调试信息：
+- 在 `application.properties` 中添加以下配置以启用更多的调试信息：
 
 ```properties
 logging.level.org.springframework.boot.autoconfigure=DEBUG
@@ -871,3 +871,253 @@ public class ExampleTest {
 }
 
 ```
+
+# sprint actuator
+
+## 1.import dependency
+
+```xml
+
+<dependency>
+    <groupId>org.springframework.boot</groupId>
+    <artifactId>spring-boot-starter-actuator</artifactId>
+</dependency>
+```
+
+## 2.set properties like following:
+
+- `management.endpoints.web.exposure.include=*`
+- `management.endpoints.web.exposure.include=health,info,metrics`
+
+## 3. 常用的 Actuator 端点
+
+### 3.1 `/actuator/health`
+
+- **用途**：检查应用程序的健康状况。
+
+### 3.2 `/actuator/info`
+
+- **用途**：提供应用程序的详细信息。
+- **配置示例**：
+
+```properties
+# application.properties
+info.app.name=MyApp
+info.app.description=My Spring Boot Application
+info.app.version=1.0.0
+```
+
+### 3.3 `/actuator/metrics`
+
+- **用途**：提供应用程序的各种度量指标。
+
+### 3.4 `/actuator/metrics/{metricName}`
+
+- **用途**：获取特定度量指标的详细信息。
+- **示例**：获取 `http.server.requests` 指标的详细信息。
+
+### 3.5 `/actuator/loggers`
+
+- **用途**：查看和修改应用程序的日志级别。
+
+### 3.6 `/actuator/loggers/{name}`
+
+- **用途**：查看和修改特定日志记录器的日志级别。
+- **示例**：查看 `com.example` 日志记录器的日志级别。
+
+### 3.7 `/actuator/env`
+
+- **用途**：查看应用程序的环境属性。
+
+### 3.8 `/actuator/beans`
+
+- **用途**：查看应用程序中的所有 Spring Bean。
+
+### 3.9 `/actuator/threaddump`
+
+- **用途**：生成应用程序的线程转储。
+
+### 3.10 `/actuator/httptrace`
+
+- **用途**：查看最近的 HTTP 请求和响应。
+
+## 4. 安全配置
+
+### 4.1 dependency
+
+```xml
+
+<dependency>
+    <groupId>org.springframework.boot</groupId>
+    <artifactId>spring-boot-starter-security</artifactId>
+</dependency>
+```
+
+### 4.2 配置 Spring Security
+
+创建一个配置类来保护 Actuator 端点：
+
+```java
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.core.userdetails.User;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.provisioning.InMemoryUserDetailsManager;
+import org.springframework.security.web.SecurityFilterChain;
+
+@Configuration
+@EnableWebSecurity
+public class SecurityConfig {
+
+    @Bean
+    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+        http
+                .authorizeRequests(authorizeRequests ->
+                        authorizeRequests
+                                .antMatchers("/actuator/**").hasRole("ACTUATOR")
+                                .anyRequest().authenticated()
+                )
+                .httpBasic();
+        return http.build();
+    }
+
+    @Bean
+    public UserDetailsService userDetailsService() {
+        UserDetails user = User.withDefaultPasswordEncoder()
+                .username("user")
+                .password("password")
+                .roles("ACTUATOR")
+                .build();
+        return new InMemoryUserDetailsManager(user);
+    }
+}
+```
+
+### 4.3 配置 Actuator 端点的安全性
+
+- 确保 Actuator 端点的安全配置生效：
+
+```properties
+# application.properties
+management.endpoints.web.exposure.include=*
+```
+
+## 5. 自定义 Actuator 端点
+
+### 5.1 创建自定义端点
+
+创建一个类并使用 `@Endpoint` 注解：
+
+```java
+import org.springframework.boot.actuate.endpoint.annotation.Endpoint;
+import org.springframework.boot.actuate.endpoint.annotation.ReadOperation;
+import org.springframework.stereotype.Component;
+
+@Component
+@Endpoint(id = "custom")
+public class CustomEndpoint {
+
+    @ReadOperation
+    public String customOperation() {
+        return "Custom Endpoint Response";
+    }
+}
+```
+
+### 5.2 公开自定义端点
+
+确保自定义端点被公开：
+
+```properties
+# application.properties
+management.endpoints.web.exposure.include=*
+```
+
+### 5.3 访问自定义端点
+
+访问自定义端点：
+
+```
+GET /actuator/custom
+```
+
+响应示例：
+
+```json
+"Custom Endpoint Response"
+```
+
+## 6. 使用 Actuator 的 Web 管理界面
+
+Spring Boot Actuator 还提供了一个 Web 管理界面，可以方便地查看和管理应用程序的状态。
+
+### 6.1 添加 Spring Boot Admin 依赖
+
+在 `pom.xml` 文件中添加 Spring Boot Admin 的依赖：
+
+```xml
+
+<dependencies>
+    <!-- 其他依赖 -->
+
+    <dependency>
+        <groupId>de.codecentric</groupId>
+        <artifactId>spring-boot-admin-starter-client</artifactId>
+        <version>2.7.6</version>
+    </dependency>
+
+    <!-- 其他依赖 -->
+</dependencies>
+```
+
+### 6.2 配置 Spring Boot Admin
+
+在 `application.properties` 或 `application.yml` 文件中配置 Spring Boot Admin 的 URL：
+
+```properties
+# application.properties
+spring.boot.admin.client.url=http://localhost:8081
+management.endpoints.web.exposure.include=*
+```
+
+
+### 6.3 启动 Spring Boot Admin 服务器
+
+可以使用 Spring Boot Admin 的 Starter 来启动一个管理服务器：
+
+```xml
+
+<dependencies>
+    <!-- 其他依赖 -->
+
+    <dependency>
+        <groupId>de.codecentric</groupId>
+        <artifactId>spring-boot-admin-starter-server</artifactId>
+        <version>2.7.6</version>
+    </dependency>
+
+    <!-- 其他依赖 -->
+</dependencies>
+```
+
+创建一个 Spring Boot 应用程序类并添加 `@EnableAdminServer` 注解：
+
+```java
+import de.codecentric.boot.admin.server.config.EnableAdminServer;
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+
+@SpringBootApplication
+@EnableAdminServer
+public class AdminServerApplication {
+
+    public static void main(String[] args) {
+        SpringApplication.run(AdminServerApplication.class, args);
+    }
+}
+```
+
+启动管理服务器后，可以通过浏览器访问 `http://localhost:8081` 来查看和管理应用程序。
