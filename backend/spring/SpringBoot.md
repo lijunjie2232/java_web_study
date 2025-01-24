@@ -1,39 +1,41 @@
 <!-- TOC -->
+
 * [Spring Boot auto configuration](#spring-boot-auto-configuration)
-  * [example: change default data source](#example-change-default-data-source)
-  * [启用调试日志](#启用调试日志)
-  * [Spring Boot 自动配置的源码解析](#spring-boot-自动配置的源码解析)
-    * [1. **`@SpringBootApplication` 注解**](#1-springbootapplication-注解)
-    * [2. **`@EnableAutoConfiguration` 注解**](#2-enableautoconfiguration-注解)
-      * [2.1 `@AutoConfigurationPackage`](#21-autoconfigurationpackage)
-      * [2.2 `AutoConfigurationImportSelector`](#22-autoconfigurationimportselector)
-    * [3. **`spring.factories` 文件**](#3-springfactories-文件)
-    * [4. **条件注解**](#4-条件注解)
-    * [5. **`@AutoConfigureAfter` 和 `@AutoConfigureBefore`**](#5-autoconfigureafter-和-autoconfigurebefore)
-    * [6. **自动配置报告**](#6-自动配置报告)
-    * [7. **排除自动配置类**](#7-排除自动配置类)
-    * [8. **自定义自动配置类**](#8-自定义自动配置类)
+    * [example: change default data source](#example-change-default-data-source)
+    * [启用调试日志](#启用调试日志)
+    * [Spring Boot 自动配置的源码解析](#spring-boot-自动配置的源码解析)
+        * [1. **`@SpringBootApplication` 注解**](#1-springbootapplication-注解)
+        * [2. **`@EnableAutoConfiguration` 注解**](#2-enableautoconfiguration-注解)
+            * [2.1 `@AutoConfigurationPackage`](#21-autoconfigurationpackage)
+            * [2.2 `AutoConfigurationImportSelector`](#22-autoconfigurationimportselector)
+        * [3. **`spring.factories` 文件**](#3-springfactories-文件)
+        * [4. **条件注解**](#4-条件注解)
+        * [5. **`@AutoConfigureAfter` 和 `@AutoConfigureBefore`**](#5-autoconfigureafter-和-autoconfigurebefore)
+        * [6. **自动配置报告**](#6-自动配置报告)
+        * [7. **排除自动配置类**](#7-排除自动配置类)
+        * [8. **自定义自动配置类**](#8-自定义自动配置类)
 * [@ConfigurationProperties](#configurationproperties)
 * [@EnableConfigurationProperties](#enableconfigurationproperties)
 * [常用的 `application.properties` 配置项](#常用的-applicationproperties-配置项)
-  * [服务器配置](#服务器配置)
-  * [应用程序配置](#应用程序配置)
-      * [数据源配置](#数据源配置)
-  * [日志配置](#日志配置)
-  * [安全配置](#安全配置)
-  * [模板引擎配置](#模板引擎配置)
-  * [静态资源配置](#静态资源配置)
-  * [跨域配置](#跨域配置)
-  * [Programming Method](#programming-method)
+    * [服务器配置](#服务器配置)
+    * [应用程序配置](#应用程序配置)
+        * [数据源配置](#数据源配置)
+    * [日志配置](#日志配置)
+    * [安全配置](#安全配置)
+    * [模板引擎配置](#模板引擎配置)
+    * [静态资源配置](#静态资源配置)
+    * [跨域配置](#跨域配置)
+    * [Programming Method](#programming-method)
 * [Log](#log)
-  * [A Simple Logging Example](#a-simple-logging-example)
-  * [log level](#log-level)
-    * [spring log level:](#spring-log-level)
-  * [logging group](#logging-group)
-  * [Output log to file](#output-log-to-file)
-  * [log archive and split to chunks](#log-archive-and-split-to-chunks)
-  * [string format in log](#string-format-in-log)
-  * [change to log4j2](#change-to-log4j2)
+    * [A Simple Logging Example](#a-simple-logging-example)
+    * [log level](#log-level)
+        * [spring log level:](#spring-log-level)
+    * [logging group](#logging-group)
+    * [Output log to file](#output-log-to-file)
+    * [log archive and split to chunks](#log-archive-and-split-to-chunks)
+    * [string format in log](#string-format-in-log)
+    * [change to log4j2](#change-to-log4j2)
+
 <!-- TOC -->
 
 # Spring Boot auto configuration
@@ -683,3 +685,16 @@ void logTest() {
 </dependencies>
 
 ```
+
+# spring environment isolation
+
+- touch and edit `application-xxx.properties` to set environment specific properties
+- annotated bean and components with `@Profile("xxx")` to enable them in xxx environment and disable them in other
+  different environments
+
+- activate environment `xxx`:
+    - method 1: set `spring.profiles.active=xxx` in `application.properties` to set current environment, then all the setting belongs
+      to `xxx` environment has higher priority than that belongs to default environment
+    - method 2: `java -jar springProject.jar --spring.profiles.active=xxx` on command line
+- `spring.profiles.include=xxx1,xxx2` to include xxx1 and xxx2 environments whatever the current environment is
+- 
