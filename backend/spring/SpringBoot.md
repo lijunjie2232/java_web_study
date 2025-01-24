@@ -743,16 +743,9 @@ void logTest() {
 - **`@BeforeAll`** 和 **`@AfterAll`**：
     - 在所有测试方法执行之前和之后各执行一次，通常用于一次性初始化或资源释放操作。
 
-- **`@ExtendWith(SpringExtension.class)`**：
-    - 如果不是使用`@SpringBootTest`，而是其他类型的测试，这个注解可以将Spring TestContext框架与JUnit 5集成起来。不过，在使用
-      `@SpringBootTest`时通常不需要显式添加此注解。
-
-- **`@MockBean`** 和 **`@SpyBean`**：
-    - `@MockBean`用于在应用上下文中插入一个mock对象（例如：模拟第三方服务），它会替换掉同类型的任何现有bean。
-    - `@SpyBean`则创建一个部分mock的对象，允许调用真实的方法同时也能mock某些行为。
-
 ```java
 import org.junit.jupiter.api.*;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 public class ExampleTest {
@@ -802,6 +795,78 @@ public class ExampleTest {
         System.out.println("Running testMethod2");
         output.append("World");
         assertEquals("World", output.toString());
+    }
+}
+
+```
+
+## assert
+
+- `assertEquals`
+- `assertNotEquals`
+- `assertSame`
+- `assertNotSame`
+- `assertTrue`
+- `assertFalse`
+- `assertNull`
+- `assertNotNull`
+- `assertArrayEquals`
+- `assertAll`
+- `assertThrows`
+- `assertTimeout`
+- `fail`
+
+
+- `assertSame` and `assertNotSame` 验证两个对象<text style="color:orange">引用同一个对象</text>
+  ```java
+  Object obj1 = new Object();
+  Object obj2 = new Object();
+  assertNotSame(obj1, obj2); // 通过
+
+  Object obj3 = obj1;
+  assertNotSame(obj1, obj3); // 失败
+  ```
+
+### Example
+
+```java
+import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.*;
+
+public class ExampleTest {
+
+    @Test
+    void testAssertions() {
+        int a = 10;
+        int b = 5;
+        String str1 = "Hello";
+        String str2 = "World";
+        Object obj1 = new Object();
+        Object obj2 = obj1;
+
+        assertEquals(a, 10);
+        assertNotEquals(a, b);
+        assertTrue(a > b);
+        assertFalse(a < b);
+        assertNull(null);
+        assertNotNull(obj1);
+        assertSame(obj1, obj2);
+        assertNotSame(obj1, new Object());
+
+        assertThrows(IllegalArgumentException.class, () -> {
+            throw new IllegalArgumentException("Invalid argument");
+        });
+
+        assertDoesNotThrow(() -> {
+            // 无异常代码
+        });
+
+        assertAll(
+                () -> assertEquals(a, 10),
+                () -> assertEquals(str1, "Hello"),
+                () -> assertTrue(a > b)
+        );
     }
 }
 
