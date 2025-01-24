@@ -688,13 +688,15 @@ void logTest() {
 
 # spring environment isolation
 
-- touch and edit `application-xxx.properties` to set environment specific properties
+- touch and modify `application-xxx.properties` to set environment specific properties
 - annotated bean and components with `@Profile("xxx")` to enable them in xxx environment and disable them in other
   different environments
 
 - activate environment `xxx`:
-    - method 1: set `spring.profiles.active=xxx` in `application.properties` to set current environment, then all the setting belongs
+    - method 1: set `spring.profiles.active=xxx` in `application.properties` to set current environment, then all the
+      setting belongs
       to `xxx` environment has higher priority than that belongs to default environment
     - method 2: `java -jar springProject.jar --spring.profiles.active=xxx` on command line
 - `spring.profiles.include=xxx1,xxx2` to include xxx1 and xxx2 environments whatever the current environment is
-- 
+- `spring.profiles.groups.xx[0]=xxx1` and `spring.profiles.groups.xx[1]=xxx2` to group xxx1 and xxx2 environments as xxx
+  group, then `spring.profiles.active=xx` will activate xxx1 and xxx2 environments
