@@ -722,3 +722,87 @@ void logTest() {
     - properties in <text style="color:orange">inner activated</text> environments have <text style="color:red">
       higher</text> priority than <text style="color:orange">outer default</text> properties
 
+# Unit Test
+
+## 常用的注解
+
+- **`@SpringBootTest`**：
+    - 用于标注测试类，它会启动整个Spring应用上下文，适用于集成测试。
+    - 可以通过`classes`属性指定加载的配置类，默认是主应用类。
+    - 支持不同的webEnvironment类型，如定义是否启动mock或真实的Servlet环境。
+
+- **`@Test`**：
+    - 来自JUnit Jupiter，用于标注测试方法，表示该方法是一个测试用例。
+
+- **`@DisplayName("test name")`**：
+    - 同样来自JUnit Jupiter，为测试类或测试方法设置一个可读的名字，替代默认的方法名显示。
+
+- **`@BeforeEach`** 和 **`@AfterEach`**：
+    - 分别在每个测试方法执行之前和之后运行，可用于设置前置条件或清理工作。
+
+- **`@BeforeAll`** 和 **`@AfterAll`**：
+    - 在所有测试方法执行之前和之后各执行一次，通常用于一次性初始化或资源释放操作。
+
+- **`@ExtendWith(SpringExtension.class)`**：
+    - 如果不是使用`@SpringBootTest`，而是其他类型的测试，这个注解可以将Spring TestContext框架与JUnit 5集成起来。不过，在使用
+      `@SpringBootTest`时通常不需要显式添加此注解。
+
+- **`@MockBean`** 和 **`@SpyBean`**：
+    - `@MockBean`用于在应用上下文中插入一个mock对象（例如：模拟第三方服务），它会替换掉同类型的任何现有bean。
+    - `@SpyBean`则创建一个部分mock的对象，允许调用真实的方法同时也能mock某些行为。
+
+```java
+import org.junit.jupiter.api.*;
+import static org.junit.jupiter.api.Assertions.*;
+
+public class ExampleTest {
+
+    // 用于存储测试数据
+    private static StringBuilder output;
+
+    // 在所有测试方法执行之前运行一次
+    @BeforeAll
+    static void setUpBeforeAll() {
+        System.out.println("Running @BeforeAll");
+        output = new StringBuilder();
+    }
+
+    // 在所有测试方法执行之后运行一次
+    @AfterAll
+    static void tearDownAfterAll() {
+        System.out.println("Running @AfterAll");
+        output = null;
+    }
+
+    // 在每个测试方法执行之前运行
+    @BeforeEach
+    void setUpBeforeEach() {
+        System.out.println("Running @BeforeEach");
+        output.setLength(0); // 清空StringBuilder
+    }
+
+    // 在每个测试方法执行之后运行
+    @AfterEach
+    void tearDownAfterEach() {
+        System.out.println("Running @AfterEach");
+        System.out.println("Final output: " + output.toString());
+    }
+
+    @Test
+    @DisplayName("Test method 1")
+    void testMethod1() {
+        System.out.println("Running testMethod1");
+        output.append("Hello");
+        assertEquals("Hello", output.toString());
+    }
+
+    @Test
+    @DisplayName("Test method 2")
+    void testMethod2() {
+        System.out.println("Running testMethod2");
+        output.append("World");
+        assertEquals("World", output.toString());
+    }
+}
+
+```
