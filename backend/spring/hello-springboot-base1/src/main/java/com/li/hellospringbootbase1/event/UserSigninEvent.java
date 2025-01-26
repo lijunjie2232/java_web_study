@@ -1,9 +1,14 @@
 package com.li.hellospringbootbase1.event;
 
-public class UserSigninEvent {
-    private String name;
+import lombok.Data;
+import org.springframework.context.ApplicationEvent;
 
-    public UserSigninEvent(String name) {
-        this.name = name;
+@Data
+public class UserSigninEvent  {
+    private String message;
+
+    public UserSigninEvent(String message) {
+        this.message = message;
     }
+
 }

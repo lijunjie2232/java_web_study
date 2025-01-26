@@ -1,71 +1,73 @@
 <!-- TOC -->
+
 * [Spring Boot auto configuration](#spring-boot-auto-configuration)
-  * [example: change default data source](#example-change-default-data-source)
-  * [启用调试日志](#启用调试日志)
-  * [Spring Boot 自动配置的源码解析](#spring-boot-自动配置的源码解析)
-    * [1. **`@SpringBootApplication` 注解**](#1-springbootapplication-注解)
-    * [2. **`@EnableAutoConfiguration` 注解**](#2-enableautoconfiguration-注解)
-      * [2.1 `@AutoConfigurationPackage`](#21-autoconfigurationpackage)
-      * [2.2 `AutoConfigurationImportSelector`](#22-autoconfigurationimportselector)
-    * [3. **`spring.factories` 文件**](#3-springfactories-文件)
-    * [4. **条件注解**](#4-条件注解)
-    * [5. **`@AutoConfigureAfter` 和 `@AutoConfigureBefore`**](#5-autoconfigureafter-和-autoconfigurebefore)
-    * [6. **自动配置报告**](#6-自动配置报告)
-    * [7. **排除自动配置类**](#7-排除自动配置类)
-    * [8. **自定义自动配置类**](#8-自定义自动配置类)
+    * [example: change default data source](#example-change-default-data-source)
+    * [启用调试日志](#启用调试日志)
+    * [Spring Boot 自动配置的源码解析](#spring-boot-自动配置的源码解析)
+        * [1. **`@SpringBootApplication` 注解**](#1-springbootapplication-注解)
+        * [2. **`@EnableAutoConfiguration` 注解**](#2-enableautoconfiguration-注解)
+            * [2.1 `@AutoConfigurationPackage`](#21-autoconfigurationpackage)
+            * [2.2 `AutoConfigurationImportSelector`](#22-autoconfigurationimportselector)
+        * [3. **`spring.factories` 文件**](#3-springfactories-文件)
+        * [4. **条件注解**](#4-条件注解)
+        * [5. **`@AutoConfigureAfter` 和 `@AutoConfigureBefore`**](#5-autoconfigureafter-和-autoconfigurebefore)
+        * [6. **自动配置报告**](#6-自动配置报告)
+        * [7. **排除自动配置类**](#7-排除自动配置类)
+        * [8. **自定义自动配置类**](#8-自定义自动配置类)
 * [@ConfigurationProperties](#configurationproperties)
 * [@EnableConfigurationProperties](#enableconfigurationproperties)
 * [常用的 `application.properties` 配置项](#常用的-applicationproperties-配置项)
-  * [服务器配置](#服务器配置)
-  * [应用程序配置](#应用程序配置)
-      * [数据源配置](#数据源配置)
-  * [日志配置](#日志配置)
-  * [安全配置](#安全配置)
-  * [模板引擎配置](#模板引擎配置)
-  * [静态资源配置](#静态资源配置)
-  * [跨域配置](#跨域配置)
-  * [Programming Method](#programming-method)
+    * [服务器配置](#服务器配置)
+    * [应用程序配置](#应用程序配置)
+        * [数据源配置](#数据源配置)
+    * [日志配置](#日志配置)
+    * [安全配置](#安全配置)
+    * [模板引擎配置](#模板引擎配置)
+    * [静态资源配置](#静态资源配置)
+    * [跨域配置](#跨域配置)
+    * [Programming Method](#programming-method)
 * [Log](#log)
-  * [A Simple Logging Example](#a-simple-logging-example)
-  * [log level](#log-level)
-    * [spring log level:](#spring-log-level)
-  * [logging group](#logging-group)
-  * [Output log to file](#output-log-to-file)
-  * [log archive and split to chunks](#log-archive-and-split-to-chunks)
-  * [string format in log](#string-format-in-log)
-  * [change to log4j2](#change-to-log4j2)
+    * [A Simple Logging Example](#a-simple-logging-example)
+    * [log level](#log-level)
+        * [spring log level:](#spring-log-level)
+    * [logging group](#logging-group)
+    * [Output log to file](#output-log-to-file)
+    * [log archive and split to chunks](#log-archive-and-split-to-chunks)
+    * [string format in log](#string-format-in-log)
+    * [change to log4j2](#change-to-log4j2)
 * [spring environment isolation](#spring-environment-isolation)
-  * [Outer properties](#outer-properties)
+    * [Outer properties](#outer-properties)
 * [Unit Test](#unit-test)
-  * [常用的注解](#常用的注解)
-  * [assert](#assert)
-    * [Example](#example)
+    * [常用的注解](#常用的注解)
+    * [assert](#assert)
+        * [Example](#example)
 * [sprint actuator](#sprint-actuator)
-  * [1.import dependency](#1import-dependency)
-  * [2.set properties like following:](#2set-properties-like-following)
-  * [3. 常用的 Actuator 端点](#3-常用的-actuator-端点)
-    * [3.1 `/actuator/health`](#31-actuatorhealth)
-    * [3.2 `/actuator/info`](#32-actuatorinfo)
-    * [3.3 `/actuator/metrics`](#33-actuatormetrics)
-    * [3.4 `/actuator/metrics/{metricName}`](#34-actuatormetricsmetricname)
-    * [3.5 `/actuator/loggers`](#35-actuatorloggers)
-    * [3.6 `/actuator/loggers/{name}`](#36-actuatorloggersname)
-    * [3.7 `/actuator/env`](#37-actuatorenv)
-    * [3.8 `/actuator/beans`](#38-actuatorbeans)
-    * [3.9 `/actuator/threaddump`](#39-actuatorthreaddump)
-    * [3.10 `/actuator/httptrace`](#310-actuatorhttptrace)
-  * [4. 安全配置](#4-安全配置)
-    * [4.1 dependency](#41-dependency)
-    * [4.2 配置 Spring Security](#42-配置-spring-security)
-    * [4.3 配置 Actuator 端点的安全性](#43-配置-actuator-端点的安全性)
-  * [5. 自定义 Actuator 端点](#5-自定义-actuator-端点)
-    * [5.1 创建自定义端点](#51-创建自定义端点)
-    * [5.2 公开自定义端点](#52-公开自定义端点)
-    * [5.3 访问自定义端点](#53-访问自定义端点)
-  * [6. 使用 Actuator 的 Web 管理界面](#6-使用-actuator-的-web-管理界面)
-    * [6.1 添加 Spring Boot Admin 依赖](#61-添加-spring-boot-admin-依赖)
-    * [6.2 配置 Spring Boot Admin](#62-配置-spring-boot-admin)
-    * [6.3 启动 Spring Boot Admin 服务器](#63-启动-spring-boot-admin-服务器)
+    * [1.import dependency](#1import-dependency)
+    * [2.set properties like following:](#2set-properties-like-following)
+    * [3. 常用的 Actuator 端点](#3-常用的-actuator-端点)
+        * [3.1 `/actuator/health`](#31-actuatorhealth)
+        * [3.2 `/actuator/info`](#32-actuatorinfo)
+        * [3.3 `/actuator/metrics`](#33-actuatormetrics)
+        * [3.4 `/actuator/metrics/{metricName}`](#34-actuatormetricsmetricname)
+        * [3.5 `/actuator/loggers`](#35-actuatorloggers)
+        * [3.6 `/actuator/loggers/{name}`](#36-actuatorloggersname)
+        * [3.7 `/actuator/env`](#37-actuatorenv)
+        * [3.8 `/actuator/beans`](#38-actuatorbeans)
+        * [3.9 `/actuator/threaddump`](#39-actuatorthreaddump)
+        * [3.10 `/actuator/httptrace`](#310-actuatorhttptrace)
+    * [4. 安全配置](#4-安全配置)
+        * [4.1 dependency](#41-dependency)
+        * [4.2 配置 Spring Security](#42-配置-spring-security)
+        * [4.3 配置 Actuator 端点的安全性](#43-配置-actuator-端点的安全性)
+    * [5. 自定义 Actuator 端点](#5-自定义-actuator-端点)
+        * [5.1 创建自定义端点](#51-创建自定义端点)
+        * [5.2 公开自定义端点](#52-公开自定义端点)
+        * [5.3 访问自定义端点](#53-访问自定义端点)
+    * [6. 使用 Actuator 的 Web 管理界面](#6-使用-actuator-的-web-管理界面)
+        * [6.1 添加 Spring Boot Admin 依赖](#61-添加-spring-boot-admin-依赖)
+        * [6.2 配置 Spring Boot Admin](#62-配置-spring-boot-admin)
+        * [6.3 启动 Spring Boot Admin 服务器](#63-启动-spring-boot-admin-服务器)
+
 <!-- TOC -->
 
 # Spring Boot auto configuration
@@ -1151,11 +1153,12 @@ public class AdminServerApplication {
 
 启动管理服务器后，可以通过浏览器访问 `http://localhost:8081` 来查看和管理应用程序。
 
-
 # Spring boot life cycle Listener
+
 ![SpringBoot-cycle.png](SpringBoot-cycle.png)
 
 ## SpringApplicationRunListener
+
 ```java
 package com.li.hellospringbootbase1.listener;
 
@@ -1207,35 +1210,402 @@ public class MyListener implements SpringApplicationRunListener {
 org.springframework.boot.SpringApplicationRunListener=com.li.hellospringbootbase1.listener.MyListener
 ```
 
-
 # Spring boot life cycle
+
 ![SpringBoot-cycle-f.png](SpringBoot-cycle-f.png)
 
 Spring Boot 应用的生命周期可以分为几个主要阶段，每个阶段都有特定的事件和回调方法。以下是 Spring Boot 生命周期的主要阶段：
 
 1. **启动准备阶段 (Bootstrap)**
-  - 读取配置文件。
-  - 初始化 `ApplicationContext`。
+
+- 读取配置文件。
+- 初始化 `ApplicationContext`。
 
 2. **上下文刷新阶段 (Context Refresh)**
-  - 加载并解析配置类。
-  - 注册 Bean 定义。
-  - 初始化所有 Singleton Beans（非懒加载）。
-  - 发布 `ContextRefreshedEvent` 事件。
+
+- 加载并解析配置类。
+- 注册 Bean 定义。
+- 初始化所有 Singleton Beans（非懒加载）。
+- 发布 `ContextRefreshedEvent` 事件。
 
 3. **Web 环境准备阶段 (Web Environment Preparation)**
-  - 如果是 Web 应用，则创建并配置 `Servlet` 容器。
+
+- 如果是 Web 应用，则创建并配置 `Servlet` 容器。
 
 4. **应用运行阶段 (Application Running)**
-  - 应用程序开始处理请求。
-  - 可以通过实现 `ApplicationRunner` 或 `CommandLineRunner` 接口，在应用启动完成后执行特定逻辑。
+
+- 应用程序开始处理请求。
+- 可以通过实现 `ApplicationRunner` 或 `CommandLineRunner` 接口，在应用启动完成后执行特定逻辑。
 
 5. **关闭阶段 (Shutdown)**
-  - 当应用程序关闭时，会调用 `DisposableBean` 的 `destroy()` 方法或 `@PreDestroy` 注解的方法。
-  - 发布 `ContextClosedEvent` 事件。
+
+- 当应用程序关闭时，会调用 `DisposableBean` 的 `destroy()` 方法或 `@PreDestroy` 注解的方法。
+- 发布 `ContextClosedEvent` 事件。
 
 ## 常见的生命周期回调接口
 
 - **`ApplicationListener`**：监听特定的 Spring Boot 事件，如 `ApplicationStartedEvent`、`ApplicationReadyEvent` 等。
 - **`SmartLifecycle`**：提供更细粒度的控制，可以定义启动和停止的顺序。
-- **`ApplicationRunner` 和 `CommandLineRunner`**：在应用启动后执行特定任务，区别在于 `ApplicationRunner` 支持 `ApplicationArguments` 参数。
+- **`ApplicationRunner` 和 `CommandLineRunner`**：在应用启动后执行特定任务，区别在于 `ApplicationRunner` 支持
+  `ApplicationArguments` 参数。
+
+# spring Event
+
+- event
+
+```java
+package com.li.hellospringbootbase1.event;
+
+@Data
+public class UserSigninEvent {
+    private String message;
+
+    public UserSigninEvent(String message) {
+        this.message = message;
+    }
+
+}
+```
+
+- instant event and public event via ApplicationEventPublisher
+
+```java
+package com.li.hellospringbootbase1.controller;
+
+@RequestMapping("/v3/api")
+@RestController
+public class UserController {
+
+
+    @Autowired
+    ApplicationEventPublisher publisher;
+
+    @RequestMapping("/signin")
+    public String signin(@RequestParam("username") String username) {
+        publisher.publishEvent(new UserSigninEvent(username + " 用户登录"));
+
+        return "{\"message\": \"success\", \"code\": 200}";
+    }
+
+}
+```
+
+- listen event by `@EventListener(UserSigninEvent.class)`
+
+```java
+package com.li.hellospringbootbase1.service;
+
+@Slf4j
+@Service
+public class UserService {
+
+    @Async
+    @EventListener(UserSigninEvent.class)
+    public void signin(UserSigninEvent event) {
+        log.info("[user signin event]: " + event.getMessage());
+    }
+}
+
+```
+
+# Custom Spring Boot Starter
+
+创建自定义的 Spring Boot Starter 是一种强大的方式，可以封装和分发可重用的配置和功能。通过自定义
+Starter，你可以简化项目的配置，使其更加模块化和易于维护。以下是创建自定义 Spring Boot Starter 的步骤：
+
+## 1. 创建 Starter 项目
+
+首先，创建一个新的 Maven 或 Gradle 项目，用于存放你的 Starter。
+
+### Maven 项目结构
+
+```
+my-custom-starter/
+├── pom.xml
+└── src/
+    └── main/
+        └── resources/
+            └── META-INF/
+                └── spring.factories
+```
+
+## 2. 配置 `pom.xml` 或 `build.gradle`
+
+确保你的项目依赖于 `spring-boot-starter`，并且打包类型为 `jar`。
+
+### Maven `pom.xml`
+
+```xml
+
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>com.example</groupId>
+    <artifactId>my-custom-starter</artifactId>
+    <version>1.0.0</version>
+    <packaging>jar</packaging>
+
+    <parent>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-parent</artifactId>
+        <version>2.7.5</version>
+    </parent>
+
+    <dependencies>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter</artifactId>
+        </dependency>
+        <!-- 添加其他依赖 -->
+    </dependencies>
+</project>
+```
+
+## 3. 创建自动配置类
+
+创建一个自动配置类，使用 `@Configuration` 和 `@ConditionalOnClass` 等注解来定义自动配置逻辑。
+
+```java
+package com.example.config;
+
+import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+
+@Configuration
+@ConditionalOnClass(MyService.class)
+public class MyAutoConfiguration {
+
+    @Bean
+    public MyService myService() {
+        return new MyService();
+    }
+}
+```
+
+## 4. 创建服务类
+
+创建一个简单的服务类，该类将在自动配置中被实例化。
+
+```java
+package com.example.service;
+
+public class MyService {
+
+    public void doSomething() {
+        System.out.println("Doing something in MyService");
+    }
+}
+```
+
+## 5. 配置 `spring.factories`
+
+在 `src/main/resources/META-INF/spring.factories` 文件中注册自动配置类。
+
+```properties
+org.springframework.boot.autoconfigure.EnableAutoConfiguration=com.example.config.MyAutoConfiguration
+```
+
+## 6. 打包并发布
+
+使用 Maven 或 Gradle 打包你的 Starter，并将其发布到 Maven 仓库或本地仓库。
+
+### Maven 打包
+
+```sh
+mvn clean install
+```
+
+## 7. 使用自定义 Starter
+
+在你的 Spring Boot 项目中引入自定义的 Starter。
+
+### Maven `pom.xml`
+
+```xml
+
+<dependency>
+    <groupId>com.example</groupId>
+    <artifactId>my-custom-starter</artifactId>
+    <version>1.0.0</version>
+</dependency>
+```
+
+## 示例代码
+
+以下是一个完整的示例，展示了如何创建和使用自定义的 Spring Boot Starter。
+
+#### 自定义 Starter 项目结构
+
+```
+my-custom-starter/
+├── pom.xml
+└── src/
+    └── main/
+        └── java/
+            └── com/
+                └── example/
+                    ├── config/
+                    │   └── MyAutoConfiguration.java
+                    └── service/
+                        └── MyService.java
+        └── resources/
+            └── META-INF/
+                └── spring.factories
+```
+
+### `MyService.java`
+
+```java
+package com.example.service;
+
+public class MyService {
+
+    public void doSomething() {
+        System.out.println("Doing something in MyService");
+    }
+}
+```
+
+### `MyAutoConfiguration.java`
+
+```java
+package com.example.config;
+
+import com.example.service.MyService;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+
+@Configuration
+@ConditionalOnClass(MyService.class)
+public class MyAutoConfiguration {
+
+    @Bean
+    public MyService myService() {
+        return new MyService();
+    }
+}
+```
+
+### properties in META-INF
+
+- method 1: touch `META-INF/spring.factories`
+
+```properties
+org.springframework.boot.autoconfigure.EnableAutoConfiguration=com.example.config.MyAutoConfiguration
+```
+
+- method 2: touch file `META-INF.spring/org.springframework.boot.autoconfigure.AutoConfiguration.imports`
+
+```properties
+com.example.config.MyAutoConfiguration
+```
+
+### `pom.xml`
+
+```xml
+
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>com.example</groupId>
+    <artifactId>my-custom-starter</artifactId>
+    <version>1.0.0</version>
+    <packaging>jar</packaging>
+
+    <parent>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-parent</artifactId>
+        <version>2.7.5</version>
+    </parent>
+
+    <dependencies>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter</artifactId>
+        </dependency>
+    </dependencies>
+</project>
+```
+
+### 使用自定义 Starter 的项目结构
+
+```
+demo/
+├── pom.xml
+└── src/
+    └── main/
+        └── java/
+            └── com/
+                └── example/
+                    └── demo/
+                        └── DemoApplication.java
+```
+
+### `DemoApplication.java`
+
+```java
+package com.example.demo;
+
+import com.example.service.MyService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.CommandLineRunner;
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+
+@SpringBootApplication
+public class DemoApplication implements CommandLineRunner {
+
+    @Autowired
+    private MyService myService;
+
+    public static void main(String[] args) {
+        SpringApplication.run(DemoApplication.class, args);
+    }
+
+    @Override
+    public void run(String... args) throws Exception {
+        myService.doSomething();
+    }
+}
+```
+
+### `pom.xml`
+
+```xml
+
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>com.example</groupId>
+    <artifactId>demo</artifactId>
+    <version>1.0.0</version>
+    <packaging>jar</packaging>
+
+    <parent>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-parent</artifactId>
+        <version>2.7.5</version>
+    </parent>
+
+    <dependencies>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.example</groupId>
+            <artifactId>my-custom-starter</artifactId>
+            <version>1.0.0</version>
+        </dependency>
+    </dependencies>
+</project>
+```
+
