@@ -1151,6 +1151,7 @@ public class AdminServerApplication {
 
 启动管理服务器后，可以通过浏览器访问 `http://localhost:8081` 来查看和管理应用程序。
 
+
 # Spring boot life cycle Listener
 ![SpringBoot-cycle.png](SpringBoot-cycle.png)
 
@@ -1206,3 +1207,35 @@ public class MyListener implements SpringApplicationRunListener {
 org.springframework.boot.SpringApplicationRunListener=com.li.hellospringbootbase1.listener.MyListener
 ```
 
+
+# Spring boot life cycle
+![SpringBoot-cycle-f.png](SpringBoot-cycle-f.png)
+
+Spring Boot 应用的生命周期可以分为几个主要阶段，每个阶段都有特定的事件和回调方法。以下是 Spring Boot 生命周期的主要阶段：
+
+1. **启动准备阶段 (Bootstrap)**
+  - 读取配置文件。
+  - 初始化 `ApplicationContext`。
+
+2. **上下文刷新阶段 (Context Refresh)**
+  - 加载并解析配置类。
+  - 注册 Bean 定义。
+  - 初始化所有 Singleton Beans（非懒加载）。
+  - 发布 `ContextRefreshedEvent` 事件。
+
+3. **Web 环境准备阶段 (Web Environment Preparation)**
+  - 如果是 Web 应用，则创建并配置 `Servlet` 容器。
+
+4. **应用运行阶段 (Application Running)**
+  - 应用程序开始处理请求。
+  - 可以通过实现 `ApplicationRunner` 或 `CommandLineRunner` 接口，在应用启动完成后执行特定逻辑。
+
+5. **关闭阶段 (Shutdown)**
+  - 当应用程序关闭时，会调用 `DisposableBean` 的 `destroy()` 方法或 `@PreDestroy` 注解的方法。
+  - 发布 `ContextClosedEvent` 事件。
+
+## 常见的生命周期回调接口
+
+- **`ApplicationListener`**：监听特定的 Spring Boot 事件，如 `ApplicationStartedEvent`、`ApplicationReadyEvent` 等。
+- **`SmartLifecycle`**：提供更细粒度的控制，可以定义启动和停止的顺序。
+- **`ApplicationRunner` 和 `CommandLineRunner`**：在应用启动后执行特定任务，区别在于 `ApplicationRunner` 支持 `ApplicationArguments` 参数。
