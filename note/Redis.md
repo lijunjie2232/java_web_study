@@ -5,6 +5,8 @@
   - [String](#string)
   - [List](#list)
   - [Hash](#hash)
+  - [Set](#set)
+  - [ZSet](#zset)
 
 # redis config
 
@@ -37,6 +39,7 @@ String is the most basic data type in Redis. It is a binary safe type which can 
 
 - `set key value`: set key value
 - `get key`: get key value
+
 ```redis
 SET user:age 30
 GET user:age
@@ -49,10 +52,74 @@ List is a "Doubly Linked List", could store at most <font color="orange">2<sup>3
 ## Hash
 
 Hash is a key-value map like dict in python, could store at most <font color="orange">2<sup>32</sup> - 1 = 4294967295</font> items;
-each hash key maps to multiple hash fields like:  hash key -> {field1: value1, field2: value2, ...}
+each hash key maps to multiple hash fields like: hash key -> {field1: value1, field2: value2, ...}
 
 ```redis
 HSET user:info name "Alice" age 25 city "Beijing"
 HGET user:info name
 HGETALL user:info
 ```
+
+## Set
+
+Set is an <font color="orange">un-ordered</font> collection of unique elements, it is build by <font color="orange">intest or hashtable</font>;
+
+Set could store at most <font color="orange">2<sup>32</sup> - 1 = 4294967295</font> items
+
+Set uses hash table to store elements, operations like add, remove, check existence are all <font color="orange">O(1)</font>
+
+| 命令                           | 描述                                                             |
+| ------------------------------ | ---------------------------------------------------------------- |
+| `SADD key member [member ...]` | 向 `Set` 中添加一个或多个成员。如果成员已存在，则不会重复添加。  |
+| `SMEMBERS key`                 | 返回 `Set` 中的所有成员。                                        |
+| `SISMEMBER key member`         | 检查某个成员是否存在于 `Set` 中。返回 1 表示存在，0 表示不存在。 |
+| `SCARD key`                    | 返回 `Set` 中成员的数量。                                        |
+| `SREM key member [member ...]` | 从 `Set` 中移除一个或多个成员。如果成员不存在，则忽略。          |
+| `SPOP key [count]`             | 移除并返回 `Set` 中的一个或多个随机成员。                        |
+| `SRANDMEMBER key [count]`      | 返回 `Set` 中的一个或多个随机成员，但不移除它们。                |
+| `SINTER key [key ...]`         | 返回多个 `Set` 的交集。                                          |
+| `SUNION key [key ...]`         | 返回多个 `Set` 的并集。                                          |
+| `SDIFF key [key ...]`          | 返回第一个 `Set` 中存在但其他 `Set` 中不存在的成员。             |
+
+```redis
+# 添加成员到 set
+SADD myset "apple" "banana" "orange"
+
+# 查看 set 中的所有成员
+SMEMBERS myset
+
+# 检查某个成员是否存在
+SISMEMBER myset "banana"
+
+# 获取 set 中成员的数量
+SCARD myset
+
+# 移除某个成员
+SREM myset "orange"
+```
+
+## ZSet
+
+ZSet is an <font color="orange">ordered and sorted</font> set
+
+```redis
+# 添加成员到 zset 并指定分数
+ZADD myzset 1 "apple" 2 "banana" 3 "orange"
+
+# 获取所有成员及其分数（按分数升序）
+ZRANGE myzset 0 -1 WITHSCORES
+
+# 获取所有成员及其分数（按分数降序）
+ZREVRANGE myzset 0 -1 WITHSCORES
+
+# 获取某个成员的排名（按分数升序）
+ZRANK myzset "banana"
+
+# 获取某个成员的排名（按分数降序）
+ZREVRANK myzset "banana"
+
+# 获取某个成员的分数
+ZSCORE myzset "banana"
+```
+
+
