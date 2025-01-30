@@ -7,6 +7,11 @@
   - [Hash](#hash)
   - [Set](#set)
   - [ZSet](#zset)
+  - [GEO](#geo)
+  - [HyperLogLog](#hyperloglog)
+  - [BitMap](#bitmap)
+  - [BitField](#bitfield)
+  - [Stream](#stream)
 
 # redis config
 
@@ -122,4 +127,22 @@ ZREVRANK myzset "banana"
 ZSCORE myzset "banana"
 ```
 
+## GEO
 
+Geo is a data type used to store geographic coordinates and perform distance calculations. 
+
+## HyperLogLog
+
+A space-efficient way to count unique elements in a set.
+
+## BitMap
+
+A data structure that allows you to store a large number of bits and perform operations on them quickly.
+
+## BitField
+
+Operate in multiple bit fields at once.
+
+## Stream
+
+For message Queue
