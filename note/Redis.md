@@ -12,6 +12,9 @@
   - [BitMap](#bitmap)
   - [BitField](#bitfield)
   - [Stream](#stream)
+- [Redis Command](#redis-command)
+- [key and value](#key-and-value)
+- [db and index](#db-and-index)
 
 # redis config
 
@@ -146,3 +149,27 @@ Operate in multiple bit fields at once.
 ## Stream
 
 For message Queue
+
+# Redis Command
+
+# key and value
+- `SET key value [EX seconds] [PX milliseconds] [NX|XX]`
+  - `SET user:age 30`
+  - `SET user:age 30 EX 3600` set key value and expire after 3600 seconds
+  - `SET user:age 30 PX 3600000` set key value and expire after 3600000 milliseconds
+  - `SET user:age 30 NX` set key value if not exists
+  - `SET user:age 30 XX` set key value if exists
+- `TYPE key`: get key type
+- `EXISTS key`: check key exists
+- `EXPIRE key <seconds>`: set key expire
+- `DEL key`: delete key
+- `UNLINK key`: delete key without blocking other threads
+- `TTL key`: get the remaining seconds of key to expire (`-1` means key does not expire for ever ,`-2` means key has already expired)
+
+# db and index
+- `MOVE key <db index>`: move key to db
+- `SELECT <db index>`: use db
+- `DBSIZE`: get db size
+- `FLUSHDB`: remove all from current db
+- `FLUSHALL`: remove all from all db
+
