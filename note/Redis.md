@@ -357,4 +357,27 @@ OK
   2) "2"
   ```
 
+- `LSET <key> <index> <value>`: set element by index
+  ```bash
+  127.0.0.1:6379> lrange msg2 0 -1
+  1) "3"
+  2) "2"
+  127.0.0.1:6379> LSET msg2 0 5
+  OK
+  127.0.0.1:6379> lrange msg2 0 -1
+  1) "5"
+  2) "2"
+  ```
 
+- `INSERT <key> <BEFORE|AFTER> <pivot> <value>`: insert element after or before pivot
+  ```bash
+  127.0.0.1:6379> lrange msg2 0 -1
+  1) "5"
+  2) "2"
+  127.0.0.1:6379> LINSERT msg2 BEFORE 2 3
+  (integer) 3
+  127.0.0.1:6379> lrange msg2 0 -1
+  1) "5"
+  2) "3"
+  3) "2"
+  ```
