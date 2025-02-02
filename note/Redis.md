@@ -23,6 +23,8 @@
   - [basic command](#basic-command)
 - [Hash](#hash-1)
   - [Basic Commands](#basic-commands)
+- [Set](#set-1)
+  - [Basic Commands](#basic-commands-1)
 
 # redis config
 
@@ -461,3 +463,82 @@ OK
   ```
 
 - `HSETNX <key> <field> <value>`: set field value if not exists, return 1 if set, 0 if not set
+
+
+# Set
+- Set in redis is a hashset
+
+## Basic Commands
+- `SADD <key> <member> [<member2> ...]`: add member to set
+- `SMEMBER <key> <member>`: check member exists or not
+- `SISMEMBER <key> <member>`: check member exists or not, return 1 if exists, 0 if not exists
+- `SREM <key> <member> [<member2> ...]`: remove member from set
+- `SCARD <key>`: get set size
+  ```bash
+  127.0.0.1:6379> SADD ms 1 2 3 4 5 6 3 2 2 4 1 4 5 6 3 1 4 5 6 1 4
+  (integer) 6
+  127.0.0.1:6379> SMEMBERS ms
+  1) "1"
+  2) "2"
+  3) "3"
+  4) "4"
+  5) "5"
+  6) "6"
+  127.0.0.1:6379> SISMEMBER ms 5
+  (integer) 1
+  127.0.0.1:6379> SISMEMBER ms 15
+  (integer) 0
+  127.0.0.1:6379> SREM ms 15
+  (integer) 0
+  127.0.0.1:6379> SREM ms 5
+  (integer) 1
+  127.0.0.1:6379> SISMEMBER ms 5
+  (integer) 0
+  127.0.0.1:6379> SMEMBERS ms
+  1) "1"
+  2) "2"
+  3) "3"
+  4) "4"
+  5) "6"
+  127.0.0.1:6379> SCARD ms
+  (integer) 5
+  ```
+
+- `SRANDMEMBER <key> <count>`: get random member from set, if count < 0, get one member, if count == 0, get no member
+- `SPOP <key> <count>`: remove and return random members from set
+  ```bash
+  127.0.0.1:6379> SMEMBERS ms
+  1) "1"
+  2) "2"
+  3) "3"
+  4) "4"
+  5) "6"
+  127.0.0.1:6379> SRANDMEMBER ms
+  "6"
+  127.0.0.1:6379> SRANDMEMBER ms -1
+  1) "6"
+  127.0.0.1:6379> SRANDMEMBER ms 0
+  (empty array)
+  127.0.0.1:6379> SRANDMEMBER ms 5
+  1) "1"
+  2) "2"
+  3) "3"
+  4) "4"
+  5) "6"
+  127.0.0.1:6379> SRANDMEMBER ms 2
+  1) "2"
+  2) "4"
+  127.0.0.1:6379> SMEMBERS ms
+  1) "1"
+  2) "2"
+  3) "3"
+  4) "4"
+  5) "6"
+  127.0.0.1:6379> SPOP ms 2
+  1) "1"
+  2) "6"
+  127.0.0.1:6379> SMEMBERS ms
+  1) "2"
+  2) "3"
+  3) "4"
+  ```
