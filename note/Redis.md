@@ -15,7 +15,7 @@
 - [Redis Command](#redis-command)
 - [key and value](#key-and-value)
 - [db and index](#db-and-index)
-- [](#)
+- [String](#string-1)
 
 # redis config
 
@@ -154,12 +154,19 @@ For message Queue
 # Redis Command
 
 # key and value
-- `SET key value [EX seconds] [PX milliseconds] [NX|XX]`
+- `SET key value [EX seconds] [PX milliseconds] [EXAT timestamp] [PXAT timestamp_milliseconds] [NX|XX] [KEEPTTL] [get]`
   - `SET user:age 30`
   - `SET user:age 30 EX 3600` set key value and expire after 3600 seconds
   - `SET user:age 30 PX 3600000` set key value and expire after 3600000 milliseconds
   - `SET user:age 30 NX` set key value if not exists
   - `SET user:age 30 XX` set key value if exists
+  - `SET user:age 30 EXAT 1620000000` set key value and expire at 1620000000 (unix timestamp)
+  - `SET user:age 30 get` set new key value and return old value
+  - `SET user:age 30 KEEPTTL` set key value and keep ttl
+- `MSET key value [key value ...]`: set multiple key value (None exec if any error)
+- `MGET key [key ...]`: get multiple key value
+- `MSETNX key value [key value ...]`: set multiple key value if not exists (None exec if any error)
+
 - `TYPE key`: get key type
 - `EXISTS key`: check key exists
 - `EXPIRE key <seconds>`: set key expire
@@ -174,4 +181,4 @@ For message Queue
 - `FLUSHDB`: remove all from current db
 - `FLUSHALL`: remove all from all db
 
-# 
+# String
