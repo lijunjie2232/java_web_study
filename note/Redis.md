@@ -17,7 +17,8 @@
 - [db and index](#db-and-index)
 - [String](#string-1)
   - [GETRANGE / SETRANGE](#getrange--setrange)
-  - [INCR / INCRBY / DECR / DECRBY (for number)](#incr--incrby--decr--decrby-for-number)
+  - [INCR / INCRBY / DECR / DECRBY / INCRBYFLOAT (for number)](#incr--incrby--decr--decrby--incrbyfloat-for-number)
+  - [STRLEN / APPEND](#strlen--append)
 
 # redis config
 
@@ -156,18 +157,22 @@ For message Queue
 # Redis Command
 
 # key and value
-- `SET key value [EX seconds] [PX milliseconds] [EXAT timestamp] [PXAT timestamp_milliseconds] [NX|XX] [KEEPTTL] [get]`
+- `SET key value [EX seconds] [PX milliseconds] [EXAT timestamp] [PXAT timestamp_milliseconds] [NX|XX] [KEEPTTL] [GET]`
   - `SET user:age 30`
   - `SET user:age 30 EX 3600` set key value and expire after 3600 seconds
   - `SET user:age 30 PX 3600000` set key value and expire after 3600000 milliseconds
   - `SET user:age 30 NX` set key value if not exists
   - `SET user:age 30 XX` set key value if exists
   - `SET user:age 30 EXAT 1620000000` set key value and expire at 1620000000 (unix timestamp)
-  - `SET user:age 30 get` set new key value and return old value
+  - `SET user:age 30 GET`  set new key value and return old value
   - `SET user:age 30 KEEPTTL` set key value and keep ttl
+- `GETSET key value` == `SET key value GET`
 - `MSET key value [key value ...]`: set multiple key value (None exec if any error)
 - `MGET key [key ...]`: get multiple key value
 - `MSETNX key value [key value ...]`: set multiple key value if not exists (None exec if any error)
+- `SETEX / SETNX` is atomic operation for multi thread
+  - `SETEX key <expire_seconds> <value>`: set key value and expire after seconds
+  - `SETNX key value`: set key value if not exists
 
 - `TYPE key`: get key type
 - `EXISTS key`: check key exists
@@ -185,7 +190,7 @@ For message Queue
 
 # String
 ## GETRANGE / SETRANGE
-```redis
+```bash
 127.0.0.1:6379> set ip 127.0.0.1
 OK
 127.0.0.1:6379> GETRANGE ip 0,5
@@ -202,5 +207,36 @@ OK
 (error) ERR offset is out of range
 ```
 
-## INCR / INCRBY / DECR / DECRBY (for number)
+## INCR / INCRBY / DECR / DECRBY / INCRBYFLOAT (for number)
+
+```bash
+127.0.0.1:6379> set vol 100 EX 500
+OK
+127.0.0.1:6379> ttl vol
+(integer) 389
+127.0.0.1:6379> INCR vol
+(integer) 101
+127.0.0.1:6379> get vol
+"101"
+127.0.0.1:6379> ttl vol
+(integer) 370
+127.0.0.1:6379> decr vol
+(integer) 100
+127.0.0.1:6379> INCRBY vol -5
+(integer) 95
+127.0.0.1:6379> deCRBY vol -5
+(integer) 100
+127.0.0.1:6379> INCRBYFLOAT vol 1.23456
+"101.23456"
+```
+
+## STRLEN / APPEND
+```bash
+127.0.0.1:6379> STRLEN ip
+(integer) 9
+127.0.0.1:6379> APPEND ip ":8888"
+(integer) 14
+127.0.0.1:6379> get ip
+"11920.0.1:8888"
+```
 
