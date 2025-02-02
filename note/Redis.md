@@ -19,6 +19,8 @@
   - [GETRANGE / SETRANGE](#getrange--setrange)
   - [INCR / INCRBY / DECR / DECRBY / INCRBYFLOAT (for number)](#incr--incrby--decr--decrby--incrbyfloat-for-number)
   - [STRLEN / APPEND](#strlen--append)
+- [List](#list-1)
+  - [basic command](#basic-command)
 
 # redis config
 
@@ -240,3 +242,61 @@ OK
 "11920.0.1:8888"
 ```
 
+# List
+- List is implemented as a doubly linked list, primarily used for queue operations such as push and pop.
+
+## basic command
+- LPUSH / RPUSH: add element to list
+- LPOP / RPOP: remove element from list
+- LRANGE (no rrange): get element from list
+  ```bash
+  127.0.0.1:6379> LPUSH msg "hellp"
+  (integer) 1
+  127.0.0.1:6379> LRANGE msg 0 -1
+  1) "hellp"
+  127.0.0.1:6379> LPUSH msg "hello" "helli"
+  (integer) 3
+  127.0.0.1:6379> LRANGE msg 0 -1
+  1) "helli"
+  2) "hello"
+  3) "hellp"
+  127.0.0.1:6379> RPUSH msg "world"
+  (integer) 4
+  127.0.0.1:6379> LRANGE msg 0 -1
+  1) "helli"
+  2) "hello"
+  3) "hellp"
+  4) "world"
+  127.0.0.1:6379> LPOP msg
+  "helli"
+  127.0.0.1:6379> LRANGE msg 0 -1
+  1) "hello"
+  2) "hellp"
+  3) "world"
+  127.0.0.1:6379> RPOP msg
+  "world"
+  127.0.0.1:6379> LRANGE msg 0 -1
+  1) "hello"
+  2) "hellp"
+  ```
+
+- `LINDEX <key> <index>`: get element from list by index
+- `LLEN <key>`: get list length
+```bash
+127.0.0.1:6379> LRANGE msg 0 -1
+1) "hello"
+2) "hellp"
+127.0.0.1:6379> LINDEX msg 1
+"hellp"
+127.0.0.1:6379> LINDEX msg -1
+"hellp"
+127.0.0.1:6379> LINDEX msg -2
+"hello"
+127.0.0.1:6379> LINDEX msg 0
+"hello"
+127.0.0.1:6379> llen msg
+(integer) 2
+```
+
+- `LREM <key> <count> <value>`: remove element from list by value, if count < 0, delete value from tail to head
+- `LTRIM <key> <start> <stop>`: `key (new)` = `key[start:stop+1]`
