@@ -25,6 +25,7 @@
   - [Basic Commands](#basic-commands)
 - [Set](#set-1)
   - [Basic Commands](#basic-commands-1)
+  - [Set Operations](#set-operations)
 
 # redis config
 
@@ -542,3 +543,34 @@ OK
   2) "3"
   3) "4"
   ```
+- `SMOVE <src> <dst> <member>`: move member from src to dst, return 1 if moved, 0 if not moved
+  ```bash
+  127.0.0.1:6379> SMEMBERS ms
+  1) "2"
+  2) "3"
+  3) "4"
+  127.0.0.1:6379> SMOVE ms ns 2
+  (integer) 1
+  127.0.0.1:6379> SMEMBERS ms
+  1) "3"
+  2) "4"
+  127.0.0.1:6379> SMEMBERS ns
+  1) "2"
+  127.0.0.1:6379> SADD ms 2
+  (integer) 1
+  127.0.0.1:6379> SMEMBERS ms
+  1) "2"
+  2) "3"
+  3) "4"
+  127.0.0.1:6379> SMOVE ms ns 2
+  (integer) 1
+  127.0.0.1:6379> SMEMBERS ms
+  1) "3"
+  2) "4"
+  127.0.0.1:6379> SMEMBERS ns
+  1) "2"
+  ```
+
+## Set Operations
+
+- 
