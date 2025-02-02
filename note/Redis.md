@@ -21,6 +21,8 @@
   - [STRLEN / APPEND](#strlen--append)
 - [List](#list-1)
   - [basic command](#basic-command)
+- [Hash](#hash-1)
+  - [Basic Commands](#basic-commands)
 
 # redis config
 
@@ -380,4 +382,45 @@ OK
   1) "5"
   2) "3"
   3) "2"
+  ```
+
+# Hash
+- hash: `Map<String, Map<Object,Object>>`
+
+## Basic Commands
+- `HSET <key> <field> <value> [<field2> <value2> ...]`: set field value
+- `HGET <key> <field>`: get field value
+  ```bash
+  127.0.0.1:6379> hset user:011 id 11 name 11 age 11
+  (integer) 3
+  127.0.0.1:6379> hget user:011 id name age
+  (error) ERR wrong number of arguments for 'hget' command
+  127.0.0.1:6379> hget user:011 id
+  "11"
+  ```
+
+- `HMSET <key> <field> <value> [<field2> <value2> ...]`: set field value
+- `HMGET <key> <field> [<field2> ...]`: get field value
+- `HDEL <key> <field> [<field2> ...]`: delete field
+  ```bash
+  127.0.0.1:6379> HDEL user:011 age
+  (integer) 1
+  127.0.0.1:6379> HMGET user:011 id name age
+  1) "11"
+  2) "11"
+  3) (nil)
+  ```
+- `HEXISTS <key> <field>`: check field exists or not
+- `HGETALL <key>`: get all field value
+- `HLEN <key>`: get field count
+  ```bash
+  127.0.0.1:6379> HLEN uesr:011
+  (integer) 0
+  127.0.0.1:6379> HGETALL user:011
+  1) "id"
+  2) "11"
+  3) "name"
+  4) "11"
+  127.0.0.1:6379> HEXISTS user:011 age
+  (integer) 0
   ```
