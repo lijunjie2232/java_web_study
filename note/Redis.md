@@ -28,6 +28,9 @@
   - [Basic Commands](#basic-commands-1)
   - [Set Operations](#set-operations)
   - [Use Case:](#use-case-1)
+- [Zset](#zset-1)
+  - [Basic Commands](#basic-commands-2)
+  - [Use Case:](#use-case-2)
 
 # redis config
 
@@ -652,4 +655,156 @@ OK
    3. `SCARD like:msg_id>`: get like count
    4. `SMEMBERS like:msg_id>`: get all liked user
 3. use `SINTERCARD` to calculate same like user and recommend to user
+
+# Zset
+- Zset is a hashset with score
+
+## Basic Commands
+- `ZADD <key> <score> <member> [<score> <member> ...]`: add member to zset, if member exists, <font color="orange">score will be updated</font>
+- `ZCARD <key>`: get zset size
+- `ZSCORE <key> <member>`: get score of member
+- `ZRANGE/ZREVRANGE <key> <start> <stop> [WITHSCORES]`: get members from zset ordered by score ascend/descend, if WITHSCORES, return members and scores
+- `ZREVRANGE ...` == `ZRANGE ... REV`
+  ```bash
+  127.0.0.1:6379> ZADD mvp 15 a 9 b 12 c 6 d 7.8 e
+  (integer) 5127.0.0.1:6379> ZCARD mvp
+  (integer) 5
+  127.0.0.1:6379> ZSCORE mvp a
+  "15"
+  127.0.0.1:6379> ZRANGE mvp 0 -1
+  1) "d"
+  2) "e"
+  3) "b"
+  4) "c"
+  5) "a"
+  127.0.0.1:6379> ZREVRANGE mvp 0 -1
+  1) "a"
+  2) "c"
+  3) "b"
+  4) "e"
+  5) "d"
+  127.0.0.1:6379> ZRANGE mvp 0 -1 REV WITHSCORES
+  1) "a"
+  2) "15"
+  3) "c"
+  4) "12"
+  5) "b"
+  6) "9"
+  7) "e"
+  8) "7.8"
+  9) "d"
+  10) "6"
+  ```
+- `ZRANGEBYSCORE/ZREVRANGEBYSCORE <key> <min> <max> [LIMIT <offset> <count>] [WITHSCORES]`: get members from zset ordered by score ascend/descend, if WITHSCORES, return members and scores
+  ```bash
+  127.0.0.1:6379> ZRANGEBYSCORE mvp 10 15 withscores
+  1) "c"
+  2) "12"
+  3) "a"
+  4) "15"
+  127.0.0.1:6379> ZRANGEBYSCORE mvp 9 15 withscores
+  1) "b"
+  2) "9"
+  3) "c"
+  4) "12"
+  5) "a"
+  6) "15"
+  127.0.0.1:6379> ZRANGEBYSCORE mvp 9 15 withscores LIMIT 0 2
+  1) "b"
+  2) "9"
+  3) "c"
+  4) "12"
+  127.0.0.1:6379> ZRANGEBYSCORE mvp (9 15 withscores LIMIT 0 2
+  1) "c"
+  2) "12"
+  3) "a"
+  4) "15"
+  127.0.0.1:6379> ZRANGEBYSCORE mvp (9 (15 withscores LIMIT 0 2
+  1) "c"
+  2) "12"
+  ```
+- `ZREM <key> <member> [<member2> ...]`: remove member from zset
+  ```bash
+  127.0.0.1:6379> ZREM mvp a e
+  (integer) 2
+  127.0.0.1:6379> ZRANGE mvp 0 -1 REV
+  1) "c"
+  2) "b"
+  3) "d"
+  ```
+
+- `ZINCRBY <key> <increment> <member>`: increment score of member, if member not exists, add member to zset
+  ```bash
+  127.0.0.1:6379> ZRANGE mvp 0 -1 REV
+  1) "c"
+  2) "b"
+  3) "d"
+  127.0.0.1:6379> ZINCRBY mvp 5 a
+  "5"
+  127.0.0.1:6379> ZRANGE mvp 0 -1 REV
+  1) "c"
+  2) "b"
+  3) "d"
+  4) "a"
+  127.0.0.1:6379> ZRANGE mvp 0 -1 REV WITHSCORES
+  1) "c"
+  2) "12"
+  3) "b"
+  4) "9"
+  5) "d"
+  6) "6"
+  7) "a"
+  8) "5"
+  ```
+
+- `ZCOUNT <key> <min> <max>`: count members in zset with score between min and max
+  ```bash
+  127.0.0.1:6379> ZCOUNT mvp 0 9
+  (integer) 3
+  127.0.0.1:6379> ZCOUNT mvp 0 (9
+  (integer) 2
+  ```
+
+- `ZMPOP <numberkeys> <key> [<key2> ...] min|max [COUNT <count>]` <font color="orange">(redis7+)</font>: pop the minimum/maximum `count` members from zset
+  ```bash
+  127.0.0.1:6379> ZMPOP 1 mvp min count 3
+  1) "mvp"
+  2) 1) 1) "a"
+        2) "5"
+    2) 1) "d"
+        2) "6"
+    3) 1) "b"
+        2) "9"
+  127.0.0.1:6379> ZRANGE mvp 0 -1 withscores
+  1) "c"
+  2) "12"
+  ```
+
+- `ZRANK/ZREVRANK <key> <member> [WITHSCORE]`: get rank of member in zset, if member not exists, return nil
+```bash
+127.0.0.1:6379> ZRANGE mvp 0 -1 withscores
+ 1) "d"
+ 2) "6"
+ 3) "e"
+ 4) "8"
+ 5) "b"
+ 6) "9"
+ 7) "c"
+ 8) "12"
+ 9) "a"
+10) "15"
+127.0.0.1:6379> ZRANK mvp v
+(nil)
+127.0.0.1:6379> ZRANK mvp a
+(integer) 4
+127.0.0.1:6379> ZRANK mvp a withscore
+1) (integer) 4
+2) "15"
+127.0.0.1:6379> ZREVRANK mvp a withscore
+1) (integer) 0
+2) "15
+```
+
+## Use Case:
+1. `ZRANGE` for best sale or hot lives
 
