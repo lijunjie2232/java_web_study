@@ -413,9 +413,13 @@ OK
 - `HEXISTS <key> <field>`: check field exists or not
 - `HGETALL <key>`: get all field value
 - `HLEN <key>`: get field count
+- `HKEYS <key>`: get all field
+- `HVALS <key>`: get all value
   ```bash
   127.0.0.1:6379> HLEN uesr:011
   (integer) 0
+  127.0.0.1:6379> HLEN user:011
+  (integer) 2
   127.0.0.1:6379> HGETALL user:011
   1) "id"
   2) "11"
@@ -423,4 +427,37 @@ OK
   4) "11"
   127.0.0.1:6379> HEXISTS user:011 age
   (integer) 0
+  127.0.0.1:6379> HKEYS user:011
+  1) "id"
+  2) "name"
+  127.0.0.1:6379> HVALS user:011
+  1) "11"
+  2) "11"
   ```
+
+- `HICRBYTE <key> <field> <increment>`: increment field value by increment, return new value
+- `HINCRBYFLOAT <key> <field> <increment>`: increment field value by increment, return new value
+  ```bash
+  127.0.0.1:6379> HGETALL user:011
+  1) "id"
+  2) "11"
+  3) "name"
+  4) "11"
+  127.0.0.1:6379> HKEYS user:011
+  1) "id"
+  2) "name"
+  127.0.0.1:6379> HGETALL user:011
+  1) "id"
+  2) "12"
+  3) "name"
+  4) "11"
+  127.0.0.1:6379> HINCRBYFLOAT user:011 id 0.1
+  "12.1"
+  127.0.0.1:6379> HGETALL user:011
+  1) "id"
+  2) "12.1"
+  3) "name"
+  4) "11"
+  ```
+
+- `HSETNX <key> <field> <value>`: set field value if not exists, return 1 if set, 0 if not set
