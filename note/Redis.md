@@ -23,9 +23,11 @@
   - [basic command](#basic-command)
 - [Hash](#hash-1)
   - [Basic Commands](#basic-commands)
+  - [Use Case](#use-case)
 - [Set](#set-1)
   - [Basic Commands](#basic-commands-1)
   - [Set Operations](#set-operations)
+  - [Use Case:](#use-case-1)
 
 # redis config
 
@@ -465,6 +467,12 @@ OK
 
 - `HSETNX <key> <field> <value>`: set field value if not exists, return 1 if set, 0 if not set
 
+## Use Case
+1. online shoping:
+   1. add item into Shopping Cart: `HSETNX user:011:cart:011 <goods_id> <amount>`
+   2. increment amount: `HINCBY user:011:cart:011 <goods_id> 1`
+   3. get numbers of goods type: `HLEN user:011:cart:011`
+   4. get all goods and calculate price: `HGETALL user:011:cart:011`
 
 # Set
 - Set in redis is a hashset
@@ -572,5 +580,76 @@ OK
   ```
 
 ## Set Operations
+```bash
+127.0.0.1:6379> SADD ms 1 2 8
+(integer) 3
+127.0.0.1:6379> SMEMBERS ms
+1) "1"
+2) "2"
+3) "3"
+4) "4"
+5) "8"
+127.0.0.1:6379> SADD ns 3 8 9 10
+(integer) 4
+127.0.0.1:6379> SMEMBERS ns
+1) "2"
+2) "3"
+3) "8"
+4) "9"
+5) "10"
+```
+- ms: `[1,2,3,4,8]`
+- ns: `[2,3,8,9,10]`
 
-- 
+- `SDIFF <key> <key2>`: get difference of sets <font color="orange"> key1 - key2</font>
+  ```bash
+  127.0.0.1:6379> SDIFF ms ns
+  1) "1"
+  2) "4"
+  127.0.0.1:6379> SDIFF ns ms
+  1) "9"
+  2) "10"
+  ```
+- `SUNION <key> <key2>`: get union of sets key1 + key2 (or key1 | key2)
+  ```bash
+  127.0.0.1:6379> SUNION ms ns
+  1) "1"
+  2) "2"
+  3) "3"
+  4) "4"
+  5) "8"
+  6) "9"
+  7) "10"
+  ```
+- `SINTER <key> <key2>`: get intersection of sets key1 & key2
+- `SINTERCARD <number> <key> [<key2> ...] [limit <limit>]`(<font color="orange">redis7+</font>): get intersection of the first `number` sets, and return the "count" of elements in result; if `limit` is set, return: "count" if count <= `limit` else `limit`
+  ```bash
+  127.0.0.1:6379> SINTER ms ns
+  1) "2"
+  2) "3"
+  3) "8"
+  127.0.0.1:6379> SINTERCARD 2 ms ns
+  (integer) 3
+  127.0.0.1:6379> SINTERCARD 2 ms ns limit 0
+  (integer) 3
+  127.0.0.1:6379> SINTERCARD 2 ms ns limit 1
+  (integer) 1
+  127.0.0.1:6379> SINTERCARD 2 ms ns limit 2
+  (integer) 2
+  127.0.0.1:6379> SINTERCARD 2 ms ns limit 3
+  (integer) 3
+  127.0.0.1:6379> SINTERCARD 2 ms ns limit 4
+  (integer) 3
+  127.0.0.1:6379> SINTERCARD 2 ms ns limit 5
+  (integer) 3
+  ```
+
+## Use Case:
+1. `SPOP` for Lottery
+2. twitter like:
+   1. `SADD like:msg_id> <user_id>` to add liked user
+   2. `SREM like:msg_id> <user_id>` to remove liked user
+   3. `SCARD like:msg_id>`: get like count
+   4. `SMEMBERS like:msg_id>`: get all liked user
+3. use `SINTERCARD` to calculate same like user and recommend to user
+
