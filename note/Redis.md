@@ -16,6 +16,8 @@
 - [key and value](#key-and-value)
 - [db and index](#db-and-index)
 - [String](#string-1)
+  - [GETRANGE / SETRANGE](#getrange--setrange)
+  - [INCR / INCRBY / DECR / DECRBY (for number)](#incr--incrby--decr--decrby-for-number)
 
 # redis config
 
@@ -182,3 +184,23 @@ For message Queue
 - `FLUSHALL`: remove all from all db
 
 # String
+## GETRANGE / SETRANGE
+```redis
+127.0.0.1:6379> set ip 127.0.0.1
+OK
+127.0.0.1:6379> GETRANGE ip 0,5
+(error) ERR wrong number of arguments for 'getrange' command
+127.0.0.1:6379> GETRANGE ip 0 5
+"127.0."
+127.0.0.1:6379> GETRANGE ip 0 -1
+"127.0.0.1"
+127.0.0.1:6379> SETRANGE ip 1 192
+(integer) 9
+127.0.0.1:6379> get ip
+"11920.0.1"
+127.0.0.1:6379> SETRANGE ip -1 192
+(error) ERR offset is out of range
+```
+
+## INCR / INCRBY / DECR / DECRBY (for number)
+
