@@ -282,21 +282,79 @@ OK
 
 - `LINDEX <key> <index>`: get element from list by index
 - `LLEN <key>`: get list length
-```bash
-127.0.0.1:6379> LRANGE msg 0 -1
-1) "hello"
-2) "hellp"
-127.0.0.1:6379> LINDEX msg 1
-"hellp"
-127.0.0.1:6379> LINDEX msg -1
-"hellp"
-127.0.0.1:6379> LINDEX msg -2
-"hello"
-127.0.0.1:6379> LINDEX msg 0
-"hello"
-127.0.0.1:6379> llen msg
-(integer) 2
-```
+  ```bash
+  127.0.0.1:6379> LRANGE msg 0 -1
+  1) "hello"
+  2) "hellp"
+  127.0.0.1:6379> LINDEX msg 1
+  "hellp"
+  127.0.0.1:6379> LINDEX msg -1
+  "hellp"
+  127.0.0.1:6379> LINDEX msg -2
+  "hello"
+  127.0.0.1:6379> LINDEX msg 0
+  "hello"
+  127.0.0.1:6379> llen msg
+  (integer) 2
+  ```
 
 - `LREM <key> <count> <value>`: remove element from list by value, if count < 0, delete value from tail to head
 - `LTRIM <key> <start> <stop>`: `key (new)` = `key[start:stop+1]`
+  ```bash
+  127.0.0.1:6379> LRANGE msg 0 -1
+  1) "0"
+  2) "0"
+  3) "2"
+  4) "1"
+  5) "0"
+  6) "0"
+  7) "0"
+  127.0.0.1:6379> LREM msg -2 0
+  (integer) 2
+  127.0.0.1:6379> LRANGE msg 0 -1
+  1) "0"
+  2) "0"
+  3) "2"
+  4) "1"
+  5) "0"
+  127.0.0.1:6379> del msg
+  (integer) 1
+  127.0.0.1:6379> lpush msg 0 1 2 3 4 5 6 7 8 9
+  (integer) 10
+  127.0.0.1:6379> lrange msg 0 -1
+  1) "9"
+  2) "8"
+  3) "7"
+  4) "6"
+  5) "5"
+  6) "4"
+  7) "3"
+  8) "2"
+  9) "1"
+  10) "0"
+  127.0.0.1:6379> LTRIM msg 1 -3
+  OK
+  127.0.0.1:6379> lrange msg 0 -1
+  1) "8"
+  2) "7"
+  3) "6"
+  4) "5"
+  5) "4"
+  6) "3"
+  7) "2"
+  ```
+
+- `RPOPLPUSH <src> <dst>`: `RPOP` element from src and `LPUSH` to dst, return removed element
+  ```bash
+  127.0.0.1:6379> RPOPLPUSH msg msg2
+  "2"
+  127.0.0.1:6379> lrange msg2 0 -1
+  1) "2"
+  127.0.0.1:6379> RPOPLPUSH msg msg2
+  "3"
+  127.0.0.1:6379> lrange msg2 0 -1
+  1) "3"
+  2) "2"
+  ```
+
+
