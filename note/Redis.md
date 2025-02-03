@@ -40,6 +40,9 @@
 - [Geo](#geo-1)
   - [Basic Commands](#basic-commands-5)
   - [Use Case:](#use-case-5)
+- [Stream](#stream-1)
+  - [special character:](#special-character)
+  - [Basic Commands](#basic-commands-6)
 
 # redis config
 
@@ -953,3 +956,49 @@ OK
 
 ## Use Case:
 1. find nearby people of destination
+
+# Stream
+- a MQ data structure
+
+## special character:
+- `>`: not sent yet to consumer id, update the customer id
+- `*`: auto generate id
+- `$`: only send the newest message, get the biggest msg id
+- `- `/`+`: the min or max id
+## Basic Commands
+- `XADD <key> <id> <field> <value> [<field> <value> ...]`: add stream, if id is `*`, auto generate id, the generated msg id is `{timestamp(ms)}-{msg_count_in_the_ms}`
+  ```bash
+  127.0.0.1:6379> XADD msgs * user li msg "hello world"
+  "1738562890769-0"
+  127.0.0.1:6379> XADD msgs * user li msg "logined"
+  "1738562910436-0"
+  ```
+- `XRANGE <key> <start> <end> [COUNT <count>]`: get stream, if start is `-`, get the min id, if end is `+`, get the max id, if count is not set, get all stream, if count is set, get count stream, if count is 0, get all stream, if count is negative, get all stream in reverse order
+  ```bash
+  127.0.0.1:6379> XRANGE msgs - +
+  1) 1) "1738562890769-0"
+    2) 1) "user"
+        2) "li"
+        3) "msg"
+        4) "hello world"
+  2) 1) "1738562910436-0"
+    2) 1) "user"
+        2) "li"
+        3) "msg"
+        4) "logined"
+  ```
+
+- `XREVRANGE <key> <start> <end> [COUNT <count>]`: get stream in reverse order, if start is `+`, get the max id, if end is `-`, get the min id, if count is not set, get all stream, if count is set, get count stream, if count is 0, get all stream, if count is negative, get all stream in reverse order
+  ```bash
+  127.0.0.1:6379> XREVRANGE msgs + -
+  1) 1) "1738562910436-0"
+    2) 1) "user"
+        2) "li"
+        3) "msg"
+        4) "logined"
+  2) 1) "1738562890769-0"
+    2) 1) "user"
+        2) "li"
+        3) "msg"
+        4) "hello world"
+  ```
