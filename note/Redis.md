@@ -43,6 +43,8 @@
 - [Stream](#stream-1)
   - [special character:](#special-character)
   - [Basic Commands](#basic-commands-6)
+- [bitfield](#bitfield-1)
+  - [Basic Comands](#basic-comands)
 
 # redis config
 
@@ -1224,15 +1226,110 @@ OK
               3) "msg"
               4) "test2"
   ```
-- `XPENDING key group [[IDLE min-idle-time] start end count [consumer]]`: 
+- `XPENDING key group [[IDLE <min-idle-time>] <start> <end> <count> [<consumer>]]`: 
   ```bash
   127.0.0.1:6379> XPENDING msgs msgs_g
   1) (integer) 3  # number of msg read by group
   2) "1738563920892-0"  # min msg id read by group
   3) "1738563929610-0"  # max msg id read by group
   4) 1) 1) "cs1"
-        2) "2"  # number of msg read by cs1
-    2) 1) "cs2"
-        2) "1"  # number of msg read by cs2
+        1) "2"  # number of msg read by cs1
+    1) 1) "cs2"
+        1) "1"  # number of msg read by cs2
+  127.0.0.1:6379> XPENDING msgs msgs_g - + 10
+  1) 1) "1738563920892-0"
+    2) "cs1"
+    3) (integer) 336472
+    4) (integer) 1
+  2) 1) "1738563927438-0"
+    2) "cs1"
+    3) (integer) 332363
+    4) (integer) 1
+  3) 1) "1738563929610-0"
+    2) "cs2"
+    3) (integer) 328063
+    4) (integer) 1
+  127.0.0.1:6379> XPENDING msgs msgs_g - + 10 cs1
+  1) 1) "1738563920892-0"
+    2) "cs1"
+    3) (integer) 343157
+    4) (integer) 1
+  2) 1) "1738563927438-0"
+    2) "cs1"
+    3) (integer) 339048
+    4) (integer) 1
   ```
 
+- `XACK key group id [id ...]`: ack msg
+  ```bash
+  127.0.0.1:6379> XPENDING msgs msgs_g - + 10
+  1) 1) "1738563920892-0"
+    2) "cs1"
+    3) (integer) 336472
+    4) (integer) 1
+  2) 1) "1738563927438-0"
+    2) "cs1"
+    3) (integer) 332363
+    4) (integer) 1
+  3) 1) "1738563929610-0"
+    2) "cs2"
+    3) (integer) 328063
+    4) (integer) 1
+  127.0.0.1:6379> XPENDING msgs msgs_g - + 10 cs1
+  1) 1) "1738563920892-0"
+    2) "cs1"
+    3) (integer) 343157
+    4) (integer) 1
+  2) 1) "1738563927438-0"
+    2) "cs1"
+    3) (integer) 339048
+    4) (integer) 1
+  127.0.0.1:6379> XACK msgs msgs_g 1738563920892-0
+  (integer) 1
+  127.0.0.1:6379> XPENDING msgs msgs_g
+  1) (integer) 2
+  2) "1738563927438-0"
+  3) "1738563929610-0"
+  4) 1) 1) "cs1"
+        2) "1"
+    2) 1) "cs2"
+        2) "1"
+  127.0.0.1:6379> XPENDING msgs msgs_g - + 10 cs1
+  1) 1) "1738563927438-0"
+    2) "cs1"
+    3) (integer) 496652
+    4) (integer) 1
+  127.0.0.1:6379> XPENDING msgs msgs_g - + 10
+  1) 1) "1738563927438-0"
+    2) "cs1"
+    3) (integer) 505170
+    4) (integer) 1
+  2) 1) "1738563929610-0"
+    2) "cs2"
+    3) (integer) 500870
+    4) (integer) 1
+  ```
+
+# bitfield
+- bitfield could modify a string in bit level
+
+## Basic Comands
+
+- `BITFIELD <key> [[GET type offest] ...]|[OVERFLOW WRAP|SAT`: get one bit from key value at offset position
+- `BITFIELD <key> SET type offset value [GET type offset] ...`: set one bit to key value at offset position
+  ```bash
+  127.0.0.1:6379> SET user li
+  OK
+  127.0.0.1:6379> BITFIELD user GET i8 0
+  1) (integer) 108
+  127.0.0.1:6379> BITFIELD user SET i8 0 104
+  1) (integer) 108
+  127.0.0.1:6379> GET user
+  "hi"
+  ```
+- `BITFIELD <key> INCRBY type offset increment [GET type offset] ...`: increment one bit to key value at offset position
+- `BITFIELD <key> OVERFLOW WRAP|SAT|FAIL`: set overflow mode
+- `BITFIELD <key> TEST OVERFLOW WRAP|SAT|FAIL (SET type offset value)|(GET type offset)`: handle value first to avoid overflow before set/get
+  - if VOERFLOW set to `FAIL`, it will return error if overflow
+  - if VOERFLOW set to `WRAP`, it will wrap around if overflow
+  - if VOERFLOW set to `SAT`, it will set to max/min if up/down overflow
