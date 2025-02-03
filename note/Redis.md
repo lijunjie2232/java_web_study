@@ -32,7 +32,11 @@
   - [Basic Commands](#basic-commands-2)
   - [Use Case:](#use-case-2)
 - [Bitmap](#bitmap-1)
+  - [Basic Commands](#basic-commands-3)
   - [Use Case:](#use-case-3)
+- [HyperLogLog](#hyperloglog-1)
+  - [Basic Commands](#basic-commands-4)
+  - [Use Case:](#use-case-4)
 
 # redis config
 
@@ -813,6 +817,7 @@ OK
 # Bitmap
 - bitmap : 010101000011101...
 
+## Basic Commands
 - `SETBIT <key> <offset> <value>`: set bit at offset to value, <font color="orange">offset >= 0 </font>
 - `GETBIT <key> <offset>`: get bit at offset
   ```bash
@@ -859,3 +864,33 @@ OK
    1. `HSET uid:map 0 <user0:uid>`;`HSET uid:map 1 <user1:uid>`;...
    2. `SETBIT sign:20250101 0 1` means user0 sign at 20250101 and `SETBIT sign:20250101 0 0` means user0 not sign at 20250101
    3. `BITOP AND sign_two_days sign:20250101 sign:20250102`: get both-two-days-sign user bitmap
+
+# HyperLogLog
+- HyperLogLog is a probabilistic data structure for estimating the cardinality of a set
+- HyperLogLog is for statictics, <font color="orange">could not get content of  item</font>
+- HyperLogLog is not precise, could contains standard error of 0.81%
+
+## Basic Commands
+- `PFADD <key> <element> [<element> ...]`: add element to HyperLogLog, if element exists, do nothing
+- `PFCOUNT <key> [<key2> ...]`: get HyperLogLog size
+- `PFMERGE <destkey> <sourcekey> [<sourcekey2> ...]`: merge HyperLogLog
+  ```bash
+  127.0.0.1:6379> PFADD ids 0 1 2 36 6 68 4 3 5 47 8 9 6 1 4 6 21 0
+  (integer) 1
+  127.0.0.1:6379> PFCOUNT ids
+  (integer) 13
+  127.0.0.1:6379> PFADD ids2 2 1 3 5 6 4 78 9 2 0 5 6 1 4 6 
+  (integer) 1
+  127.0.0.1:6379> PFCOUNT ids2
+  (integer) 9
+  127.0.0.1:6379> PFMERGE ids3 ids ids2
+  OK
+  127.0.0.1:6379> PFCOUNT ids3
+  (integer) 14
+  ```
+
+## Use Case:
+1. unique visitor count
+
+
+
