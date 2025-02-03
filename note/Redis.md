@@ -1163,3 +1163,76 @@ OK
               3) "msg"
               4) "test1"
   ```
+- `XGROUP CREATE <key> <groupname> <id> [MKSTREAM]`: create group
+- `XREADGROUP [COUNT <count>] [BLOCK <milliseconds>] [NOACK] GROUP <groupname> <consumername> STREAMS <key> <id> [<id> ...]`: read stream by group
+  - <font color="orange">the same msg could not be read twice by customers in the same group</font>
+  ```bash
+  127.0.0.1:6379> XRANGE msgs - +
+  1) 1) "1738563920892-0"
+    2) 1) "user"
+        2) "li"
+        3) "msg"
+        4) "test"
+  2) 1) "1738563927438-0"
+    2) 1) "user"
+        2) "li"
+        3) "msg"
+        4) "test1"
+  3) 1) "1738563929610-0"
+    2) 1) "user"
+        2) "li"
+        3) "msg"
+        4) "test2"
+  4) 1) "1738564446910-0"
+    2) 1) "user"
+        2) "li"
+        3) "msg"
+        4) "hello"
+  5) 1) "1738564450674-0"
+    2) 1) "user"
+        2) "li"
+        3) "msg"
+        4) "world"
+  6) 1) "1738565413243-0"
+    2) 1) "user"
+        2) "li"
+        3) "msg"
+        4) "hello"
+  127.0.0.1:6379> XGROUP CREATE msgs msgs_g 0
+  OK
+  127.0.0.1:6379> XGROUP CREATE msgs msgs_g1 $
+  OK
+  127.0.0.1:6379> XREADGROUP COUNT 1 GROUP msgs_g cs1 STREAMS msgs >
+  1) 1) "msgs"
+    2) 1) 1) "1738563920892-0"
+          2) 1) "user"
+              2) "li"
+              3) "msg"
+              4) "test"
+  127.0.0.1:6379> XREADGROUP COUNT 1 GROUP msgs_g cs1 STREAMS msgs >
+  1) 1) "msgs"
+    2) 1) 1) "1738563927438-0"
+          2) 1) "user"
+              2) "li"
+              3) "msg"
+              4) "test1"
+  127.0.0.1:6379> XREADGROUP COUNT 1 GROUP msgs_g cs2 STREAMS msgs >
+  1) 1) "msgs"
+    2) 1) 1) "1738563929610-0"
+          2) 1) "user"
+              2) "li"
+              3) "msg"
+              4) "test2"
+  ```
+- `XPENDING key group [[IDLE min-idle-time] start end count [consumer]]`: 
+  ```bash
+  127.0.0.1:6379> XPENDING msgs msgs_g
+  1) (integer) 3  # number of msg read by group
+  2) "1738563920892-0"  # min msg id read by group
+  3) "1738563929610-0"  # max msg id read by group
+  4) 1) 1) "cs1"
+        2) "2"  # number of msg read by cs1
+    2) 1) "cs2"
+        2) "1"  # number of msg read by cs2
+  ```
+
