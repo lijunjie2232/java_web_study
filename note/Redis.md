@@ -595,24 +595,27 @@ OK
   ```
 
 ## Set Operations
-```bash
-127.0.0.1:6379> SADD ms 1 2 8
-(integer) 3
-127.0.0.1:6379> SMEMBERS ms
-1) "1"
-2) "2"
-3) "3"
-4) "4"
-5) "8"
-127.0.0.1:6379> SADD ns 3 8 9 10
-(integer) 4
-127.0.0.1:6379> SMEMBERS ns
-1) "2"
-2) "3"
-3) "8"
-4) "9"
-5) "10"
-```
+- `SADD <key> <member> [<member2> ...]`: add member to set
+- `SMEMBER <key> <member>`: check member exists or not
+- `SISMEMBER <key> <member>`: check member exists or not, return 1 if exists, 0 if not exists
+  ```bash
+  127.0.0.1:6379> SADD ms 1 2 8
+  (integer) 3
+  127.0.0.1:6379> SMEMBERS ms
+  1) "1"
+  2) "2"
+  3) "3"
+  4) "4"
+  5) "8"
+  127.0.0.1:6379> SADD ns 3 8 9 10
+  (integer) 4
+  127.0.0.1:6379> SMEMBERS ns
+  1) "2"
+  2) "3"
+  3) "8"
+  4) "9"
+  5) "10"
+  ```
 - ms: `[1,2,3,4,8]`
 - ns: `[2,3,8,9,10]`
 
@@ -793,29 +796,29 @@ OK
   ```
 
 - `ZRANK/ZREVRANK <key> <member> [WITHSCORE]`: get rank of member in zset, if member not exists, return nil
-```bash
-127.0.0.1:6379> ZRANGE mvp 0 -1 withscores
- 1) "d"
- 2) "6"
- 3) "e"
- 4) "8"
- 5) "b"
- 6) "9"
- 7) "c"
- 8) "12"
- 9) "a"
-10) "15"
-127.0.0.1:6379> ZRANK mvp v
-(nil)
-127.0.0.1:6379> ZRANK mvp a
-(integer) 4
-127.0.0.1:6379> ZRANK mvp a withscore
-1) (integer) 4
-2) "15"
-127.0.0.1:6379> ZREVRANK mvp a withscore
-1) (integer) 0
-2) "15
-```
+  ```bash
+  127.0.0.1:6379> ZRANGE mvp 0 -1 withscores
+  1) "d"
+  2) "6"
+  3) "e"
+  4) "8"
+  5) "b"
+  6) "9"
+  7) "c"
+  8) "12"
+  9) "a"
+  10) "15"
+  127.0.0.1:6379> ZRANK mvp v
+  (nil)
+  127.0.0.1:6379> ZRANK mvp a
+  (integer) 4
+  127.0.0.1:6379> ZRANK mvp a withscore
+  1) (integer) 4
+  2) "15"
+  127.0.0.1:6379> ZREVRANK mvp a withscore
+  1) (integer) 0
+  2) "15
+  ```
 
 ## Use Case:
 1. `ZRANGE` for best sale or hot lives
@@ -852,7 +855,7 @@ OK
   (integer) 2
   ```
 
-`BITCOUNT <key>`: count 1 in bitmap
+- `BITCOUNT <key>`: count 1 in bitmap
   ```bash
   127.0.0.1:6379> BITCOUNT sign
   (integer) 1
@@ -916,43 +919,43 @@ OK
 - `GEORADIUS <key> <longitude> <latitude> <radius> M|KM|FT|MI [WITHCOORD] [WITHDIST] [WITHHASH] [COUNT <count>] [ASC|DESC](default not sorted, by add order) [STORE <dest>] [STOREDIST <destination>]`: get point in radius, if WITHCOORD, return point coordinate, if WITHDIST, return point distance, if WITHHASH, return point hash (mainly for debug), if STORE, store result to destination.
 - `GEMRADIUSBYMEMBER <key> <member> <radius> M|KM|FT|MI [WITHCOORD] [WITHDIST] [WITHHASH] [COUNT <count>] [ASC|DESC](default not sorted, by add order) [STORE <dest>] [STOREDIST <destination>]`: get point in radius by member, if WITHCOORD, return point coordinate, if WITHDIST, returnpoint distance, if WITHHASH, return point hash (mainly for debug
 
-```bash
-127.0.0.1:6379> GEOADD pos 139.66032 35.782643 point1 139.707751 35.751717 point2 139.862691 35.703664 point3
-(integer) 3
-127.0.0.1:6379> GEOPOS pos point1
-1) 1) "139.66031938791275024"
-   1) "35.78264213070043098"
-127.0.0.1:6379> GEOHASH pos point1
-1) "xn77d418cr0"
-127.0.0.1:6379> GEODIST pos point1 point2 M
-"5491.5048"
-127.0.0.1:6379> GEODIST pos point1 point2
-"5491.5048"
-127.0.0.1:6379> GEORADIUS pos 139.750079 35.693141 10000 M WITHDIST
-1) 1) "point2"
-   1) "7553.4831"
-127.0.0.1:6379> GEORADIUS pos 139.750079 35.693141 20000 M WITHDIST
-1) 1) "point3"
-   1) "10239.0834"
-2) 1) "point2"
-   1) "7553.4831"
-3) 1) "point1"
-   1) "12836.2504"
-127.0.0.1:6379> GEORADIUS pos 139.750079 35.693141 20000 M WITHDIST ASC
-1) 1) "point2"
-   1) "7553.4831"
-2) 1) "point3"
-   2) "10239.0834"
-3) 1) "point1"
-   1) "12836.2504"
-127.0.0.1:6379> GEORADIUSBYMEMBER pos point2 200 KM WITHDIST ASC
-1) 1) "point2"
-   1) "0.0000"
-2) 1) "point1"
-   1) "5.4915"
-3) 1) "point3"
-   1) "14.9763"
-```
+  ```bash
+  127.0.0.1:6379> GEOADD pos 139.66032 35.782643 point1 139.707751 35.751717 point2 139.862691 35.703664 point3
+  (integer) 3
+  127.0.0.1:6379> GEOPOS pos point1
+  1) 1) "139.66031938791275024"
+    1) "35.78264213070043098"
+  127.0.0.1:6379> GEOHASH pos point1
+  1) "xn77d418cr0"
+  127.0.0.1:6379> GEODIST pos point1 point2 M
+  "5491.5048"
+  127.0.0.1:6379> GEODIST pos point1 point2
+  "5491.5048"
+  127.0.0.1:6379> GEORADIUS pos 139.750079 35.693141 10000 M WITHDIST
+  1) 1) "point2"
+    1) "7553.4831"
+  127.0.0.1:6379> GEORADIUS pos 139.750079 35.693141 20000 M WITHDIST
+  1) 1) "point3"
+    1) "10239.0834"
+  2) 1) "point2"
+    1) "7553.4831"
+  3) 1) "point1"
+    1) "12836.2504"
+  127.0.0.1:6379> GEORADIUS pos 139.750079 35.693141 20000 M WITHDIST ASC
+  1) 1) "point2"
+    1) "7553.4831"
+  2) 1) "point3"
+    2) "10239.0834"
+  3) 1) "point1"
+    1) "12836.2504"
+  127.0.0.1:6379> GEORADIUSBYMEMBER pos point2 200 KM WITHDIST ASC
+  1) 1) "point2"
+    1) "0.0000"
+  2) 1) "point1"
+    1) "5.4915"
+  3) 1) "point3"
+    1) "14.9763"
+  ```
 
 ## Use Case:
 1. find nearby people of destination
@@ -965,6 +968,7 @@ OK
 - `*`: auto generate id
 - `$`: only send the newest message, get the biggest msg id
 - `- `/`+`: the min or max id
+  
 ## Basic Commands
 - `XADD <key> <id> <field> <value> [<field> <value> ...]`: add stream, if id is `*`, auto generate id, the generated msg id is `{timestamp(ms)}-{msg_count_in_the_ms}`
   ```bash
@@ -973,7 +977,43 @@ OK
   127.0.0.1:6379> XADD msgs * user li msg "logined"
   "1738562910436-0"
   ```
-- `XRANGE <key> <start> <end> [COUNT <count>]`: get stream, if start is `-`, get the min id, if end is `+`, get the max id, if count is not set, get all stream, if count is set, get count stream, if count is 0, get all stream, if count is negative, get all stream in reverse order
+- `XRANGE <key> <start> <end> [COUNT <count>]`: get stream
+  ```bash
+  127.0.0.1:6379> XRANGE msgs - +
+  1) 1) "1738562890769-0"
+    1) 1) "user"
+        1) "li"
+        2) "msg"
+        3) "hello world"
+  2) 1) "1738562910436-0"
+    1) 1) "user"
+        1) "li"
+        2) "msg"
+        3) "logined"
+  ```
+
+- `XREVRANGE <key> <start> <end> [COUNT <count>]`: get stream in reverse order
+  ```bash
+  127.0.0.1:6379> XREVRANGE msgs + -
+  1) 1) "1738562910436-0"
+    1) 1) "user"
+        1) "li"
+        2) "msg"
+        3) "logined"
+  2) 1) "1738562890769-0"
+    1) 1) "user"
+        1) "li"
+        2) "msg"
+        3) "hello world"
+  ```
+
+- `XLEN <key>`: get stream length
+  ```bash
+  127.0.0.1:6379> XLEN msgs
+  (integer) 2
+  ```
+
+- `XDEL <key> <id> [<id> ...]`: delete stream by id
   ```bash
   127.0.0.1:6379> XRANGE msgs - +
   1) 1) "1738562890769-0"
@@ -986,19 +1026,140 @@ OK
         2) "li"
         3) "msg"
         4) "logined"
-  ```
-
-- `XREVRANGE <key> <start> <end> [COUNT <count>]`: get stream in reverse order, if start is `+`, get the max id, if end is `-`, get the min id, if count is not set, get all stream, if count is set, get count stream, if count is 0, get all stream, if count is negative, get all stream in reverse order
-  ```bash
-  127.0.0.1:6379> XREVRANGE msgs + -
-  1) 1) "1738562910436-0"
+  3) 1) "1738563353298-0"
     2) 1) "user"
         2) "li"
         3) "msg"
-        4) "logined"
-  2) 1) "1738562890769-0"
+        4) "test"
+  127.0.0.1:6379> XDEL msgs 1738563353298-0
+  (integer) 1
+  127.0.0.1:6379> XRANGE msgs - +
+  1) 1) "1738562890769-0"
     2) 1) "user"
         2) "li"
         3) "msg"
         4) "hello world"
+  2) 1) "1738562910436-0"
+    2) 1) "user"
+        2) "li"
+        3) "msg"
+        4) "logined"
+  ```
+- `XTRIM <key> MAXLEN|MINID [=|~] <threshold> [LIMIT <count>]`: trim stream
+  - <font color="orange">all the items in result will be append into stream and the origin items will lost</font>
+  - `MAXLEN` will reserve the newest `threshold` msg
+    ```bash
+    127.0.0.1:6379> XRANGE msgs - +
+    1) 1) "1738562890769-0"
+       1) 1) "user"
+          1) "li"
+          2) "msg"
+          3) "hello world"
+    2) 1) "1738562910436-0"
+       1) 1) "user"
+          1) "li"
+          2) "msg"
+          3) "logined"
+    3) 1) "1738563920892-0"
+       1) 1) "user"
+          1) "li"
+          2) "msg"
+          3) "test"
+    4) 1) "1738563927438-0"
+       1) 1) "user"
+          1) "li"
+          2) "msg"
+          3) "test1"
+    5) 1) "1738563929610-0"
+       1) 1) "user"
+          1) "li"
+          2) "msg"
+          3) "test2"
+    127.0.0.1:6379> XTRIM msgs MAXLEN 4
+    (integer) 1
+    127.0.0.1:6379> XRANGE msgs - +
+    6) 1) "1738562910436-0"
+       1) 1) "user"
+          1) "li"
+          2) "msg"
+          3) "logined"
+    7) 1) "1738563920892-0"
+       1) 1) "user"
+          1) "li"
+          2) "msg"
+          3) "test"
+    8) 1) "1738563927438-0"
+       1) 1) "user"
+          1) "li"
+          2) "msg"
+          3) "test1"
+    9) 1) "1738563929610-0"
+       1) 1) "user"
+          1) "li"
+          2) "msg"
+          3) "test2"
+    ```
+  - `MINID` will reserve the items new than `threshold`, `threshold` is an id
+    ```bash
+    127.0.0.1:6379> XTRIM msgs MINID 1738563920892-0
+    (integer) 1
+    127.0.0.1:6379> XRANGE msgs - +
+    1) 1) "1738563920892-0"
+      1) 1) "user"
+          1) "li"
+          2) "msg"
+          3) "test"
+    2) 1) "1738563927438-0"
+      1) 1) "user"
+          1) "li"
+          2) "msg"
+          3) "test1"
+    3) 1) "1738563929610-0"
+      1) 1) "user"
+          1) "li"
+          2) "msg"
+          3) "test2"
+    ```
+- `XREAD [COUNT <count>] [BLOCK <milliseconds>] STREAMS <key> <key ...> <id> [<id> ...]`: read stream
+  - `BLOCK <milliseconds>`: wait for new msg, always wait if `milliseconds` is 0 (could not be negative)
+  ```bash
+  127.0.0.1:6379> XREAD STREAMS msgs 0-0
+  1) 1) "msgs"
+    2) 1) 1) "1738563920892-0"
+          2) 1) "user"
+              2) "li"
+              3) "msg"
+              4) "test"
+        2) 1) "1738563927438-0"
+          2) 1) "user"
+              2) "li"
+              3) "msg"
+              4) "test1"
+        3) 1) "1738563929610-0"
+          2) 1) "user"
+              2) "li"
+              3) "msg"
+              4) "test2"
+        4) 1) "1738564446910-0"
+          2) 1) "user"
+              2) "li"
+              3) "msg"
+              4) "hello"
+        5) 1) "1738564450674-0"
+          2) 1) "user"
+              2) "li"
+              3) "msg"
+              4) "world"
+  127.0.0.1:6379> XREAD COUNT 2 STREAMS msgs 0-0
+  1) 1) "msgs"
+    2) 1) 1) "1738563920892-0"
+          2) 1) "user"
+              2) "li"
+              3) "msg"
+              4) "test"
+        2) 1) "1738563927438-0"
+          2) 1) "user"
+              2) "li"
+              3) "msg"
+              4) "test1"
   ```
