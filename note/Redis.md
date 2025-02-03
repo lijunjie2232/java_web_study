@@ -37,6 +37,9 @@
 - [HyperLogLog](#hyperloglog-1)
   - [Basic Commands](#basic-commands-4)
   - [Use Case:](#use-case-4)
+- [Geo](#geo-1)
+  - [Basic Commands](#basic-commands-5)
+  - [Use Case:](#use-case-5)
 
 # redis config
 
@@ -894,3 +897,59 @@ OK
 
 
 
+# Geo
+- Geo is a data structure for storing and querying points in a 2D plane
+
+## Basic Commands
+- example position:
+  - 139.66032 35.782643 point1
+  - 139.707751 35.751717 point2
+  - 139.862691 35.703664 point3
+  - 139.750079 35.693141
+- `GEOADD <key> <longitude> <latitude> <member> [<longitude> <latitude> <member> ...]`: add point to Geo, if member exists, update point
+- `GEOPOS <key> <member> [<member> ...]`: get point of member
+- `GEOHASH <key> <member1> <member2>`: get hash of member
+- `GEODIST <key> <member1> <member2> [M(default)|KM|FT|MI]`: get distance between member1 and member2, unit: m, km, mi, ft
+- `GEORADIUS <key> <longitude> <latitude> <radius> M|KM|FT|MI [WITHCOORD] [WITHDIST] [WITHHASH] [COUNT <count>] [ASC|DESC](default not sorted, by add order) [STORE <dest>] [STOREDIST <destination>]`: get point in radius, if WITHCOORD, return point coordinate, if WITHDIST, return point distance, if WITHHASH, return point hash (mainly for debug), if STORE, store result to destination.
+- `GEMRADIUSBYMEMBER <key> <member> <radius> M|KM|FT|MI [WITHCOORD] [WITHDIST] [WITHHASH] [COUNT <count>] [ASC|DESC](default not sorted, by add order) [STORE <dest>] [STOREDIST <destination>]`: get point in radius by member, if WITHCOORD, return point coordinate, if WITHDIST, returnpoint distance, if WITHHASH, return point hash (mainly for debug
+
+```bash
+127.0.0.1:6379> GEOADD pos 139.66032 35.782643 point1 139.707751 35.751717 point2 139.862691 35.703664 point3
+(integer) 3
+127.0.0.1:6379> GEOPOS pos point1
+1) 1) "139.66031938791275024"
+   1) "35.78264213070043098"
+127.0.0.1:6379> GEOHASH pos point1
+1) "xn77d418cr0"
+127.0.0.1:6379> GEODIST pos point1 point2 M
+"5491.5048"
+127.0.0.1:6379> GEODIST pos point1 point2
+"5491.5048"
+127.0.0.1:6379> GEORADIUS pos 139.750079 35.693141 10000 M WITHDIST
+1) 1) "point2"
+   1) "7553.4831"
+127.0.0.1:6379> GEORADIUS pos 139.750079 35.693141 20000 M WITHDIST
+1) 1) "point3"
+   1) "10239.0834"
+2) 1) "point2"
+   1) "7553.4831"
+3) 1) "point1"
+   1) "12836.2504"
+127.0.0.1:6379> GEORADIUS pos 139.750079 35.693141 20000 M WITHDIST ASC
+1) 1) "point2"
+   1) "7553.4831"
+2) 1) "point3"
+   2) "10239.0834"
+3) 1) "point1"
+   1) "12836.2504"
+127.0.0.1:6379> GEORADIUSBYMEMBER pos point2 200 KM WITHDIST ASC
+1) 1) "point2"
+   1) "0.0000"
+2) 1) "point1"
+   1) "5.4915"
+3) 1) "point3"
+   1) "14.9763"
+```
+
+## Use Case:
+1. find nearby people of destination
