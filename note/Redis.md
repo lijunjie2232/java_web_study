@@ -31,6 +31,8 @@
 - [Zset](#zset-1)
   - [Basic Commands](#basic-commands-2)
   - [Use Case:](#use-case-2)
+- [Bitmap](#bitmap-1)
+  - [Use Case:](#use-case-3)
 
 # redis config
 
@@ -808,3 +810,52 @@ OK
 ## Use Case:
 1. `ZRANGE` for best sale or hot lives
 
+# Bitmap
+- bitmap : 010101000011101...
+
+- `SETBIT <key> <offset> <value>`: set bit at offset to value, <font color="orange">offset >= 0 </font>
+- `GETBIT <key> <offset>`: get bit at offset
+  ```bash
+  127.0.0.1:6379> SETBIT sign 0 1
+  (integer) 0
+  127.0.0.1:6379> SETBIT sign 1 1
+  (integer) 0
+  127.0.0.1:6379> SETBIT sign 0 0
+  (integer) 1
+  127.0.0.1:6379> GETBIT sign 1
+  (integer) 1
+  127.0.0.1:6379> GETBIT sign 0
+  (integer) 0
+  ```
+- `STRLEN <key>`: get bitmap length, <font color="orange">length = ceil(bit_len / 8)</font>
+  ```bash
+  127.0.0.1:6379> STRLEN sign
+  (integer) 1
+  127.0.0.1:6379> GETBIT sign 0
+  (integer) 0
+  127.0.0.1:6379> GETBIT sign 1
+  (integer) 1
+  127.0.0.1:6379> SETBIT sign 11 0
+  (integer) 0
+  127.0.0.1:6379> STRLEN sign
+  (integer) 2
+  ```
+
+`BITCOUNT <key>`: count 1 in bitmap
+  ```bash
+  127.0.0.1:6379> BITCOUNT sign
+  (integer) 1
+  127.0.0.1:6379> SETBIT sign 3 1
+  (integer) 0
+  127.0.0.1:6379> SETBIT sign 6 1
+  (integer) 0
+  127.0.0.1:6379> BITCOUNT sign
+  (integer) 3
+  ```
+- `BITOP AND|OR|XOR|NOT <destkey> <key> [key2] [key3] ...`
+
+## Use Case:
+1. continue sign days:
+   1. `HSET uid:map 0 <user0:uid>`;`HSET uid:map 1 <user1:uid>`;...
+   2. `SETBIT sign:20250101 0 1` means user0 sign at 20250101 and `SETBIT sign:20250101 0 0` means user0 not sign at 20250101
+   3. `BITOP AND sign_two_days sign:20250101 sign:20250102`: get both-two-days-sign user bitmap
