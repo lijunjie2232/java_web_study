@@ -57,6 +57,7 @@
   - [other config of rdb](#other-config-of-rdb)
 - [AOF (Append Only File)](#aof-append-only-file)
   - [config config](#config-config)
+  - [repair aof file](#repair-aof-file)
 
 # redis config
 
@@ -1427,8 +1428,10 @@ OK
     - `dir`: the same as rdb dir
     - `appenddirname xxx`: aof dir under `dir`
     - multipart aof
-      - `appendonly.aof.1.base.rdb`: base aof file name
-      - `appendonly.aof.1.incr.aof`: increment file name 1
-      - `appendonly.aof.12.incr.aof`: increment file name 2
-      - `appendonly.aof.manifest`: manifest file
+      - file `appendonly.aof.1.base.rdb`: base aof file name of db 1
+      - file `appendonly.aof.1.incr.aof`: increment file name of db 1
+      - file `appendonly.aof.12.incr.aof`: increment file name of db 2
+      - file `appendonly.aof.manifest`: manifest file
   
+## repair aof file
+- `redis-check-aof --fix /path/to/aof/file`: check aof file and repair it, only repain `incr` file
