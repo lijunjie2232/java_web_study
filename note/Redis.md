@@ -61,6 +61,7 @@
   - [Advantage](#advantage-1)
   - [Disadvantage](#disadvantage-1)
   - [aof rewrite](#aof-rewrite)
+  - [other config of aof](#other-config-of-aof)
 
 # redis config
 
@@ -1463,4 +1464,13 @@ OK
   - `auto-aof-rewrite-percentage 100`: percentage of `incr` aof file size compared with `incr` after last rewrite, default is 100
   - `auto-aof-rewrite-min-size 64mb`: min size of `incr` aof file to rewrite, default is 64mb
   - rewrite will execute only on <font color="orange">both</font> `auto-aof-rewrite-percentage` and `auto-aof-rewrite-min-size` meet
+
+- manual rewrite:
+  - `BGREWRITEAOF` in redis-cli
+  - `redis-cli BGREWRITEAOF` in bash
+
+
+## other config of aof
+- `no-appendfsync-on-rewrite`: whether to disable fsync when rewrite aof, default is `no`
+
 
