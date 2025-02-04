@@ -69,7 +69,7 @@
 - [Transaction](#transaction)
   - [Basic Command](#basic-command-1)
   - [ERROR Handling](#error-handling)
-  - [WATCH](#watch)
+  - [WATCH and UNWATCH](#watch-and-unwatch)
 
 # redis config
 
@@ -1536,7 +1536,7 @@ Redis Transaction put command lines into a queue to execute, but:
 - 如果在 `MULTI` 和 `EXEC` 之间的某个命令执行错误，那么 `EXEC` 执行时会报告该错误，但其他（前后）命令仍会被执行。
 - 如果希望在遇到任何错误时停止整个事务，可以在代码逻辑中进行判断并调用 `DISCARD`。
 
-## WATCH
+## WATCH and UNWATCH
 <font color="orange">乐观锁策略：当前提交的版本必须大于当前记录的版本才可以执行提交的更新</font>
 
 - `WATCH <key> [key ...]`: 监视一个或多个键，在执行 EXEC 之前检查这些键是否被修改过。如果有任何一个被修改，则整个事务会失败。
@@ -1569,3 +1569,4 @@ Redis Transaction put command lines into a queue to execute, but:
   127.0.0.1:6379> EXEC
   (nil)
   ```
+- `UNWATCH`: use before `MULTI` after `WATCH` some keys to set all watched keys not being watched
