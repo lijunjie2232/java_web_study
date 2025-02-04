@@ -58,6 +58,9 @@
 - [AOF (Append Only File)](#aof-append-only-file)
   - [config config](#config-config)
   - [repair aof file](#repair-aof-file)
+  - [Advantage](#advantage-1)
+  - [Disadvantage](#disadvantage-1)
+  - [aof rewrite](#aof-rewrite)
 
 # redis config
 
@@ -1428,10 +1431,36 @@ OK
     - `dir`: the same as rdb dir
     - `appenddirname xxx`: aof dir under `dir`
     - multipart aof
-      - file `appendonly.aof.1.base.rdb`: base aof file name of db 1
-      - file `appendonly.aof.1.incr.aof`: increment file name of db 1
-      - file `appendonly.aof.12.incr.aof`: increment file name of db 2
+      - file `appendonly.aof.1.base.rdb`: base aof file name
+      - file `appendonly.aof.1.incr.aof`: increment file name
+      - file `appendonly.aof.2.incr.aof`: increment file name, "2" means rewited from "1"
       - file `appendonly.aof.manifest`: manifest file
   
 ## repair aof file
 - `redis-check-aof --fix /path/to/aof/file`: check aof file and repair it, only repain `incr` file
+
+## Advantage
+- AOF 文件记录的是每个写命令，因此可以精确地恢复到任意时间点的数据状态。
+- 对于需要频繁写入且要求高数据完整性的场景，AOF 提供了更好的保障。
+- AOF 的 everysec 模式可以在几乎不影响性能的情况下提供较高的数据安全性，适合用于生产环境中的高可用性需求。
+- AOF 文件是纯文本格式，包含的是 Redis 命令，因此便于人工检查和编辑。如果需要手动调整或修复数据，可以直接修改 AOF 文件。
+
+## Disadvantage
+- AOF 文件记录了所有的写操作，因此随着时间的推移，文件会变得非常大，占用较多的磁盘空间。尽管可以通过 BGREWRITEAOF 命令进行压缩优化，但仍然无法避免文件逐渐增大的趋势。
+- 相比 RDB 文件，AOF 文件的恢复速度较慢，因为它需要逐条重放写命令。对于大规模数据集，AOF 的恢复过程可能会消耗较多的时间和资源。
+- AOF 文件会随着写操作的增加而变得冗长，需要定期进行重写（BGREWRITEAOF）以保持文件大小可控。文件重写过程中会消耗额外的 CPU 和内存资源，尤其是在大数据量的情况下。
+- AOF 文件记录的是增量变化，不适合用于频繁的全量备份。
+- efficient:
+  - runing: AOF < RDB
+  - sync
+    - aof_sync_always < rdb
+    - aof_sync_everysec > rdb
+    - aof_sync_no = rdb
+
+
+## aof rewrite
+- config:
+  - `auto-aof-rewrite-percentage 100`: percentage of `incr` aof file size compared with `incr` after last rewrite, default is 100
+  - `auto-aof-rewrite-min-size 64mb`: min size of `incr` aof file to rewrite, default is 64mb
+  - rewrite will execute only on <font color="orange">both</font> `auto-aof-rewrite-percentage` and `auto-aof-rewrite-min-size` meet
+
