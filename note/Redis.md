@@ -56,7 +56,7 @@
   - [disable RDB](#disable-rdb)
   - [other config of rdb](#other-config-of-rdb)
 - [AOF (Append Only File)](#aof-append-only-file)
-  - [](#)
+  - [config config](#config-config)
 
 # redis config
 
@@ -1409,8 +1409,26 @@ OK
 
 
 # AOF (Append Only File)
-- AOF is a log file that records all the commands that have been executed on the Redis server.
-- AOF only allows <font color="orange">append</font> operation by config `appendonly yes`.
+- AOF is a log file that records all the write commands that have been executed on the Redis server.
+- AOF File allows <font color="orange">append</font> operation only.
 - name of AOF backup file is `appendonly.aof`
 
-## 
+## config config
+- `appendonly`: whether to enable AOF, default is `no`
+- `appendfsync`: when to flush AOF to disk, default is `everysec`
+  - `everysec`: flush AOF to disk every second
+  - `always`: flush AOF to disk every write command
+  - `no`: flushed by operation system
+- save path:
+  - redis6: the same as rdb dir(`dir /path/to/dir`in config)
+    - `dir`: the same as rdb dir
+    - `appendfilename xxx.aof`: name of aof file
+  - redis7: add `appenddirname` in config, the final path is `dir + /appenddirname + /xxx.aof`
+    - `dir`: the same as rdb dir
+    - `appenddirname xxx`: aof dir under `dir`
+    - multipart aof
+      - `appendonly.aof.1.base.rdb`: base aof file name
+      - `appendonly.aof.1.incr.aof`: increment file name 1
+      - `appendonly.aof.12.incr.aof`: increment file name 2
+      - `appendonly.aof.manifest`: manifest file
+  
