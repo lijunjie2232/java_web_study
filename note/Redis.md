@@ -62,6 +62,9 @@
   - [Disadvantage](#disadvantage-1)
   - [aof rewrite](#aof-rewrite)
   - [other config of aof](#other-config-of-aof)
+- [RDB and AOF](#rdb-and-aof)
+  - [config](#config-1)
+  - [work](#work)
 
 # redis config
 
@@ -1473,4 +1476,15 @@ OK
 ## other config of aof
 - `no-appendfsync-on-rewrite`: whether to disable fsync when rewrite aof, default is `no`
 
+
+# RDB and AOF
+- aof file has higher priority than rdb file on data recovery
+
+## config
+- `aof-use-rdb-preamble yes`: whether to enable both aof and rdb at the same time
+
+## work
+- on data recovery, data will load from rdb file, then load the increment data from aof file
+- on aof rewrite, data will be dumped into rdb file, then aof incr file will be clear
+- on backup, data will write into aof file only
 
