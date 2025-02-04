@@ -65,6 +65,7 @@
 - [RDB and AOF](#rdb-and-aof)
   - [config](#config-1)
   - [work](#work)
+- [pure cache (disable durable on redis)](#pure-cache-disable-durable-on-redis)
 
 # redis config
 
@@ -1488,3 +1489,6 @@ OK
 - on aof rewrite, data will be dumped into rdb file, then aof incr file will be clear
 - on backup, data will write into aof file only
 
+# pure cache (disable durable on redis)
+- set both `appendonly no` and `save ""` will disable bot aof and rdb, redis will totally run in RAM
+- `BGSAVE` / `SAVE` / `BEREWRITE` will still work by manually execute
