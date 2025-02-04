@@ -54,6 +54,9 @@
   - [repair dunp file](#repair-dunp-file)
   - [times of backup](#times-of-backup)
   - [disable RDB](#disable-rdb)
+  - [other config of rdb](#other-config-of-rdb)
+- [AOF (Append Only File)](#aof-append-only-file)
+  - [](#)
 
 # redis config
 
@@ -1344,6 +1347,7 @@ OK
   - if VOERFLOW set to `SAT`, it will set to max/min if up/down overflow
 
 # RDB
+- name of rdb file is `dump.rdb`
 ## config
 - `save 300 10` in config means save rdb file every 300s if there are at least 10 keys changed
 
@@ -1397,3 +1401,16 @@ OK
 - `CONFIG SET save ""` to disable rdb backup in redis-cli
 - `redis-cli CONFIG SET save ""` to disable rdb backup in bash
 - set `save ""` in config file or annotate `save` lines in config file
+
+## other config of rdb
+- `rdbcompression`: whether to compress rdb file, default is `yes`
+- `stop-writes-on-bgsave-error`: whether to stop redis when bgsave error, default is `yes`
+- `rdbchecksum`: whether to crc64 check rdb file, default is `yes`
+
+
+# AOF (Append Only File)
+- AOF is a log file that records all the commands that have been executed on the Redis server.
+- AOF only allows <font color="orange">append</font> operation by config `appendonly yes`.
+- name of AOF backup file is `appendonly.aof`
+
+## 
