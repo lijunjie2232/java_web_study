@@ -45,6 +45,10 @@
   - [Basic Commands](#basic-commands-6)
 - [bitfield](#bitfield-1)
   - [Basic Comands](#basic-comands)
+- [RDB](#rdb)
+  - [config](#config)
+- [recovery from dumped backup](#recovery-from-dumped-backup)
+- [manual backup](#manual-backup)
 
 # redis config
 
@@ -1333,3 +1337,33 @@ OK
   - if VOERFLOW set to `FAIL`, it will return error if overflow
   - if VOERFLOW set to `WRAP`, it will wrap around if overflow
   - if VOERFLOW set to `SAT`, it will set to max/min if up/down overflow
+
+# RDB
+## config
+- `save 300 10` in config means save rdb file every 300s if there are at least 10 keys changed
+
+- default setting:
+  1. old version redis:
+     ```conf
+     save 900 1
+     save 300 10
+     save 60 10000
+     ```
+  2. redis 6.2+
+      ```conf
+      save 3600 1
+      save 300 100
+      save 60 10000
+      ```
+- specify `dir /path/to/dir` in config to specify rdb file save <font color="orange">dir</font>
+
+# recovery from dumped backup
+- move the target backup file before redis shutdown
+- shutdown redis and overwrite moved backup file to redis backup file (redis will automaticly backup in shutdown)
+- after start redis, data will automaticly restore from backup file
+
+# manual backup
+- `SAVE` and `BGSAVE` command: redis fork a child process to write rdb file
+  - `SAVE` will <font color="orange">block</font> main process which could not be able to access from backend
+  - <font color="orange">ONLY `BGSAVE` is allowed to use in prodction environment</font>
+- `LASTSAVE` command: get last rdb backup time
