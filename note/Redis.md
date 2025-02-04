@@ -53,6 +53,7 @@
   - [Disadvantage](#disadvantage)
   - [repair dunp file](#repair-dunp-file)
   - [times of backup](#times-of-backup)
+  - [disable RDB](#disable-rdb)
 
 # redis config
 
@@ -1388,6 +1389,11 @@ OK
 
 ## times of backup
 - amount of changed data reach the rdb save config
-- redis will automaticly backup when shutdown
+- redis will automaticly backup when `shutdown`
 - redis will backup when `SAVE` or `BGSAVE` command
 - redis will backup when `FLUSHDB` or `FLUSHALL` command
+
+## disable RDB
+- `CONFIG SET save ""` to disable rdb backup in redis-cli
+- `redis-cli CONFIG SET save ""` to disable rdb backup in bash
+- set `save ""` in config file or annotate `save` lines in config file
