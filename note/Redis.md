@@ -49,6 +49,8 @@
   - [config](#config)
 - [recovery from dumped backup](#recovery-from-dumped-backup)
 - [manual backup](#manual-backup)
+- [Advantage](#advantage)
+- [Disadvantage](#disadvantage)
 
 # redis config
 
@@ -1367,3 +1369,14 @@ OK
   - `SAVE` will <font color="orange">block</font> main process which could not be able to access from backend
   - <font color="orange">ONLY `BGSAVE` is allowed to use in prodction environment</font>
 - `LASTSAVE` command: get last rdb backup time
+
+# Advantage
+- RDB 的配置和使用简单，备份过程对 Redis 性能的影响较小。
+- RDB 文件是紧凑且高效的二进制文件，对于大规模数据集恢复速度快。
+- RDB 文件是一个完整的快照，适合用于灾难恢复或需要完整数据备份的场景。
+- RDB 文件是压缩后的二进制文件，相比 AOF 日志文件，它占用的空间更少。
+
+# Disadvantage
+- 如果 Redis 实例在两次快照之间崩溃，那么最后一次快照之后的数据将会丢失。
+- RDB 是全量备份，fork时内存全量复制，将导致占用内存翻倍，同时备份会影响IO性能。
+- 备份操作 fork 期间可能会增加系统开销，导致服务器请求延迟，尤其是在大数据量的情况下。
