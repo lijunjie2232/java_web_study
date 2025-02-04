@@ -66,6 +66,10 @@
   - [config](#config-1)
   - [work](#work)
 - [pure cache (disable durable on redis)](#pure-cache-disable-durable-on-redis)
+- [Transaction](#transaction)
+  - [Basic Command](#basic-command-1)
+  - [ERROR Handling](#error-handling)
+  - [WATCH](#watch)
 
 # redis config
 
@@ -1492,3 +1496,76 @@ OK
 # pure cache (disable durable on redis)
 - set both `appendonly no` and `save ""` will disable bot aof and rdb, redis will totally run in RAM
 - `BGSAVE` / `SAVE` / `BEREWRITE` will still work by manually execute
+
+
+# Transaction
+Redis 事务通过 `MULTI`, `EXEC`, `DISCARD` 和 `WATCH` 命令来实现。Redis 事务并不支持传统数据库中的 ACID 特性，而是提供了一种简单的命令队列执行机制。
+
+Redis Transaction put command lines into a queue to execute, but:
+1. <font color="orange">do not ensure atomic (all the command success of fail)</font>
+2. <font color="orange">redis does not support rollback</font>
+3. <font color="orange">command execute in redis is serial execution, so there's no need of isolation</font>
+4. <font color="orange">could ensure no other command execute while transaction executing</font>
+
+## Basic Command
+
+- **MULTI**：标记事务的开始，之后的所有命令都会被放入队列中，直到遇到 `EXEC`。
+  
+- **EXEC**：执行所有之前在 `MULTI` 中排队的命令，并返回结果列表。如果在 `MULTI` 和 `EXEC` 之间有错误发生，事务中的其他命令仍然会被执行，除非使用了 `DISCARD`。
+
+- **DISCARD**：取消事务，放弃执行所有在 `MULTI` 中排队的命令。
+
+- **WATCH**：用于乐观锁，监视一个或多个键，在执行 `EXEC` 之前检查这些键是否被修改过。如果有任何一个被修改，则整个事务会失败。
+
+  ```bash
+  127.0.0.1:6379> MULTI
+  OK
+  127.0.0.1:6379> SET key1 "Hello"
+  QUEUED
+  127.0.0.1:6379> SET key2 "World"
+  QUEUED
+  127.0.0.1:6379> EXEC
+  1) OK
+  2) OK
+  ```
+
+## ERROR Handling
+
+- 在 `EXEC` 之前调用 `DISCARD` 命令，所有 `MULTI` 之后的命令都会被取消。
+- 如果有命令有语法错误，那么在添加到队列时就会报错，同时该队列直接取消，之后 `EXEC` 会直接报错`EXECABORT`，所有命令均不执行。
+- 如果在 `MULTI` 和 `EXEC` 之间的某个命令执行错误，那么 `EXEC` 执行时会报告该错误，但其他（前后）命令仍会被执行。
+- 如果希望在遇到任何错误时停止整个事务，可以在代码逻辑中进行判断并调用 `DISCARD`。
+
+## WATCH
+<font color="orange">乐观锁策略：当前提交的版本必须大于当前记录的版本才可以执行提交的更新</font>
+
+- `WATCH <key> [key ...]`: 监视一个或多个键，在执行 EXEC 之前检查这些键是否被修改过。如果有任何一个被修改，则整个事务会失败。
+  ```bash
+  # 初始化库存
+  127.0.0.1:6379> SET inventory:product1 10
+  OK
+  # 开始事务前先 WATCH 库存键
+  127.0.0.1:6379> WATCH inventory:product1
+  OK
+  # 检查当前库存
+  127.0.0.1:6379> GET inventory:product1
+  "10"
+  # 开始事务
+  127.0.0.1:6379> MULTI
+  OK
+  # 扣减库存
+  127.0.0.1:6379> DECR inventory:product1
+  QUEUED
+  # 提交事务
+  127.0.0.1:6379> EXEC
+  1) (integer) 9
+  # 再次检查库存
+  127.0.0.1:6379> GET inventory:product1
+  "9"
+  ```
+- if `inventory:product1` be modified after WATCH:
+  ```bash
+  # 提交事务
+  127.0.0.1:6379> EXEC
+  (nil)
+  ```
