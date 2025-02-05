@@ -95,6 +95,18 @@
       - [从节点重启](#从节点重启)
     - [4. 读写操作的影响](#4-读写操作的影响)
     - [注意事项](#注意事项-1)
+- [Redis Sentinel](#redis-sentinel)
+  - [config](#config-2)
+  - [other config options](#other-config-options)
+  - [Start Sentinel](#start-sentinel)
+  - [Redis Sentinel 故障转移（Failover）理论](#redis-sentinel-故障转移failover理论)
+    - [1. **Sentinel 监控**](#1-sentinel-监控)
+    - [2. **选举领导者 Sentinel**](#2-选举领导者-sentinel)
+    - [3. **选择新的主节点**](#3-选择新的主节点)
+    - [4. **故障转移过程**](#4-故障转移过程)
+    - [5. **恢复旧主节点**](#5-恢复旧主节点)
+    - [6. **配置传播**](#6-配置传播)
+    - [注意事项](#注意事项-2)
 
 # redis config
 
@@ -1823,3 +1835,74 @@ Redis Replica（复制）是Redis中的一个高级功能，允许多个Redis实
 - **网络分区**：在网络不稳定的情况下，可能会出现网络分区问题，即主节点和从节点之间的连接中断。这时，从节点会尝试重新连接主节点。如果主节点已经不可达，从节点会等待直到能够重新连接。
 - **数据一致性**：为了保证数据的一致性，建议配置主节点的持久化策略（如 RDB 或 AOF），以便在发生故障时可以从最近的快照中恢复。
 - **性能考虑**：对于大规模部署，应该注意主节点的负载，因为所有的写操作都会被转发给从节点，这可能增加主节点的负担。此外，初次全量同步会对主节点造成一定的压力，尤其是在大容量数据集的情况下。
+
+# Redis Sentinel
+
+## config
+- config sentinel at `sentinel.conf` file
+- `bind`/`daemonize`/`protected-mode`/`port`/`logfile`/`pidfile`/`dir`/... is the same meaning as `redis.conf`
+- `sentinel monitor <master-name> <ip> <port> <quorum>`: monitor a master node
+- `sentinel auth-pass <master-name> <password>`: set password for master node
+
+- <font color="orange">**quorum**</font>:  the least threshold of sentinels agreement to decide a master node is unavailable
+
+- default port of a sentinel node is `26379`
+
+- <font color="orange">old master will be slave after reboot</font>, so `masterauth xxx`should also be configured in master node
+
+## other config options
+- `sentinel down-after-milliseconds <master-name> <milliseconds>`: set down time for master node
+- `sentinel parallel-syncs <master-name> <num-syncs>`: set parallel sync for master node, after a slave node up to master node, reast slave node will sync data from it
+- `sentinel failover-timeout <master-name> <milliseconds>`: set failover timeout for a slave node change to master node, if a slave node not change to master node in failover timeout, the failover operation will be considered as failed
+- `sentinel notice-script <master-name> <script>`: set script for event
+- `sentinel client-reconfig-script <master-name> <script>`: set script for a slave node to change to master node
+
+## Start Sentinel
+- `redis-sentinel sentinel.conf --sentinel` to start a sentinel
+
+- `redis.conf` of redis nodes will be modified by sentinel
+
+
+## Redis Sentinel 故障转移（Failover）理论
+
+Redis Sentinel 是一个高可用性解决方案，用于监控 Redis 主从集群并在主节点（master）发生故障时自动进行故障转移。以下是故障转移的详细理论：
+
+### 1. **Sentinel 监控**
+
+- **心跳检测**：每个 Sentinel 节点会定期向主节点、从节点和其他 Sentinel 发送心跳命令（`PING`），以检查它们的健康状态。
+- **主观下线（Subjectively Down, SDD）**：如果一个 Sentinel 在指定时间内没有收到主节点的响应，则认为该主节点处于主观下线状态。
+- **客观下线（Objectively Down, ODD）**：当达到配置的 `quorum` 数量的 Sentinel 同意主节点已下线时，主节点将被标记为客观下线。
+
+### 2. **选举领导者 Sentinel**
+
+- **领导者Sentinel选举**：<font color="orange"> 一旦主节点被标记为客观下线，Sentinel 节点之间会通过 Raft 算法选举出一个领导者 Sentinel 来执行故障转移操作。</font>
+  
+### 3. **选择新的主节点**
+
+- **选择标准**：
+  1. **优先级**：根据 `slave-priority` 配置项选择优先级最高的从节点。
+  2. **复制偏移量**：选择与原主节点同步最接近的从节点（即具有最大复制偏移量的从节点）。
+  3. **延迟 or `run id`**：选择延迟/`run_id`最小的从节点。
+
+### 4. **故障转移过程**
+
+- **提升新主节点**：领导者 Sentinel 将选定的从节点提升为新的主节点。
+- **断开旧主节点**：领导者 Sentinel 将旧主节点设置为从节点，并通知其他 Sentinel 和从节点。
+- **重新配置从节点**：其他从节点开始从新的主节点同步数据。
+- **客户端重定向**：Sentinel 会更新客户端的配置，使其连接到新的主节点。
+
+### 5. **恢复旧主节点**
+
+- **重新加入集群**：当旧主节点恢复后，它会自动成为新主节点的从节点。
+- **数据同步**：旧主节点会从新主节点同步最新的数据，确保数据一致性。
+
+### 6. **配置传播**
+
+- **自动更新配置**：Sentinel 会自动更新所有 Redis 节点的配置文件（如 `redis.conf`），以反映新的主从关系。
+- **通知脚本**：可以通过配置 `sentinel notification-script` 和 `sentinel client-reconfig-script` 来执行自定义的通知和客户端重配置脚本。
+
+### 注意事项
+
+- **网络分区**：在网络分区的情况下，可能会出现脑裂问题（split-brain），即部分 Sentinel 认为主节点已下线并进行了故障转移，而另一部分 Sentinel 仍认为主节点是健康的。为了避免这种情况，建议配置合理的 `quorum` 值。
+- **性能影响**：故障转移过程中，尤其是初次全量同步时，会对新主节点造成一定的性能压力。因此，建议在生产环境中合理规划从节点的数量和硬件资源。
+- **持久化配置**：为了确保故障转移后的数据一致性，建议为主节点和从节点配置适当的持久化策略（如 RDB 或 AOF）。
