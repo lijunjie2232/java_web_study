@@ -107,6 +107,10 @@
     - [5. **恢复旧主节点**](#5-恢复旧主节点)
     - [6. **配置传播**](#6-配置传播)
     - [注意事项](#注意事项-2)
+- [Redis Cluster](#redis-cluster)
+  - [Role](#role)
+  - [Algorithm of Redis Cluster Key-Node Mapping](#algorithm-of-redis-cluster-key-node-mapping)
+  - [Hash Slot](#hash-slot)
 
 # redis config
 
@@ -1906,3 +1910,43 @@ Redis Sentinel 是一个高可用性解决方案，用于监控 Redis 主从集�
 - **网络分区**：在网络分区的情况下，可能会出现脑裂问题（split-brain），即部分 Sentinel 认为主节点已下线并进行了故障转移，而另一部分 Sentinel 仍认为主节点是健康的。为了避免这种情况，建议配置合理的 `quorum` 值。
 - **性能影响**：故障转移过程中，尤其是初次全量同步时，会对新主节点造成一定的性能压力。因此，建议在生产环境中合理规划从节点的数量和硬件资源。
 - **持久化配置**：为了确保故障转移后的数据一致性，建议为主节点和从节点配置适当的持久化策略（如 RDB 或 AOF）。
+
+# Redis Cluster
+- redis cluster provides data sharding amongst redis nodes
+- a edis cluster contrains multiple master nodes
+- cluster does not force to ensure data consistency which may lead to loss requests received by system some times.
+
+## Role
+- 读写分离
+- 数据高可用性
+- 数据读写量大
+- 自带Sentinel实现Failover
+
+## Algorithm of Redis Cluster Key-Node Mapping
+1. 哈希取余映射分区
+   - 直接映射到固定的桶或节点上，当节点数量变化时，会导致大量的键需要重新分配
+2. 一致性哈希算法
+   - 哈希环：所有可能的哈希值构成一个连续的空间，这个空间被想象成一个首尾相连的圆环。在这个环上的位置由哈希函数计算得出。
+   - 虚拟节点：为了更均匀地分布数据，并减少物理节点增减带来的影响，一致性哈希引入了“虚拟节点”的概念。每个物理节点对应多个虚拟节点，这些虚拟节点分布在哈希环上。
+   - 节点选择：当存储或查找某个键时，首先计算该键的哈希值，然后顺时针方向找到第一个大于等于此哈希值的节点作为目标节点。
+   - 节点增删：当增加或删除节点时，只有紧邻新增或删除节点的一部分数据受到影响，其他数据保持不变。
+   - Advantages：
+     - 负载均衡：一致性哈希算法可以保证数据分布的均衡性，即每个节点的负载基本相同。
+     - 容错性：当节点故障时，只需要移除故障节点对应的虚拟节点，其他虚拟节点的映射关系不会发生变化，从而保证数据 remains consistent。
+   - Disadvantages：
+     - 节点的变化使数据量不均衡：当节点数量增加时，需要增加虚拟节点的数量，以保持数据分布的均衡性。
+3. 哈希槽
+
+## Hash Slot
+- 哈希槽（hash slot）用于实现数据分片（sharding）。每个键根据其哈希值映射到一个特定的哈希槽上，而每个哈希槽又分配给集群中的某个主节点（master node）。
+
+- 哈希槽数量：Redis 集群中有固定的 <font color="orange">2<sup>14</sup>=16384</font> 个哈希槽。
+  - while `ping` node, `myslots[CLUSTER_SLOTS/8]`= len(slots) // 8 (Bytes) in ping pkg header, while len(slots) is 65536, the size will reach 8KB which is too large, 16384 slots will occupy only 2KB.
+  - redis nodes could not be more than 1000 for net and sync reason, so 16384 is enough for less than 1000 nodes.
+  - master nodes configuration stored in `bitmap` format, which means <font color="orange">compress rate will be low</font> if there are too less nodes or too many slots.
+
+- 键到哈希槽的映射：当存储一个<font color="orange">键</font>时，Redis 使用 CRC16 算法对键进行哈希计算，并将结果取模 16384 来确定该键应该放置在哪一个哈希槽中。`Hash Slot = crc16(key) % 16384`
+- 哈希槽到节点的映射：每个主节点负责一部分哈希槽。集群配置决定了哪些哈希槽由哪个主节点管理。这种映射关系可以在集群初始化时指定，也可以随着集群状态的变化（例如添加或移除节点）动态调整。
+
+
+
