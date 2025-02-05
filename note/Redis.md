@@ -83,6 +83,10 @@
     - [取消订阅](#取消订阅)
     - [模式订阅](#模式订阅)
   - [注意事项](#注意事项)
+- [Redis Replica](#redis-replica)
+  - [作用](#作用)
+  - [Tips](#tips-1)
+  - [config redis](#config-redis)
 
 # redis config
 
@@ -1710,4 +1714,58 @@ Reading messages... (press Ctrl-C to quit)
 - 发布/订阅模式适用于实时消息传递和事件通知系统。
 - <font color="orange">SUB has no ack</font>
 - <font color="orange">SUB has no durable</font>
+
+# Redis Replica
+Redis Replica（复制）是Redis中的一个高级功能，允许多个Redis实例之间进行数据同步。当主Redis实例发生故障时，Replica可以作为主Redis的故障转移机制。
+
+## 作用
+- 读写分离
+- 容灾恢复
+- 数据备份
+- 高并发
+
+## Tips
+- Redis Replica is  a failover mechanism, <font color="orange">not a backup solution</font>.
+- replica node is <font color="orange">readonly</font>
+- original data of replica node <font color="orange">will be clear</font> and sync from master node
+- if master node is down, replica node will wait to connect;
+- when master reboot, replica node will connect to master node again;
+
+## config redis
+- master node
+  - `bind 0.0.0.0`
+  - (optional)`daemonize yes`
+  - `requirepass <password>`
+  - `protected-mode no`: enable connected from remote
+  - `port 6379`
+  - `dir /path`
+  - `pidfile /path/redis.pid`(not modify but used later)
+  - `logfile /path/redis.log`
+  - `rdb` / `aof` related config
+  - `repl-ping-replica-period 10`: ping replica node every 10 seconds
+
+- replica node
+  - `replicaof <host> <port>`: make current redis instance be a replica of the specified master node
+  - `masterauth <password>`: password of master node
+
+
+- reids-cli
+  - `info replication`: show replication info
+    - master node:
+      - `role:master`
+      - `connected_slaves:n`: `n` is the number of connected slaves
+      - `slave0:ip=<ip>,port=<port>,state=online,offset=<offset>,lag=<lag>`
+      - `slave1:ip=<ip>,port=<port>,state=online,offset=<offset>,lag=<lag>`
+    - replica node:
+      - `role:slave`
+      - `master_host:<host>`
+      - `master_port:<port>`
+      - `master_link_status:up`
+      - `master_lastio_seconds_ago:<seconds>`
+      - `master_sync_in_progress:0`
+- Set Replica in cli
+  - `slaveof <host> <port>`: make current redis instance be a replica of the specified master instance
+    - <font color="orange">masterauth should be configured in conf file if master node requirepass</font>
+    - <font color="orange">slaveof will lost after reboot</font>
+  - `slaveof no one`: make current redis instance be a master instance
 
