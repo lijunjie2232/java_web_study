@@ -73,6 +73,16 @@
 - [Redis Pipe](#redis-pipe)
   - [Usage](#usage)
   - [Tips](#tips)
+- [PUB/SUB](#pubsub)
+  - [基本概念](#基本概念)
+  - [基本命令](#基本命令)
+  - [示例](#示例)
+    - [订阅频道](#订阅频道)
+    - [发布消息](#发布消息)
+    - [接收消息](#接收消息)
+    - [取消订阅](#取消订阅)
+    - [模式订阅](#模式订阅)
+  - [注意事项](#注意事项)
 
 # redis config
 
@@ -1597,4 +1607,107 @@ errors: 0, replies: 3
 - A pipe has additional resource costs. It is better if one pipe does not contain more than 10k lines.
 
 
+# PUB/SUB
+发布/订阅（Pub/Sub）是一种消息通信模式，允许客户端订阅特定的频道（channels），并接收其他客户端发布到这些频道的消息。
+
+## 基本概念
+
+1. **频道（Channel）**：消息发布的主题，客户端可以订阅一个或多个频道。
+2. **发布者（Publisher）**：向频道发送消息的客户端。
+3. **订阅者（Subscriber）**：接收频道消息的客户端。
+
+## 基本命令
+
+- **SUBSCRIBE <channel> [channel ...]**：订阅一个或多个频道。
+- **PSUBSCRIBE <pattern> [pattern ...]**：订阅与给定模式匹配的所有频道。
+- **PUBLISH <channel> <message>**：向指定的频道发布消息。
+- **UNSUBSCRIBE [channel [channel ...]]**：取消订阅一个或多个频道。
+- **PUNSUBSCRIBE [pattern [pattern ...]]**：取消订阅与给定模式匹配的所有频道。
+- **PUBSUB NUMPAT**: 返回模式订阅的模式数量。
+
+## 示例
+
+### 订阅频道
+
+假设我们有一个客户端订阅名为 `news` 的频道：
+
+```bash
+127.0.0.1:6379> SUBSCRIBE news
+Reading messages... (press Ctrl-C to quit)
+1) "subscribe"
+2) "news"
+3) (integer) 1
+```
+
+### 发布消息
+
+在另一个客户端中，我们可以向 `news` 频道发布消息：
+
+```bash
+127.0.0.1:6379> PUBLISH news "Hello, Redis!"
+(integer) 1
+```
+
+### 接收消息
+
+订阅客户端会收到发布的消息：
+
+```bash
+1) "message"
+2) "news"
+3) "Hello, Redis!"
+```
+
+### 取消订阅
+
+要取消订阅，可以使用 `UNSUBSCRIBE` 命令：
+
+```bash
+127.0.0.1:6379> UNSUBSCRIBE news
+1) "unsubscribe"
+2) "news"
+3) (integer) 0
+```
+
+### 模式订阅
+
+模式订阅允许客户端订阅符合特定模式的所有频道。例如，订阅所有以 `news:` 开头的频道：
+
+```bash
+127.0.0.1:6379> PSUBSCRIBE news:*
+Reading messages... (press Ctrl-C to quit)
+1) "psubscribe"
+2) "news:*"
+3) (integer) 1
+```
+
+发布消息到匹配的频道：
+
+```bash
+127.0.0.1:6379> PUBLISH news:sports "Sports news update"
+(integer) 1
+127.0.0.1:6379> PUBLISH news:politics "Politics news update"
+(integer) 1
+```
+
+订阅客户端会收到所有匹配的消息：
+
+```bash
+1) "pmessage"
+2) "news:*"
+3) "news:sports"
+4) "Sports news update"
+1) "pmessage"
+2) "news:*"
+3) "news:politics"
+4) "Politics news update"
+```
+
+## 注意事项
+
+- 发布/订阅模式是无阻塞的，发布者不会等待订阅者的响应。
+- 订阅者可以订阅多个频道或模式。
+- 发布/订阅模式适用于实时消息传递和事件通知系统。
+- <font color="orange">SUB has no ack</font>
+- <font color="orange">SUB has no durable</font>
 
