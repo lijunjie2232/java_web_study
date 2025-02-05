@@ -70,6 +70,9 @@
   - [Basic Command](#basic-command-1)
   - [ERROR Handling](#error-handling)
   - [WATCH and UNWATCH](#watch-and-unwatch)
+- [Redis Pipe](#redis-pipe)
+  - [Usage](#usage)
+  - [Tips](#tips)
 
 # redis config
 
@@ -1570,3 +1573,28 @@ Redis Transaction put command lines into a queue to execute, but:
   (nil)
   ```
 - `UNWATCH`: use before `MULTI` after `WATCH` some keys to set all watched keys not being watched
+
+# Redis Pipe
+- Redis Pipe is a feature that allows you to execute multiple commands in a single request.
+
+## Usage
+create command lines in `pip_cmd.txt`:
+```bash
+HSET user:011 name 011
+HSET user:011 password 111111
+HSET user:011 email 011@11.11
+```
+cat `pip_cmd.txt` into redis-cli:
+```bash
+❯ cat pip_cmd.txt | redis-cli -a redis --pipe
+Warning: Using a password with '-a' or '-u' option on the command line interface may not be safe.
+All data transferred. Waiting for the last reply...
+Last reply received from server.
+errors: 0, replies: 3
+```
+## Tips
+- pipe is not atomic, even if one command failed, the whole pipe will continue
+- A pipe has additional resource costs. It is better if one pipe does not contain more than 10k lines.
+
+
+
