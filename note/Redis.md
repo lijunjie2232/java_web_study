@@ -113,6 +113,9 @@
   - [Hash Slot](#hash-slot)
   - [config](#config-3)
   - [Usage](#usage-1)
+  - [Failover](#failover)
+  - [Add Node to Cluster](#add-node-to-cluster)
+  - [Delete Node from Cluster](#delete-node-from-cluster)
 
 # redis config
 
@@ -1969,5 +1972,23 @@ Redis Sentinel 是一个高可用性解决方案，用于监控 Redis 主从集�
   - `CLUSTER INFO` to get the cluster environment info
 
 ## Usage
-- `redis-cli -h 127.0.0.1 -p 6379 -a <password> -c`
+- `redis-cli [-h 127.0.0.1] [-p 6379] -a <password> -c`
   - `-c` should be specified while connecting to cluster to enable cluster redirection for write operations
+
+## Failover
+- if a master node `6379` is down, it's slave node `6380` will be promoted to master node
+- then the node `6379` rebooted, it will be slave node of `6380`
+- to change `6379` back to master node and `6380` back to slave node:
+  - run `redis-cli -p 6379 cluster failover` in bash
+  - run `CLUSTER FAILOVER` in redis-cli in `6379`
+## Add Node to Cluster
+- config in the same way
+- `redis-cli -a <password> --cluster add-node <exist_master_ip>:<exist_master_port> <new_master_ip>:<new_master_port>`: add one master to cluster
+- `redis-cli -a <password> --cluster add-node <new_slave_ip>:<new_slave_port> <new_master_ip>:<new_master_port> --cluster-slave --cluster-master-id <new_master_id>`: add one slave to cluster
+- `redis-cli -a <password> --cluster reshard <exist_master_ip>:<exist_master_port>`: shared slots from existing master node to new node
+
+## Delete Node from Cluster
+1. remove slave node: `redis-cli -a <password> --cluster del-node <removing_slave_ip>:<removing_slave_port> <removing_slave_id>`
+2. reshared slots back to other master node: `redis-cli -a <password> --cluster reshard <exist_master_ip>:<exist_master_port>`
+3. after reshared all slots to a exist master node, the deleting master node will automaticly be another slave node of the exist master node
+4. then remove it as step 1
