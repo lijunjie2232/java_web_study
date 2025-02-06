@@ -116,6 +116,8 @@
   - [Failover](#failover)
   - [Add Node to Cluster](#add-node-to-cluster)
   - [Delete Node from Cluster](#delete-node-from-cluster)
+  - [mset and mget in cluster](#mset-and-mget-in-cluster)
+  - [Other Config](#other-config)
 
 # redis config
 
@@ -1992,3 +1994,16 @@ Redis Sentinel 是一个高可用性解决方案，用于监控 Redis 主从集�
 2. reshared slots back to other master node: `redis-cli -a <password> --cluster reshard <exist_master_ip>:<exist_master_port>`
 3. after reshared all slots to a exist master node, the deleting master node will automaticly be another slave node of the exist master node
 4. then remove it as step 1
+
+## mset and mget in cluster
+1. if keys are not in the same slot, mset and mget will fail
+2. set group of keys to ensure keys writen into the same slot
+   - `MSET k1{g1} v1 k2{g1} v2 k3{g1} v3`: set [`k1`, `k2`, `k3`] is group `g1`
+   - `MGET k1{g1} k2{g1} k3{g1}`
+
+## Other Config
+- `redis.conf`
+  - `cluster-require-full-coverage no`: if one or more slots (master and slave nodes) totally down, will the cluster deny access.
+- redis-cli
+  - `CLUSTER COUNTKEYSINSLOT x`: is the slot x being occupied
+  - `CLUSTER KEYSLOT <key>`: get the slot `key` will be mapped into
