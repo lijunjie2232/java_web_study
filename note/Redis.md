@@ -111,6 +111,8 @@
   - [Role](#role)
   - [Algorithm of Redis Cluster Key-Node Mapping](#algorithm-of-redis-cluster-key-node-mapping)
   - [Hash Slot](#hash-slot)
+  - [config](#config-3)
+  - [Usage](#usage-1)
 
 # redis config
 
@@ -1949,4 +1951,23 @@ Redis Sentinel 是一个高可用性解决方案，用于监控 Redis 主从集�
 - 哈希槽到节点的映射：每个主节点负责一部分哈希槽。集群配置决定了哪些哈希槽由哪个主节点管理。这种映射关系可以在集群初始化时指定，也可以随着集群状态的变化（例如添加或移除节点）动态调整。
 
 
+## config
+- add cluster config to redis.conf in both slave and master node
+  - `cluster-enabled yes`: enable cluster mode
+  - `cluster-config-file nodes-xxxx.conf`: specify the configuration file for cluster mode, "xxxx" means <font color="orange">different node has different nodes-xxxx.conf</font>
+  - `cluster-node-timeout 5000`: specify the timeout for cluster mode
+- start redis
+- setup cluster in bash
+  - `redis-cli --cluster create --cluster-replicas 1 <master1_ip>:<master1_port> <slave1_ip>:<slave1_port> <master2_ip>:<master2_port> <slave2_ip>:<slave2_port> ...`
+    - `--cluster-replicas 1`: specify the number of replicas for each master node
+    - `<master1_ip>:<master1_port> <slave1_ip>:<slave1_port>`: one master node and `<cluster-replicas>` slave nodes
+    - <font color="orange">slave node of master node may be dynamic but master or slave type will not change</font>
+  - `nodes-xxxx.conf` will be auto generated after setup cluster
+- verify cluster in redis-cli
+  - `INFO REPLICATION` to check the replication status
+  - `CLUSTER NODES` to get the cluster nodes info
+  - `CLUSTER INFO` to get the cluster environment info
 
+## Usage
+- `redis-cli -h 127.0.0.1 -p 6379 -a <password> -c`
+  - `-c` should be specified while connecting to cluster to enable cluster redirection for write operations
