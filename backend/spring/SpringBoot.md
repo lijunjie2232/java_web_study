@@ -1677,3 +1677,234 @@ public class JedisUtil {
 }
 ```
 
+### 基本操作
+
+1. **连接到 Redis 服务器**
+2. **字符串操作**
+3. **哈希操作**
+4. **列表操作**
+5. **集合操作**
+6. **有序集合操作**
+7. **发布/订阅**
+8. **事务和管道**
+
+### 1. 连接到 Redis 服务器
+
+```java
+import redis.clients.jedis.Jedis;
+
+public class JedisExample {
+    public static void main(String[] args) {
+        Jedis jedis = new Jedis("127.0.0.1", 6379);
+        jedis.auth("redis");
+        System.out.println("Connected to Redis server successfully");
+        jedis.close();
+    }
+}
+```
+
+
+### 2. 字符串操作
+
+```java
+import redis.clients.jedis.Jedis;
+
+public class JedisExample {
+    public static void main(String[] args) {
+        Jedis jedis = new Jedis("127.0.0.1", 6379);
+        jedis.auth("redis");
+
+        // 设置字符串
+        jedis.set("name", "Alice");
+        System.out.println("Stored string in Redis:: " + jedis.get("name"));
+
+        jedis.close();
+    }
+}
+```
+
+
+### 3. 哈希操作
+
+```java
+import redis.clients.jedis.Jedis;
+
+public class JedisExample {
+    public static void main(String[] args) {
+        Jedis jedis = new Jedis("127.0.0.1", 6379);
+        jedis.auth("redis");
+
+        // 设置哈希
+        jedis.hset("user:1000", "name", "Alice");
+        jedis.hset("user:1000", "age", "25");
+
+        // 获取哈希
+        System.out.println("Stored hash in Redis:: " + jedis.hget("user:1000", "name"));
+        System.out.println("Stored hash in Redis:: " + jedis.hget("user:1000", "age"));
+
+        jedis.close();
+    }
+}
+```
+
+
+### 4. 列表操作
+
+```java
+import redis.clients.jedis.Jedis;
+
+public class JedisExample {
+    public static void main(String[] args) {
+        Jedis jedis = new Jedis("127.0.0.1", 6379);
+        jedis.auth("redis");
+
+        // 添加到列表
+        jedis.lpush("list1", "item1");
+        jedis.lpush("list1", "item2");
+        jedis.lpush("list1", "item3");
+
+        // 获取列表
+        System.out.println("Stored list in Redis:: " + jedis.lrange("list1", 0, -1));
+
+        jedis.close();
+    }
+}
+```
+
+
+### 5. 集合操作
+
+```java
+import redis.clients.jedis.Jedis;
+
+public class JedisExample {
+    public static void main(String[] args) {
+        Jedis jedis = new Jedis("127.0.0.1", 6379);
+        jedis.auth("redis");
+
+        // 添加到集合
+        jedis.sadd("set1", "item1");
+        jedis.sadd("set1", "item2");
+        jedis.sadd("set1", "item3");
+
+        // 获取集合
+        System.out.println("Stored set in Redis:: " + jedis.smembers("set1"));
+
+        jedis.close();
+    }
+}
+```
+
+
+### 6. 有序集合操作
+
+```java
+import redis.clients.jedis.Jedis;
+
+public class JedisExample {
+    public static void main(String[] args) {
+        Jedis jedis = new Jedis("127.0.0.1", 6379);
+        jedis.auth("redis");
+
+        // 添加到有序集合
+        jedis.zadd("zset1", 1, "item1");
+        jedis.zadd("zset1", 2, "item2");
+        jedis.zadd("zset1", 3, "item3");
+
+        // 获取有序集合
+        System.out.println("Stored sorted set in Redis:: " + jedis.zrange("zset1", 0, -1));
+
+        jedis.close();
+    }
+}
+```
+
+
+### 7. 发布/订阅
+
+```java
+import redis.clients.jedis.Jedis;
+import redis.clients.jedis.JedisPubSub;
+
+public class JedisExample {
+    public static void main(String[] args) {
+        // 订阅线程
+        new Thread(() -> {
+            Jedis jedis = new Jedis("127.0.0.1", 6379);
+            jedis.auth("redis");
+
+            JedisPubSub jedisPubSub = new JedisPubSub() {
+                @Override
+                public void onMessage(String channel, String message) {
+                    System.out.println("Received message from channel '" + channel + "': " + message);
+                }
+            };
+
+            jedis.subscribe(jedisPubSub, "channel1");
+            jedis.close();
+        }).start();
+
+        // 发布线程
+        new Thread(() -> {
+            Jedis jedis = new Jedis("127.0.0.1", 6379);
+            jedis.auth("redis");
+
+            jedis.publish("channel1", "Hello, Redis!");
+            jedis.close();
+        }).start();
+    }
+}
+```
+
+
+### 8. 事务和管道
+
+#### 事务
+
+```java
+import redis.clients.jedis.Jedis;
+import redis.clients.jedis.Transaction;
+
+public class JedisExample {
+    public static void main(String[] args) {
+        Jedis jedis = new Jedis("127.0.0.1", 6379);
+        jedis.auth("redis");
+
+        Transaction tx = jedis.multi();
+        tx.set("foo", "bar");
+        tx.incr("counter");
+        tx.exec();
+
+        System.out.println("foo: " + jedis.get("foo"));
+        System.out.println("counter: " + jedis.get("counter"));
+
+        jedis.close();
+    }
+}
+```
+
+
+#### 管道
+
+```java
+import redis.clients.jedis.Jedis;
+import redis.clients.jedis.Pipeline;
+
+public class JedisExample {
+    public static void main(String[] args) {
+        Jedis jedis = new Jedis("127.0.0.1", 6379);
+        jedis.auth("redis");
+
+        Pipeline pipeline = jedis.pipelined();
+        pipeline.set("foo", "bar");
+        pipeline.incr("counter");
+        pipeline.sync();
+
+        System.out.println("foo: " + jedis.get("foo"));
+        System.out.println("counter: " + jedis.get("counter"));
+
+        jedis.close();
+    }
+}
+```
+
