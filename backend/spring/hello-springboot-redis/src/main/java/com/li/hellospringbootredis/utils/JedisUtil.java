@@ -1,11 +1,13 @@
 package com.li.hellospringbootredis.utils;
 
 import jakarta.annotation.PostConstruct;
+import lombok.NoArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import redis.clients.jedis.Jedis;
 
 
+@NoArgsConstructor
 @Component
 public class JedisUtil {
     @Value("${redis.host:127.0.0.1}")

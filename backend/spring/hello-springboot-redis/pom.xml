@@ -51,6 +51,13 @@
             <artifactId>jedis</artifactId>
             <version>5.2.0</version>
         </dependency>
+        <!-- https://mvnrepository.com/artifact/io.lettuce/lettuce-core -->
+        <dependency>
+            <groupId>io.lettuce</groupId>
+            <artifactId>lettuce-core</artifactId>
+            <version>6.5.3.RELEASE</version>
+        </dependency>
+
 
     </dependencies>
 

@@ -1,112 +1,114 @@
 <!-- TOC -->
+
 * [Spring Boot auto configuration](#spring-boot-auto-configuration)
-  * [example: change default data source](#example-change-default-data-source)
-  * [启用调试日志](#启用调试日志)
-  * [Spring Boot 自动配置的源码解析](#spring-boot-自动配置的源码解析)
-    * [1. **`@SpringBootApplication` 注解**](#1-springbootapplication-注解)
-    * [2. **`@EnableAutoConfiguration` 注解**](#2-enableautoconfiguration-注解)
-      * [2.1 `@AutoConfigurationPackage`](#21-autoconfigurationpackage)
-      * [2.2 `AutoConfigurationImportSelector`](#22-autoconfigurationimportselector)
-    * [3. **`spring.factories` 文件**](#3-springfactories-文件)
-    * [4. **条件注解**](#4-条件注解)
-    * [5. **`@AutoConfigureAfter` 和 `@AutoConfigureBefore`**](#5-autoconfigureafter-和-autoconfigurebefore)
-    * [6. **自动配置报告**](#6-自动配置报告)
-    * [7. **排除自动配置类**](#7-排除自动配置类)
-    * [8. **自定义自动配置类**](#8-自定义自动配置类)
+    * [example: change default data source](#example-change-default-data-source)
+    * [启用调试日志](#启用调试日志)
+    * [Spring Boot 自动配置的源码解析](#spring-boot-自动配置的源码解析)
+        * [1. **`@SpringBootApplication` 注解**](#1-springbootapplication-注解)
+        * [2. **`@EnableAutoConfiguration` 注解**](#2-enableautoconfiguration-注解)
+            * [2.1 `@AutoConfigurationPackage`](#21-autoconfigurationpackage)
+            * [2.2 `AutoConfigurationImportSelector`](#22-autoconfigurationimportselector)
+        * [3. **`spring.factories` 文件**](#3-springfactories-文件)
+        * [4. **条件注解**](#4-条件注解)
+        * [5. **`@AutoConfigureAfter` 和 `@AutoConfigureBefore`**](#5-autoconfigureafter-和-autoconfigurebefore)
+        * [6. **自动配置报告**](#6-自动配置报告)
+        * [7. **排除自动配置类**](#7-排除自动配置类)
+        * [8. **自定义自动配置类**](#8-自定义自动配置类)
 * [@ConfigurationProperties](#configurationproperties)
 * [@EnableConfigurationProperties](#enableconfigurationproperties)
 * [常用的 `application.properties` 配置项](#常用的-applicationproperties-配置项)
-  * [服务器配置](#服务器配置)
-  * [应用程序配置](#应用程序配置)
-      * [数据源配置](#数据源配置)
-  * [日志配置](#日志配置)
-  * [安全配置](#安全配置)
-  * [模板引擎配置](#模板引擎配置)
-  * [静态资源配置](#静态资源配置)
-  * [跨域配置](#跨域配置)
-  * [Programming Method](#programming-method)
+    * [服务器配置](#服务器配置)
+    * [应用程序配置](#应用程序配置)
+        * [数据源配置](#数据源配置)
+    * [日志配置](#日志配置)
+    * [安全配置](#安全配置)
+    * [模板引擎配置](#模板引擎配置)
+    * [静态资源配置](#静态资源配置)
+    * [跨域配置](#跨域配置)
+    * [Programming Method](#programming-method)
 * [Log](#log)
-  * [A Simple Logging Example](#a-simple-logging-example)
-  * [log level](#log-level)
-    * [spring log level:](#spring-log-level)
-  * [logging group](#logging-group)
-  * [Output log to file](#output-log-to-file)
-  * [log archive and split to chunks](#log-archive-and-split-to-chunks)
-  * [string format in log](#string-format-in-log)
-  * [change to log4j2](#change-to-log4j2)
+    * [A Simple Logging Example](#a-simple-logging-example)
+    * [log level](#log-level)
+        * [spring log level:](#spring-log-level)
+    * [logging group](#logging-group)
+    * [Output log to file](#output-log-to-file)
+    * [log archive and split to chunks](#log-archive-and-split-to-chunks)
+    * [string format in log](#string-format-in-log)
+    * [change to log4j2](#change-to-log4j2)
 * [spring environment isolation](#spring-environment-isolation)
-  * [Outer properties](#outer-properties)
+    * [Outer properties](#outer-properties)
 * [Unit Test](#unit-test)
-  * [常用的注解](#常用的注解)
-  * [assert](#assert)
-    * [Example](#example)
+    * [常用的注解](#常用的注解)
+    * [assert](#assert)
+        * [Example](#example)
 * [sprint actuator](#sprint-actuator)
-  * [1.import dependency](#1import-dependency)
-  * [2.set properties like following:](#2set-properties-like-following)
-  * [3. 常用的 Actuator 端点](#3-常用的-actuator-端点)
-    * [3.1 `/actuator/health`](#31-actuatorhealth)
-    * [3.2 `/actuator/info`](#32-actuatorinfo)
-    * [3.3 `/actuator/metrics`](#33-actuatormetrics)
-    * [3.4 `/actuator/metrics/{metricName}`](#34-actuatormetricsmetricname)
-    * [3.5 `/actuator/loggers`](#35-actuatorloggers)
-    * [3.6 `/actuator/loggers/{name}`](#36-actuatorloggersname)
-    * [3.7 `/actuator/env`](#37-actuatorenv)
-    * [3.8 `/actuator/beans`](#38-actuatorbeans)
-    * [3.9 `/actuator/threaddump`](#39-actuatorthreaddump)
-    * [3.10 `/actuator/httptrace`](#310-actuatorhttptrace)
-  * [4. 安全配置](#4-安全配置)
-    * [4.1 dependency](#41-dependency)
-    * [4.2 配置 Spring Security](#42-配置-spring-security)
-    * [4.3 配置 Actuator 端点的安全性](#43-配置-actuator-端点的安全性)
-  * [5. 自定义 Actuator 端点](#5-自定义-actuator-端点)
-    * [5.1 创建自定义端点](#51-创建自定义端点)
-    * [5.2 公开自定义端点](#52-公开自定义端点)
-    * [5.3 访问自定义端点](#53-访问自定义端点)
-  * [6. 使用 Actuator 的 Web 管理界面](#6-使用-actuator-的-web-管理界面)
-    * [6.1 添加 Spring Boot Admin 依赖](#61-添加-spring-boot-admin-依赖)
-    * [6.2 配置 Spring Boot Admin](#62-配置-spring-boot-admin)
-    * [6.3 启动 Spring Boot Admin 服务器](#63-启动-spring-boot-admin-服务器)
+    * [1.import dependency](#1import-dependency)
+    * [2.set properties like following:](#2set-properties-like-following)
+    * [3. 常用的 Actuator 端点](#3-常用的-actuator-端点)
+        * [3.1 `/actuator/health`](#31-actuatorhealth)
+        * [3.2 `/actuator/info`](#32-actuatorinfo)
+        * [3.3 `/actuator/metrics`](#33-actuatormetrics)
+        * [3.4 `/actuator/metrics/{metricName}`](#34-actuatormetricsmetricname)
+        * [3.5 `/actuator/loggers`](#35-actuatorloggers)
+        * [3.6 `/actuator/loggers/{name}`](#36-actuatorloggersname)
+        * [3.7 `/actuator/env`](#37-actuatorenv)
+        * [3.8 `/actuator/beans`](#38-actuatorbeans)
+        * [3.9 `/actuator/threaddump`](#39-actuatorthreaddump)
+        * [3.10 `/actuator/httptrace`](#310-actuatorhttptrace)
+    * [4. 安全配置](#4-安全配置)
+        * [4.1 dependency](#41-dependency)
+        * [4.2 配置 Spring Security](#42-配置-spring-security)
+        * [4.3 配置 Actuator 端点的安全性](#43-配置-actuator-端点的安全性)
+    * [5. 自定义 Actuator 端点](#5-自定义-actuator-端点)
+        * [5.1 创建自定义端点](#51-创建自定义端点)
+        * [5.2 公开自定义端点](#52-公开自定义端点)
+        * [5.3 访问自定义端点](#53-访问自定义端点)
+    * [6. 使用 Actuator 的 Web 管理界面](#6-使用-actuator-的-web-管理界面)
+        * [6.1 添加 Spring Boot Admin 依赖](#61-添加-spring-boot-admin-依赖)
+        * [6.2 配置 Spring Boot Admin](#62-配置-spring-boot-admin)
+        * [6.3 启动 Spring Boot Admin 服务器](#63-启动-spring-boot-admin-服务器)
 * [Spring boot life cycle Listener](#spring-boot-life-cycle-listener)
-  * [SpringApplicationRunListener](#springapplicationrunlistener)
+    * [SpringApplicationRunListener](#springapplicationrunlistener)
 * [Spring boot life cycle](#spring-boot-life-cycle)
-  * [常见的生命周期回调接口](#常见的生命周期回调接口)
+    * [常见的生命周期回调接口](#常见的生命周期回调接口)
 * [spring Event](#spring-event)
 * [Custom Spring Boot Starter](#custom-spring-boot-starter)
-  * [1. 创建 Starter 项目](#1-创建-starter-项目)
-    * [Maven 项目结构](#maven-项目结构)
-  * [2. 配置 `pom.xml` 或 `build.gradle`](#2-配置-pomxml-或-buildgradle)
-    * [Maven `pom.xml`](#maven-pomxml)
-  * [3. 创建自动配置类](#3-创建自动配置类)
-  * [4. 创建服务类](#4-创建服务类)
-  * [5. 配置 `spring.factories`](#5-配置-springfactories)
-  * [6. 打包并发布](#6-打包并发布)
-    * [Maven 打包](#maven-打包)
-  * [7. 使用自定义 Starter](#7-使用自定义-starter)
-    * [Maven `pom.xml`](#maven-pomxml-1)
-  * [示例代码](#示例代码)
-      * [自定义 Starter 项目结构](#自定义-starter-项目结构)
-    * [`MyService.java`](#myservicejava)
-    * [`MyAutoConfiguration.java`](#myautoconfigurationjava)
-    * [properties in META-INF](#properties-in-meta-inf)
-    * [`pom.xml`](#pomxml)
-    * [使用自定义 Starter 的项目结构](#使用自定义-starter-的项目结构)
-    * [`DemoApplication.java`](#demoapplicationjava)
-    * [`pom.xml`](#pomxml-1)
+    * [1. 创建 Starter 项目](#1-创建-starter-项目)
+        * [Maven 项目结构](#maven-项目结构)
+    * [2. 配置 `pom.xml` 或 `build.gradle`](#2-配置-pomxml-或-buildgradle)
+        * [Maven `pom.xml`](#maven-pomxml)
+    * [3. 创建自动配置类](#3-创建自动配置类)
+    * [4. 创建服务类](#4-创建服务类)
+    * [5. 配置 `spring.factories`](#5-配置-springfactories)
+    * [6. 打包并发布](#6-打包并发布)
+        * [Maven 打包](#maven-打包)
+    * [7. 使用自定义 Starter](#7-使用自定义-starter)
+        * [Maven `pom.xml`](#maven-pomxml-1)
+    * [示例代码](#示例代码)
+        * [自定义 Starter 项目结构](#自定义-starter-项目结构)
+        * [`MyService.java`](#myservicejava)
+        * [`MyAutoConfiguration.java`](#myautoconfigurationjava)
+        * [properties in META-INF](#properties-in-meta-inf)
+        * [`pom.xml`](#pomxml)
+        * [使用自定义 Starter 的项目结构](#使用自定义-starter-的项目结构)
+        * [`DemoApplication.java`](#demoapplicationjava)
+        * [`pom.xml`](#pomxml-1)
 * [Use Redis in Spring Boot](#use-redis-in-spring-boot)
-  * [Jedis](#jedis)
-    * [dependency](#dependency)
-    * [connect to redis](#connect-to-redis)
-    * [基本操作](#基本操作)
-    * [1. 连接到 Redis 服务器](#1-连接到-redis-服务器)
-    * [2. 字符串操作](#2-字符串操作)
-    * [3. 哈希操作](#3-哈希操作)
-    * [4. 列表操作](#4-列表操作)
-    * [5. 集合操作](#5-集合操作)
-    * [6. 有序集合操作](#6-有序集合操作)
-    * [7. 发布/订阅](#7-发布订阅)
-    * [8. 事务和管道](#8-事务和管道)
-      * [事务](#事务)
-      * [管道](#管道)
+    * [Jedis](#jedis)
+        * [dependency](#dependency)
+        * [connect to redis](#connect-to-redis)
+        * [基本操作](#基本操作)
+        * [1. 连接到 Redis 服务器](#1-连接到-redis-服务器)
+        * [2. 字符串操作](#2-字符串操作)
+        * [3. 哈希操作](#3-哈希操作)
+        * [4. 列表操作](#4-列表操作)
+        * [5. 集合操作](#5-集合操作)
+        * [6. 有序集合操作](#6-有序集合操作)
+        * [7. 发布/订阅](#7-发布订阅)
+        * [8. 事务和管道](#8-事务和管道)
+            * [事务](#事务)
+            * [管道](#管道)
+
 <!-- TOC -->
 
 # Spring Boot auto configuration
@@ -1664,7 +1666,9 @@ public class DemoApplication implements CommandLineRunner {
 ```
 
 ### connect to redis
+
 - timeout should be set if net work is not stable
+
 ```java
 
 @Component
@@ -1716,7 +1720,6 @@ public class JedisExample {
 }
 ```
 
-
 ### 2. 字符串操作
 
 ```java
@@ -1735,7 +1738,6 @@ public class JedisExample {
     }
 }
 ```
-
 
 ### 3. 哈希操作
 
@@ -1760,7 +1762,6 @@ public class JedisExample {
 }
 ```
 
-
 ### 4. 列表操作
 
 ```java
@@ -1783,7 +1784,6 @@ public class JedisExample {
     }
 }
 ```
-
 
 ### 5. 集合操作
 
@@ -1808,7 +1808,6 @@ public class JedisExample {
 }
 ```
 
-
 ### 6. 有序集合操作
 
 ```java
@@ -1831,7 +1830,6 @@ public class JedisExample {
     }
 }
 ```
-
 
 ### 7. 发布/订阅
 
@@ -1869,7 +1867,6 @@ public class JedisExample {
 }
 ```
 
-
 ### 8. 事务和管道
 
 #### 事务
@@ -1896,7 +1893,6 @@ public class JedisExample {
 }
 ```
 
-
 #### 管道
 
 ```java
@@ -1921,3 +1917,51 @@ public class JedisExample {
 }
 ```
 
+## Lettuce
+
+### dependency
+
+```xml
+<!-- https://mvnrepository.com/artifact/io.lettuce/lettuce-core -->
+<dependency>
+    <groupId>io.lettuce</groupId>
+    <artifactId>lettuce-core</artifactId>
+    <version>6.5.3.RELEASE</version>
+</dependency>
+```
+
+### setup
+
+```java
+public void _init(
+        @Value("${redis.host:127.0.0.1}") String host,
+        @Value("${redis.port:6379}") Integer port,
+        @Value("${redis.password:redis}") String password
+) {
+    System.out.println("*******************LettuceUtil init*******************");
+    RedisURI uri = RedisURI.Builder
+            .redis(host)
+            .withPort(port)
+            .withAuthentication("default", password)
+            .withTimeout(Duration.ofSeconds(10))
+            .build();
+    this.client = RedisClient.create(uri);
+    System.out.println("*******************LettuceUtil init*******************");
+}
+```
+
+### Usage
+
+```java
+
+@Test
+public void testJedisUtil() {
+    try (StatefulRedisConnection connection = lu.getConnection()) {
+        RedisCommands commands = connection.sync();
+        System.out.println(commands.get("user"));
+
+    } catch (Exception e) {
+        throw new RuntimeException(e);
+    }
+}
+```
