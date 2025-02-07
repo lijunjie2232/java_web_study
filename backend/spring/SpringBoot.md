@@ -2186,10 +2186,17 @@ flushCommands(); // 触发管道执行
 ### setup
 - config redis connection
 ```properties
-spring.redis.host=127.0.0.1
-spring.redis.port=6379
-spring.redis.password=redis
-spring.redis.database=0
+spring.data.redis.host=127.0.0.1
+spring.data.redis.port=6379
+spring.data.redis.password=redis
+spring.data.redis.database=0
+spring.data.redis.timeout=10000
+# old version config
+#spring.redis.host=127.0.0.1
+#spring.redis.port=6379
+#spring.redis.password=redis
+#spring.redis.database=0
+#spring.redis.timeout=10000
 ```
 - config redis template
 ```java
