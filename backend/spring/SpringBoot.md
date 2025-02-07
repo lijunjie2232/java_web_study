@@ -2305,8 +2305,6 @@ public class RedisService {
 
 ```
 
-### Usage
-
 ```java
 
 @Test
@@ -2315,3 +2313,272 @@ public void test() {
     System.out.println(redisService.getString("redistest_user"));
 }
 ```
+
+
+### 1. 字符串（String）操作
+
+```java
+package com.li.hellospringbootredis.service;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.stereotype.Service;
+
+@Service
+public class RedisService {
+
+    @Autowired
+    private RedisTemplate<String, Object> redisTemplate;
+
+    // 存储字符串
+    public void setString(String key, String value) {
+        redisTemplate.opsForValue().set(key, value);
+    }
+
+    // 获取字符串
+    public String getString(String key) {
+        return (String) redisTemplate.opsForValue().get(key);
+    }
+}
+```
+
+
+### 2. 哈希（Hash）操作
+
+```java
+package com.li.hellospringbootredis.service;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.stereotype.Service;
+
+@Service
+public class RedisService {
+
+    @Autowired
+    private RedisTemplate<String, Object> redisTemplate;
+
+    // 存储哈希
+    public void setHash(String key, String hashKey, String value) {
+        redisTemplate.opsForHash().put(key, hashKey, value);
+    }
+
+    // 获取哈希
+    public String getHash(String key, String hashKey) {
+        return (String) redisTemplate.opsForHash().get(key, hashKey);
+    }
+}
+```
+
+
+### 3. 列表（List）操作
+
+```java
+package com.li.hellospringbootredis.service;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.stereotype.Service;
+
+@Service
+public class RedisService {
+
+    @Autowired
+    private RedisTemplate<String, Object> redisTemplate;
+
+    // 存储列表
+    public void setList(String key, String value) {
+        redisTemplate.opsForList().rightPush(key, value);
+    }
+
+    // 获取列表
+    public String getList(String key, long index) {
+        return (String) redisTemplate.opsForList().index(key, index);
+    }
+}
+```
+
+
+### 4. 集合（Set）操作
+
+```java
+package com.li.hellospringbootredis.service;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.stereotype.Service;
+
+import java.util.Set;
+
+@Service
+public class RedisService {
+
+    @Autowired
+    private RedisTemplate<String, Object> redisTemplate;
+
+    // 存储集合
+    public void setSet(String key, String value) {
+        redisTemplate.opsForSet().add(key, value);
+    }
+
+    // 获取集合
+    public Set<String> getSet(String key) {
+        return (Set<String>) redisTemplate.opsForSet().members(key);
+    }
+}
+```
+
+
+### 5. 有序集合（ZSet）操作
+
+```java
+package com.li.hellospringbootredis.service;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.stereotype.Service;
+
+import java.util.Set;
+
+@Service
+public class RedisService {
+
+    @Autowired
+    private RedisTemplate<String, Object> redisTemplate;
+
+    // 存储有序集合
+    public void setZSet(String key, String value, double score) {
+        redisTemplate.opsForZSet().add(key, value, score);
+    }
+
+    // 获取有序集合
+    public Set<String> getZSet(String key) {
+        return (Set<String>) redisTemplate.opsForZSet().range(key, 0, -1);
+    }
+}
+```
+
+
+### 6. 删除操作
+
+```java
+package com.li.hellospringbootredis.service;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.stereotype.Service;
+
+@Service
+public class RedisService {
+
+    @Autowired
+    private RedisTemplate<String, Object> redisTemplate;
+
+    // 删除键
+    public void deleteKey(String key) {
+        redisTemplate.delete(key);
+    }
+}
+```
+
+
+### 7. 判断键是否存在
+
+```java
+package com.li.hellospringbootredis.service;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.stereotype.Service;
+
+@Service
+public class RedisService {
+
+    @Autowired
+    private RedisTemplate<String, Object> redisTemplate;
+
+    // 判断键是否存在
+    public boolean hasKey(String key) {
+        return redisTemplate.hasKey(key);
+    }
+}
+```
+
+
+### 8. 设置过期时间
+
+```java
+package com.li.hellospringbootredis.service;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.stereotype.Service;
+
+import java.util.concurrent.TimeUnit;
+
+@Service
+public class RedisService {
+
+    @Autowired
+    private RedisTemplate<String, Object> redisTemplate;
+
+    // 设置键的过期时间
+    public void expireKey(String key, long timeout, TimeUnit unit) {
+        redisTemplate.expire(key, timeout, unit);
+    }
+}
+```
+
+
+### 9. 获取键的剩余过期时间
+
+```java
+package com.li.hellospringbootredis.service;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.stereotype.Service;
+
+import java.util.concurrent.TimeUnit;
+
+@Service
+public class RedisService {
+
+    @Autowired
+    private RedisTemplate<String, Object> redisTemplate;
+
+    // 获取键的剩余过期时间
+    public Long getExpire(String key, TimeUnit unit) {
+        return redisTemplate.getExpire(key, unit);
+    }
+}
+```
+
+
+### 10. 递增/递减操作
+
+```java
+package com.li.hellospringbootredis.service;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.stereotype.Service;
+
+@Service
+public class RedisService {
+
+    @Autowired
+    private RedisTemplate<String, Object> redisTemplate;
+
+    // 递增操作
+    public Long increment(String key, long delta) {
+        return redisTemplate.opsForValue().increment(key, delta);
+    }
+
+    // 递减操作
+    public Long decrement(String key, long delta) {
+        return redisTemplate.opsForValue().decrement(key, delta);
+    }
+}
+```
+
