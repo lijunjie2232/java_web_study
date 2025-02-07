@@ -1,116 +1,118 @@
 <!-- TOC -->
+
 * [Spring Boot auto configuration](#spring-boot-auto-configuration)
-  * [example: change default data source](#example-change-default-data-source)
-  * [启用调试日志](#启用调试日志)
-  * [Spring Boot 自动配置的源码解析](#spring-boot-自动配置的源码解析)
-    * [1. **`@SpringBootApplication` 注解**](#1-springbootapplication-注解)
-    * [2. **`@EnableAutoConfiguration` 注解**](#2-enableautoconfiguration-注解)
-      * [2.1 `@AutoConfigurationPackage`](#21-autoconfigurationpackage)
-      * [2.2 `AutoConfigurationImportSelector`](#22-autoconfigurationimportselector)
-    * [3. **`spring.factories` 文件**](#3-springfactories-文件)
-    * [4. **条件注解**](#4-条件注解)
-    * [5. **`@AutoConfigureAfter` 和 `@AutoConfigureBefore`**](#5-autoconfigureafter-和-autoconfigurebefore)
-    * [6. **自动配置报告**](#6-自动配置报告)
-    * [7. **排除自动配置类**](#7-排除自动配置类)
-    * [8. **自定义自动配置类**](#8-自定义自动配置类)
+    * [example: change default data source](#example-change-default-data-source)
+    * [启用调试日志](#启用调试日志)
+    * [Spring Boot 自动配置的源码解析](#spring-boot-自动配置的源码解析)
+        * [1. **`@SpringBootApplication` 注解**](#1-springbootapplication-注解)
+        * [2. **`@EnableAutoConfiguration` 注解**](#2-enableautoconfiguration-注解)
+            * [2.1 `@AutoConfigurationPackage`](#21-autoconfigurationpackage)
+            * [2.2 `AutoConfigurationImportSelector`](#22-autoconfigurationimportselector)
+        * [3. **`spring.factories` 文件**](#3-springfactories-文件)
+        * [4. **条件注解**](#4-条件注解)
+        * [5. **`@AutoConfigureAfter` 和 `@AutoConfigureBefore`**](#5-autoconfigureafter-和-autoconfigurebefore)
+        * [6. **自动配置报告**](#6-自动配置报告)
+        * [7. **排除自动配置类**](#7-排除自动配置类)
+        * [8. **自定义自动配置类**](#8-自定义自动配置类)
 * [@ConfigurationProperties](#configurationproperties)
 * [@EnableConfigurationProperties](#enableconfigurationproperties)
 * [常用的 `application.properties` 配置项](#常用的-applicationproperties-配置项)
-  * [服务器配置](#服务器配置)
-  * [应用程序配置](#应用程序配置)
-      * [数据源配置](#数据源配置)
-  * [日志配置](#日志配置)
-  * [安全配置](#安全配置)
-  * [模板引擎配置](#模板引擎配置)
-  * [静态资源配置](#静态资源配置)
-  * [跨域配置](#跨域配置)
-  * [Programming Method](#programming-method)
+    * [服务器配置](#服务器配置)
+    * [应用程序配置](#应用程序配置)
+        * [数据源配置](#数据源配置)
+    * [日志配置](#日志配置)
+    * [安全配置](#安全配置)
+    * [模板引擎配置](#模板引擎配置)
+    * [静态资源配置](#静态资源配置)
+    * [跨域配置](#跨域配置)
+    * [Programming Method](#programming-method)
 * [Log](#log)
-  * [A Simple Logging Example](#a-simple-logging-example)
-  * [log level](#log-level)
-    * [spring log level:](#spring-log-level)
-  * [logging group](#logging-group)
-  * [Output log to file](#output-log-to-file)
-  * [log archive and split to chunks](#log-archive-and-split-to-chunks)
-  * [string format in log](#string-format-in-log)
-  * [change to log4j2](#change-to-log4j2)
+    * [A Simple Logging Example](#a-simple-logging-example)
+    * [log level](#log-level)
+        * [spring log level:](#spring-log-level)
+    * [logging group](#logging-group)
+    * [Output log to file](#output-log-to-file)
+    * [log archive and split to chunks](#log-archive-and-split-to-chunks)
+    * [string format in log](#string-format-in-log)
+    * [change to log4j2](#change-to-log4j2)
 * [spring environment isolation](#spring-environment-isolation)
-  * [Outer properties](#outer-properties)
+    * [Outer properties](#outer-properties)
 * [Unit Test](#unit-test)
-  * [常用的注解](#常用的注解)
-  * [assert](#assert)
-    * [Example](#example)
+    * [常用的注解](#常用的注解)
+    * [assert](#assert)
+        * [Example](#example)
 * [sprint actuator](#sprint-actuator)
-  * [1.import dependency](#1import-dependency)
-  * [2.set properties like following:](#2set-properties-like-following)
-  * [3. 常用的 Actuator 端点](#3-常用的-actuator-端点)
-    * [3.1 `/actuator/health`](#31-actuatorhealth)
-    * [3.2 `/actuator/info`](#32-actuatorinfo)
-    * [3.3 `/actuator/metrics`](#33-actuatormetrics)
-    * [3.4 `/actuator/metrics/{metricName}`](#34-actuatormetricsmetricname)
-    * [3.5 `/actuator/loggers`](#35-actuatorloggers)
-    * [3.6 `/actuator/loggers/{name}`](#36-actuatorloggersname)
-    * [3.7 `/actuator/env`](#37-actuatorenv)
-    * [3.8 `/actuator/beans`](#38-actuatorbeans)
-    * [3.9 `/actuator/threaddump`](#39-actuatorthreaddump)
-    * [3.10 `/actuator/httptrace`](#310-actuatorhttptrace)
-  * [4. 安全配置](#4-安全配置)
-    * [4.1 dependency](#41-dependency)
-    * [4.2 配置 Spring Security](#42-配置-spring-security)
-    * [4.3 配置 Actuator 端点的安全性](#43-配置-actuator-端点的安全性)
-  * [5. 自定义 Actuator 端点](#5-自定义-actuator-端点)
-    * [5.1 创建自定义端点](#51-创建自定义端点)
-    * [5.2 公开自定义端点](#52-公开自定义端点)
-    * [5.3 访问自定义端点](#53-访问自定义端点)
-  * [6. 使用 Actuator 的 Web 管理界面](#6-使用-actuator-的-web-管理界面)
-    * [6.1 添加 Spring Boot Admin 依赖](#61-添加-spring-boot-admin-依赖)
-    * [6.2 配置 Spring Boot Admin](#62-配置-spring-boot-admin)
-    * [6.3 启动 Spring Boot Admin 服务器](#63-启动-spring-boot-admin-服务器)
+    * [1.import dependency](#1import-dependency)
+    * [2.set properties like following:](#2set-properties-like-following)
+    * [3. 常用的 Actuator 端点](#3-常用的-actuator-端点)
+        * [3.1 `/actuator/health`](#31-actuatorhealth)
+        * [3.2 `/actuator/info`](#32-actuatorinfo)
+        * [3.3 `/actuator/metrics`](#33-actuatormetrics)
+        * [3.4 `/actuator/metrics/{metricName}`](#34-actuatormetricsmetricname)
+        * [3.5 `/actuator/loggers`](#35-actuatorloggers)
+        * [3.6 `/actuator/loggers/{name}`](#36-actuatorloggersname)
+        * [3.7 `/actuator/env`](#37-actuatorenv)
+        * [3.8 `/actuator/beans`](#38-actuatorbeans)
+        * [3.9 `/actuator/threaddump`](#39-actuatorthreaddump)
+        * [3.10 `/actuator/httptrace`](#310-actuatorhttptrace)
+    * [4. 安全配置](#4-安全配置)
+        * [4.1 dependency](#41-dependency)
+        * [4.2 配置 Spring Security](#42-配置-spring-security)
+        * [4.3 配置 Actuator 端点的安全性](#43-配置-actuator-端点的安全性)
+    * [5. 自定义 Actuator 端点](#5-自定义-actuator-端点)
+        * [5.1 创建自定义端点](#51-创建自定义端点)
+        * [5.2 公开自定义端点](#52-公开自定义端点)
+        * [5.3 访问自定义端点](#53-访问自定义端点)
+    * [6. 使用 Actuator 的 Web 管理界面](#6-使用-actuator-的-web-管理界面)
+        * [6.1 添加 Spring Boot Admin 依赖](#61-添加-spring-boot-admin-依赖)
+        * [6.2 配置 Spring Boot Admin](#62-配置-spring-boot-admin)
+        * [6.3 启动 Spring Boot Admin 服务器](#63-启动-spring-boot-admin-服务器)
 * [Spring boot life cycle Listener](#spring-boot-life-cycle-listener)
-  * [SpringApplicationRunListener](#springapplicationrunlistener)
+    * [SpringApplicationRunListener](#springapplicationrunlistener)
 * [Spring boot life cycle](#spring-boot-life-cycle)
-  * [常见的生命周期回调接口](#常见的生命周期回调接口)
+    * [常见的生命周期回调接口](#常见的生命周期回调接口)
 * [spring Event](#spring-event)
 * [Custom Spring Boot Starter](#custom-spring-boot-starter)
-  * [1. 创建 Starter 项目](#1-创建-starter-项目)
-    * [Maven 项目结构](#maven-项目结构)
-  * [2. 配置 `pom.xml` 或 `build.gradle`](#2-配置-pomxml-或-buildgradle)
-    * [Maven `pom.xml`](#maven-pomxml)
-  * [3. 创建自动配置类](#3-创建自动配置类)
-  * [4. 创建服务类](#4-创建服务类)
-  * [5. 配置 `spring.factories`](#5-配置-springfactories)
-  * [6. 打包并发布](#6-打包并发布)
-    * [Maven 打包](#maven-打包)
-  * [7. 使用自定义 Starter](#7-使用自定义-starter)
-    * [Maven `pom.xml`](#maven-pomxml-1)
-  * [示例代码](#示例代码)
-      * [自定义 Starter 项目结构](#自定义-starter-项目结构)
-    * [`MyService.java`](#myservicejava)
-    * [`MyAutoConfiguration.java`](#myautoconfigurationjava)
-    * [properties in META-INF](#properties-in-meta-inf)
-    * [`pom.xml`](#pomxml)
-    * [使用自定义 Starter 的项目结构](#使用自定义-starter-的项目结构)
-    * [`DemoApplication.java`](#demoapplicationjava)
-    * [`pom.xml`](#pomxml-1)
+    * [1. 创建 Starter 项目](#1-创建-starter-项目)
+        * [Maven 项目结构](#maven-项目结构)
+    * [2. 配置 `pom.xml` 或 `build.gradle`](#2-配置-pomxml-或-buildgradle)
+        * [Maven `pom.xml`](#maven-pomxml)
+    * [3. 创建自动配置类](#3-创建自动配置类)
+    * [4. 创建服务类](#4-创建服务类)
+    * [5. 配置 `spring.factories`](#5-配置-springfactories)
+    * [6. 打包并发布](#6-打包并发布)
+        * [Maven 打包](#maven-打包)
+    * [7. 使用自定义 Starter](#7-使用自定义-starter)
+        * [Maven `pom.xml`](#maven-pomxml-1)
+    * [示例代码](#示例代码)
+        * [自定义 Starter 项目结构](#自定义-starter-项目结构)
+        * [`MyService.java`](#myservicejava)
+        * [`MyAutoConfiguration.java`](#myautoconfigurationjava)
+        * [properties in META-INF](#properties-in-meta-inf)
+        * [`pom.xml`](#pomxml)
+        * [使用自定义 Starter 的项目结构](#使用自定义-starter-的项目结构)
+        * [`DemoApplication.java`](#demoapplicationjava)
+        * [`pom.xml`](#pomxml-1)
 * [Use Redis in Spring Boot](#use-redis-in-spring-boot)
-  * [Jedis](#jedis)
-    * [dependency](#dependency)
-    * [connect to redis](#connect-to-redis)
-    * [基本操作](#基本操作)
-    * [1. 连接到 Redis 服务器](#1-连接到-redis-服务器)
-    * [2. 字符串操作](#2-字符串操作)
-    * [3. 哈希操作](#3-哈希操作)
-    * [4. 列表操作](#4-列表操作)
-    * [5. 集合操作](#5-集合操作)
-    * [6. 有序集合操作](#6-有序集合操作)
-    * [7. 发布/订阅](#7-发布订阅)
-    * [8. 事务和管道](#8-事务和管道)
-      * [事务](#事务)
-      * [管道](#管道)
-  * [Lettuce](#lettuce)
-    * [dependency](#dependency-1)
-    * [setup](#setup)
-    * [Usage](#usage)
+    * [Jedis](#jedis)
+        * [dependency](#dependency)
+        * [connect to redis](#connect-to-redis)
+        * [基本操作](#基本操作)
+        * [1. 连接到 Redis 服务器](#1-连接到-redis-服务器)
+        * [2. 字符串操作](#2-字符串操作)
+        * [3. 哈希操作](#3-哈希操作)
+        * [4. 列表操作](#4-列表操作)
+        * [5. 集合操作](#5-集合操作)
+        * [6. 有序集合操作](#6-有序集合操作)
+        * [7. 发布/订阅](#7-发布订阅)
+        * [8. 事务和管道](#8-事务和管道)
+            * [事务](#事务)
+            * [管道](#管道)
+    * [Lettuce](#lettuce)
+        * [dependency](#dependency-1)
+        * [setup](#setup)
+        * [Usage](#usage)
+
 <!-- TOC -->
 
 # Spring Boot auto configuration
@@ -1967,3 +1969,258 @@ public void testJedisUtil() {
     }
 }
 ```
+
+### 1. 连接到 Redis 服务器
+
+首先确保已经建立了连接：
+
+```java
+import io.lettuce.core.RedisClient;
+import io.lettuce.core.api.StatefulRedisConnection;
+import io.lettuce.core.api.sync.RedisCommands;
+
+public class LettuceExample {
+    private static final String HOST = "127.0.0.1";
+    private static final int PORT = 6379;
+    private static final String PASSWORD = "redis";
+
+    public static void main(String[] args) {
+        RedisClient client = RedisClient.create("redis://" + PASSWORD + "@" + HOST + ":" + PORT);
+        StatefulRedisConnection<String, String> connection = client.connect();
+        RedisCommands<String, String> commands = connection.sync();
+
+        // 执行命令...
+
+        connection.close();
+        client.shutdown();
+    }
+}
+```
+
+### 2. 字符串操作
+
+- **设置和获取字符串**
+
+```java
+commands.set("key","value");
+
+String value = commands.get("key");
+System.out.
+
+println("Stored string in Redis:: "+value);
+```
+
+- **追加字符串**
+
+```java
+commands.append("key","more");
+```
+
+- **递增/递减数值**
+
+```java
+commands.incr("counter"); // 自增
+commands.
+
+decr("counter"); // 自减
+```
+
+### 3. 哈希操作
+
+- **设置哈希字段**
+
+```java
+commands.hset("hashKey","field1","value1");
+```
+
+- **获取哈希字段**
+
+```java
+String fieldValue = commands.hget("hashKey", "field1");
+```
+
+- **获取所有字段和值**
+
+```java
+Map<String, String> hashValues = commands.hgetall("hashKey");
+```
+
+### 4. 列表操作
+
+- **向列表左侧插入元素**
+
+```java
+commands.lpush("listKey","item1","item2");
+```
+
+- **从列表右侧弹出元素**
+
+```java
+String item = commands.rpop("listKey");
+```
+
+- **获取列表范围内的元素**
+
+```java
+List<String> listItems = commands.lrange("listKey", 0, -1);
+```
+
+### 5. 集合操作
+
+- **添加到集合**
+
+```java
+commands.sadd("setKey","member1","member2");
+```
+
+- **检查成员是否存在**
+
+```java
+Boolean isMember = commands.sismember("setKey", "member1");
+```
+
+- **获取集合中所有成员**
+
+```java
+Set<String> setMembers = commands.smembers("setKey");
+```
+
+### 6. 有序集合操作
+
+- **添加到有序集合**
+
+```java
+commands.zadd("zsetKey",1.0,"member1");
+```
+
+- **获取指定范围的成员（按分数排序）**
+
+```java
+List<String> zsetMembers = commands.zrange("zsetKey", 0, -1);
+```
+
+- **获取成员的排名**
+
+```java
+Long rank = commands.zrank("zsetKey", "member1");
+```
+
+### 7. 发布/订阅
+
+Lettuce 提供了异步的支持来处理发布/订阅模式：
+
+```java
+import io.lettuce.core.pubsub.RedisPubSubListener;
+import io.lettuce.core.pubsub.StatefulRedisPubSubConnection;
+import io.lettuce.core.pubsub.api.sync.RedisPubSubCommands;
+
+// 订阅者
+StatefulRedisPubSubConnection<String, String> pubSubConnection = client.connectPubSub();
+        RedisPubSubCommands<String, String> pubSub = pubSubConnection.sync();
+pubSub.
+
+        subscribe("channel1");
+
+pubSub.
+
+        addListener(new RedisPubSubListener<String, String>() {
+            @Override
+            public void message (String channel, String message){
+                System.out.println("Received message from channel '" + channel + "': " + message);
+            }
+        });
+
+// 发布者
+        commands.
+
+        publish("channel1","Hello, Redis!");
+```
+
+### 8. 事务和管道
+
+#### 事务
+
+```java
+import io.lettuce.core.transaction.RedisTransaction;
+import io.lettuce.core.api.async.RedisAsyncCommands;
+
+RedisTransaction tx = connection.sync().multi();
+tx.
+
+set("foo","bar").
+
+get("foo");
+
+List<Object> results = tx.exec();
+```
+
+#### 管道
+
+```java
+import io.lettuce.core.api.async.RedisAsyncCommands;
+
+RedisAsyncCommands<String, String> asyncCommands = connection.async();
+asyncCommands.
+
+set("foo","bar");
+asyncCommands.
+
+get("foo");
+asyncCommands.
+
+flushCommands(); // 触发管道执行
+```
+
+## Redis Template
+
+### dependency
+
+```xml
+
+<dependency>
+    <groupId>org.springframework.boot</groupId>
+    <artifactId>spring-boot-starter-data-redis</artifactId>
+</dependency>
+```
+
+### setup
+- config redis connection
+```properties
+spring.redis.host=127.0.0.1
+spring.redis.port=6379
+spring.redis.password=redis
+spring.redis.database=0
+```
+- config redis template
+```java
+package com.li.hellospringbootredis.config;
+
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.data.redis.connection.RedisConnectionFactory;
+import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.serializer.StringRedisSerializer;
+import org.springframework.data.redis.serializer.GenericToStringSerializer;
+
+@Configuration
+public class RedisConfig {
+
+    @Bean
+    public RedisTemplate<String, Object> redisTemplate(RedisConnectionFactory connectionFactory) {
+        RedisTemplate<String, Object> template = new RedisTemplate<>();
+        template.setConnectionFactory(connectionFactory);
+
+        // 设置Key的序列化方式
+        template.setKeySerializer(new StringRedisSerializer());
+        template.setHashKeySerializer(new StringRedisSerializer());
+
+        // 设置Value的序列化方式
+        template.setValueSerializer(new GenericToStringSerializer<>(Object.class));
+        template.setHashValueSerializer(new GenericToStringSerializer<>(Object.class));
+
+        return template;
+    }
+}
+
+```
+
