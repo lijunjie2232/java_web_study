@@ -23,6 +23,8 @@ public class RedisConfig {
         template.setValueSerializer(new GenericToStringSerializer<>(Object.class));
         template.setHashValueSerializer(new GenericToStringSerializer<>(Object.class));
 
+        template.afterPropertiesSet();
+
         return template;
     }
 }

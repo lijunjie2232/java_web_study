@@ -2208,19 +2208,27 @@ flushCommands(); // 触发管道执行
 ### setup
 
 - config redis connection
-
+- single redis
 ```properties
 spring.data.redis.host=127.0.0.1
 spring.data.redis.port=6379
 spring.data.redis.password=redis
 spring.data.redis.database=0
 spring.data.redis.timeout=10000
+spring.data.redis.lettuce.pool.max-active=8
+spring.data.redis.lettuce.pool.max-wait=-1
+spring.data.redis.lettuce.pool.max-idle=8
+spring.data.redis.lettuce.pool.min-idle=0
 # old version config
 #spring.redis.host=127.0.0.1
 #spring.redis.port=6379
 #spring.redis.password=redis
 #spring.redis.database=0
 #spring.redis.timeout=10000
+```
+- redis cluster
+```properties
+
 ```
 
 - config redis template
@@ -2232,6 +2240,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.serializer.GenericJackson2JsonRedisSerializer;
 import org.springframework.data.redis.serializer.StringRedisSerializer;
 import org.springframework.data.redis.serializer.GenericToStringSerializer;
 
@@ -2249,7 +2258,12 @@ public class RedisConfig {
 
         // 设置Value的序列化方式
         template.setValueSerializer(new GenericToStringSerializer<>(Object.class));
-        template.setHashValueSerializer(new GenericToStringSerializer<>(Object.class));
+        // store string as redis hash value
+        // template.setHashValueSerializer(new GenericToStringSerializer<>(Object.class));
+        // store json as redis hash value
+        template.setHashValueSerializer(new GenericJackson2JsonRedisSerializer());
+        
+        template.afterPropertiesSet();
 
         return template;
     }
