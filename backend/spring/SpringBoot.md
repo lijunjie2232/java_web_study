@@ -2630,3 +2630,11 @@ public class RedisService {
 spring.data.redis.lettuce.cluster.refresh.adaptive=true
 spring.data.redis.lettuce.cluster.refresh.period=2000
 ```
+
+## Sentinel
+- method 1: config by properties
+```properties
+spring.data.redis.sentinel.master=<master_name>
+spring.data.redis.sentinel.nodes=<st_node1_ip>:<st_node1_port>,<st_node2_ip>:<st_node2_port>,...
+spring.data.redis.sentinel.password=redis
+```
