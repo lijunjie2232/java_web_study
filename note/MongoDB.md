@@ -8,4 +8,10 @@ curl -fsSL https://www.mongodb.org/static/pgp/server-8.0.asc | \
 echo "deb [ arch=amd64,arm64 signed-by=/usr/share/keyrings/mongodb-server-8.0.gpg ] https://repo.mongodb.org/apt/ubuntu noble/mongodb-org/8.0 multiverse" | sudo tee /etc/apt/sources.list.d/mongodb-org-8.0.list
 sudo apt-get update
 sudo apt-get install -y mongodb-org
+sudo systemctl daemon-reload
+sudo systemctl enable mongod --now
 ```
+
+- 数据目录: `/var/lib/mongodb`
+- 日志目录: `/var/log/mongodb`
+- 配置文件: `/etc/mongod.conf`
