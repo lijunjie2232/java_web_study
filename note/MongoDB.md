@@ -67,34 +67,26 @@ mongoimport -h <host:port> -d <db> -c <collection> -u <user> -p <password> -type
 
 ## Roles
 ### 内置角色
-#### 数据库级角色
-这些角色适用于特定数据库。
-
-- **read**：允许用户读取指定数据库中的所有集合。
-- **readWrite**：允许用户读取和写入指定数据库中的所有集合。
-- **dbAdmin**：允许用户执行管理操作，如创建和删除集合、索引等，但不包括用户管理。
-- **dbOwner**：允许用户执行所有数据库级别的操作，包括用户管理。
-- **userAdmin**：允许用户管理指定数据库中的用户和角色。
-
-#### 集合级角色
-这些角色适用于特定集合。
-
-- **read**：允许用户读取指定集合。
-- **readWrite**：允许用户读取和写入指定集合。
-
-#### 跨数据库角色
-这些角色适用于所有数据库。
-
-- **readAnyDatabase**：允许用户读取所有数据库中的所有集合。
-- **readWriteAnyDatabase**：允许用户读取和写入所有数据库中的所有集合。
-- **dbAdminAnyDatabase**：允许用户执行管理操作，如创建和删除集合、索引等，但不包括用户管理，适用于所有数据库。
-- **userAdminAnyDatabase**：允许用户管理所有数据库中的用户和角色。
-- **clusterAdmin**：允许用户执行集群级别的管理操作，如备份、恢复、分片管理等。
-- **clusterMonitor**：允许用户监控集群状态。
-- **hostManager**：允许用户管理服务器和操作系统级别的操作。
-- **backup**：允许用户执行备份操作。
-- **restore**：允许用户执行恢复操作。
-- **root**：允许用户执行所有操作，包括用户管理、数据库管理、集群管理等。
+#### 数据库用户角色（Database User Roles)
+- read : 授权User只读数据的权限，允许用户读取指定的数据库
+- readWrite  授权User读/写数据的权限，允许用户读/写指定的数据库
+#### 数据库管理角色（Database Admininstration Roles)
+- dbAdmin：在当前的数据库中执行管理操作，如索引的创建、删除、统计、查看等
+- dbOwner：在当前的数据库中执行任意操作，增、删、改、查等
+- userAdmin ：在当前的数据库中管理User，创建、删除和管理用户。
+#### ​备份和还原角色（Backup and Restoration Roles)​​​​​​​
+- backup
+- restore
+#### 跨库角色（All-Database Roles)
+- readAnyDatabase：授权在所有的数据库上读取数据的权限，只在 admin 中可用
+- readWriteAnyDatabase：授权在所有的数据库上读写数据的权限，只在 admin 中可用
+- userAdminAnyDatabase：授权在所有的数据库上管理User的权限，只在 admin中可用
+- dbAdminAnyDatabase： 授权管理所有数据库的权限，只在 admin 中可用
+#### 集群管理角色（Cluster Administration Roles)
+- clusterAdmin：授权管理集群的最高权限，只在 admin中可用
+- clusterManager：授权管理和监控集群的权限
+- clusterMonoitor：授权监控集群的权限，对监控工具具有readonly的权限
+- hostManager：管理server
 
 ### 自定义角色
 除了内置角色外，MongoDB 还允许用户创建自定义角色。自定义角色可以包含特定的权限组合，以满足特定的安全需求。创建自定义角色的示例如下：
