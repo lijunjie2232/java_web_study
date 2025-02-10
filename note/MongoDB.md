@@ -35,16 +35,26 @@ Mongosh grammer as JavaScript.
   - `show roles`: show all roles, role is a set of users with permissions
   - `show logs`: show all log name
   - `show log <logname>`: show log content
-- `it <cursor>`: iterate cursor
+- `it [<cursor>]`: iterate cursor, `<cursor>` could be ignored
 - `load <file>`: load JavaScript file into mongosh
 - `cls`: clear screen
 - `print(xxx(a,b))`
 - `sleep <ms>`: sleep for ms milliseconds
 - `db.getMongo()`: get mongodb connection url
 
-## data backup
+## data backup and restore
 ### mongodump
-- `mongodump -h <host:port> -d <db> -u <user> -p <password> -o <output_dir>`
+- backup data
+```bash
+mongodump -h <host:port> -d <db> -u <user> -p <password> -o <output_dir>
+```
+- restore data
+```bash
+mongorestore -h <host:port> -d <db> -u <user> -p <password> --dir <input_dir> --drop
+```
+- `--drop`: drop if target collection exists before restore
+
+
 
 ## Insert
 ### insertOne
