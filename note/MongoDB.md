@@ -58,7 +58,12 @@ mongoexport -h <host:port> -d <db> -c <collection> -u <user> -p <password> -o <o
 ```
 - `--type json/csv`: export to json or csv
 - `-f <field1,field2,...>`: export only specified fields
-
+### import data
+```bash
+mongoimport -h <host:port> -d <db> -c <collection> -u <user> -p <password> -type json/csv --file <input_file> --headerline --jsonArray --drop
+```
+- `--headerline`: use headerline in csv file
+- `--jsonArray`: import json array
 
 ## Insert
 ### insertOne
