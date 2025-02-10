@@ -42,18 +42,22 @@ Mongosh grammer as JavaScript.
 - `sleep <ms>`: sleep for ms milliseconds
 - `db.getMongo()`: get mongodb connection url
 
-## data backup and restore
-### mongodump
-- backup data
+## backup / restore / export / import
+### backup data
 ```bash
 mongodump -h <host:port> -d <db> -u <user> -p <password> -o <output_dir>
 ```
-- restore data
+### restore data
 ```bash
 mongorestore -h <host:port> -d <db> -u <user> -p <password> --dir <input_dir> --drop
 ```
 - `--drop`: drop if target collection exists before restore
-
+### export data
+```bash
+mongoexport -h <host:port> -d <db> -c <collection> -u <user> -p <password> -o <output_file> --type json/csv -f <field1,field2,...>
+```
+- `--type json/csv`: export to json or csv
+- `-f <field1,field2,...>`: export only specified fields
 
 
 ## Insert
