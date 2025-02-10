@@ -222,10 +222,24 @@ db.createCollection("myCollection", {
   max: 5000
 })
 ```
+- `capped`: if true, the collection will be a capped collection, which means it will be a fixed size collection. `capped` is usually used in log collection.
 - `max`: max number of documents in the collection, if the collection is capped, it will delete the oldest documents when the collection reaches the max size
+- `size`: max size of the collection, if the collection is capped, it will delete the oldest documents when the collection reaches the max size
 
 ### show
 - use `show collections` or `db.getCollectionNames()` to show all collections in current database
+
+### drop
+- `db.<collection_name>.drop()`: drop a collection
+
+### collection info
+- `db.<collection_name>.stats()`: show collection info
+- `db.printCollections()`: show all collections in current database
+- count
+  - `db.<collection_name>.count()`: (deprecated) show collection size
+  - `db.<collection_name>.countDocuments()`: show collection size
+  - `db.<collection_name>.estimatedDocumentCount()`: show collection size
+- `db.<collection_name>.totalSize()`: show collection size
 
 ### Insert
 #### insertOne
