@@ -134,6 +134,91 @@ db.createRole({
   db.dropRole("roleName")
   ```
 
+## Users
+### 切换到管理数据库
+用户管理通常在 `admin` 数据库中进行。使用以下命令切换到 `admin` 数据库：
+
+```javascript
+use admin
+```
+
+### 创建管理员用户
+如果还没有管理员用户，首先需要创建一个管理员：
+
+```javascript
+db.createUser({
+  user: "adminUser",
+  pwd: "adminPassword",
+  roles: [ { role: "userAdminAnyDatabase", db: "admin" } ]
+})
+```
+
+### 认证管理员用户
+创建管理员用户后需要进行认证。使用以下命令进行认证：
+
+```javascript
+db.auth("adminUser", "adminPassword")
+```
+
+### 创建其他数据库用户
+在认证为管理员后，为其他数据库创建用户。例如，为 `myDatabase` 数据库创建一个用户：
+
+```javascript
+use myDatabase
+db.createUser({
+  user: "myUser",
+  pwd: "myPassword",
+  roles: [ { role: "readWrite", db: "myDatabase" } ]
+})
+```
+
+### 查看用户列表
+查看特定数据库中的用户列表。例如，查看 `myDatabase` 数据库中的用户：
+
+```javascript
+use myDatabase
+db.getUsers()
+```
+
+### 修改用户密码
+修改用户的密码：
+
+```javascript
+use myDatabase
+db.changeUserPassword("myUser", "newPassword")
+```
+
+### 删除用户
+删除一个用户：
+
+```javascript
+use myDatabase
+db.dropUser("myUser")
+```
+
+### 查看角色
+查看 MongoDB 中可用的角色列表：
+
+```javascript
+use admin
+db.getRoles({showBuiltinRoles: true})
+```
+
+### 将角色分配给用户
+将自定义角色分配给用户：
+
+```javascript
+use myDatabase
+db.grantRolesToUser("myUser", ["customRole"])
+```
+
+### 撤销用户角色
+如果需要撤销用户的某个角色，可以使用以下命令：
+
+```javascript
+use myDatabase
+db.revokeRolesFromUser("myUser", ["customRole"])
+```
 
 ## Insert
 ### insertOne
