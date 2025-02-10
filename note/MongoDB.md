@@ -42,6 +42,9 @@ Mongosh grammer as JavaScript.
 - `sleep <ms>`: sleep for ms milliseconds
 - `db.getMongo()`: get mongodb connection url
 
+## data backup
+### mongodump
+- `mongodump -h <host:port> -d <db> -u <user> -p <password> -o <output_dir>`
 
 ## Insert
 ### insertOne
