@@ -241,6 +241,105 @@ db.createCollection("myCollection", {
   - `db.<collection_name>.estimatedDocumentCount()`: show collection size
 - `db.<collection_name>.totalSize()`: show collection size
 
+## Documents
+
+### ObjectID
+ObjectID 是 MongoDB 中的一个特殊数据类型，用于唯一标识数据库中的文档。它由 12 个字节组成，其中前 4 个字节是时间戳，5 个字节的客服端生成的随机数，最后 3 个字节是进程标识符和自增计数器。
+
+### 基本数据类型
+
+1. **String**
+   - 用于存储文本数据。
+   - 示例：
+     ```json
+     { "name": "Alice" }
+     ```
+
+2. **Integer**
+   - 用于存储整数值。MongoDB 支持 32 位整数（`int32`）和 64 位整数（`int64`）。
+   - 示例：
+     ```json
+     { "age": 30 }
+     ```
+
+3. **Double**
+   - 用于存储浮点数值。
+   - 示例：
+     ```json
+     { "height": 5.9 }
+     ```
+
+4. **Boolean**
+   - 用于存储布尔值（`true` 或 `false`）。
+   - 示例：
+     ```json
+     { "isStudent": true }
+     ```
+
+5. **Object**
+   - 用于存储嵌套文档。
+   - 示例：
+     ```json
+     { "address": { "street": "123 Main St", "city": "New York" } }
+     ```
+
+6. **Array**
+   - 用于存储有序的值列表，可以包含不同类型的值。
+   - 示例：
+     ```json
+     { "tags": ["mongodb", "database", "nosql"] }
+     ```
+
+7. **Binary Data**
+   - 用于存储二进制数据。
+   - 示例：
+     ```json
+     { "image": BinData(0, "aGVsbG8gd29ybGQ=") }
+     ```
+
+8. **ObjectId**
+   - 用于存储唯一的对象标识符，通常用于文档的唯一标识。
+   - 示例：
+     ```json
+     { "_id": ObjectId("507f1f77bcf86cd799439011") }
+     ```
+
+9. **Date**
+   - 用于存储日期和时间。
+   - 示例：
+     ```json
+     { "createdAt": ISODate("2023-10-01T12:00:00Z") }
+     ```
+
+10. **Null**
+    - 用于表示空值。
+    - 示例：
+      ```json
+      { "middleName": null }
+      ```
+
+11. **Regular Expression**
+    - 用于存储正则表达式。
+    - 示例：
+      ```json
+      { "pattern": /abc/i }
+      ```
+
+12. **JavaScript**
+    - 用于存储 JavaScript 代码。
+    - 示例：
+      ```json
+      { "script": function() { return "hello"; } }
+      ```
+
+13. **Timestamp**
+    - 用于存储时间戳，通常用于记录文档的创建或修改时间。
+    - 示例：
+      ```json
+      { "timestamp": Timestamp(1633072800, 1) }
+      ```
+
+## CRUD
 ### Insert
 #### insertOne
 ```bash
