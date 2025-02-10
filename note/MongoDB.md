@@ -212,8 +212,23 @@ use myDatabase
 db.revokeRolesFromUser("myUser", ["customRole"])
 ```
 
-## Insert
-### insertOne
+## Collections
+- there's no need to create collections manually but some times collectinos need some options to specify
+### create
+```bash
+db.createCollection("myCollection", {
+  capped: true,
+  size: 100000,
+  max: 5000
+})
+```
+- `max`: max number of documents in the collection, if the collection is capped, it will delete the oldest documents when the collection reaches the max size
+
+### show
+- use `show collections` or `db.getCollectionNames()` to show all collections in current database
+
+### Insert
+#### insertOne
 ```bash
 use sample_mflix
 
@@ -231,7 +246,7 @@ db.movies.insertOne(
 )
 ```
 
-### insertMany
+#### insertMany
 ```bash
 use sample_mflix
 
