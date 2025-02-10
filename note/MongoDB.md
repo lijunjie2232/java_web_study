@@ -23,6 +23,26 @@ docker run --name mongodb -p 27017:27017 -d mongodb/mongodb-community-server:lat
 ```
 
 # Mongosh
+Mongosh grammer as JavaScript.
+## basic operation
+- `db`: print current database
+- `use <db>`: switch to database
+- `show`
+  - `show databases` / `show dbs`: show all databases
+  - `show collections` / `show tables`: show all collections
+  - `show profile`: show db.system.profile
+  - `show users`: show all users
+  - `show roles`: show all roles, role is a set of users with permissions
+  - `show logs`: show all log name
+  - `show log <logname>`: show log content
+- `it <cursor>`: iterate cursor
+- `load <file>`: load JavaScript file into mongosh
+- `cls`: clear screen
+- `print(xxx(a,b))`
+- `sleep <ms>`: sleep for ms milliseconds
+- `db.getMongo()`: get mongodb connection url
+
+
 ## Insert
 ### insertOne
 ```bash
@@ -69,3 +89,4 @@ db.movies.insertMany([
     }
 ])
 ```
+
