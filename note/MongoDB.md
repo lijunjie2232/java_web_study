@@ -64,6 +64,7 @@
       - [Usage](#usage-4)
     - [地理空间](#地理空间)
     - [阵列](#阵列)
+      - [Usage](#usage-5)
     - [Bitwise](#bitwise)
   - [投影操作符](#投影操作符)
   - [其他操作符](#其他操作符)
@@ -736,6 +737,46 @@ db.inventory.find( { status: "D" } )
 | [`$all`](https://www.mongodb.com/zh-cn/docs/manual/reference/operator/query/all/#mongodb-query-op.-all)                   | 匹配包含查询中指定的所有元素的数组。                                                                                                                                                |
 | [`$elemMatch`](https://www.mongodb.com/zh-cn/docs/manual/reference/operator/query/elemMatch/#mongodb-query-op.-elemMatch) | 如果数组字段中的元素与所有指定的 [`$elemMatch`](https://www.mongodb.com/zh-cn/docs/manual/reference/operator/query/elemMatch/#mongodb-query-op.-elemMatch) 条件均匹配，则选择文档。 |
 | [`$size`](https://www.mongodb.com/zh-cn/docs/manual/reference/operator/query/size/#mongodb-query-op.-size)                | 如果数组字段达到指定大小，则选择文档。                                                                                                                                              |
+
+#### Usage
+- `$elemMatch`
+  ```javascript
+  // results 数组中至少包含一个大于或等于 80 且小于 85
+  db.scores.find(
+    { results: { $elemMatch: { $gte: 80, $lt: 85 } } }
+  )
+  // results 数组中至少包含一个名为 xyz 且分数大于或等于 8 的产品
+  db.survey.find(
+    { results: { $elemMatch: { product: "xyz", score: { $gte: 8 } } } }
+  )
+  ```
+  - different between `{"results.product":"xyz"}` and `{results:{$elemMatch:{product:"xyz"}}`:
+    - `{"results.product":"xyz"}` could match array and object
+      - if document `{ _id: 5, results: { product: 'xyz', score: 7 } }` in collection, it will be retuen
+      - document line `{ _id: ?, results: [{ product: 'xyz', score: ?? }, ...] }` will be return too
+    - `{results:{$elemMatch:{product:"xyz"}}` could only match array
+      - only return document like: `{ _id: ?, results: [{ product: 'xyz', score: ?? }, ...] }`
+
+- `$all`
+  ```javascript
+  // find all documents that include all of the specified tags
+  db.inventory.find( { tags: { $all: [ "appliance", "school", "book" ] } } )
+  /*
+  each document must:
+    1. at least one item in qty has a size of "M" and quantity of this item greater than 50
+    2. at least one item in qty has a num of 100 and color of "green"
+  the two conditions must be satisfied together but could match different item
+  */
+  db.inventory.find({
+    qty: {
+      $all: [
+        { "$elemMatch": { size: "M", num: { $gt: 50 } } },
+        { "$elemMatch": { num: 100, color: "green" } }
+      ]
+    }
+  })
+  ```
+- `$size`
 
 ### Bitwise
 
