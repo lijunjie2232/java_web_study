@@ -104,6 +104,8 @@
     - [操作符](#操作符)
     - [Modifiers](#modifiers)
   - [Bitwise](#bitwise-1)
+  - [常见更新表达式](#常见更新表达式)
+  - [示例](#示例)
 
 # Mongodb install
 ## install in ubuntu
@@ -1410,3 +1412,175 @@ db.donors.updateMany(
 | 名称                                                                                                      | 说明                                         |
 | :-------------------------------------------------------------------------------------------------------- | :------------------------------------------- |
 | [`$bit`](https://www.mongodb.com/zh-cn/docs/manual/reference/operator/update/bit/#mongodb-update-up.-bit) | 对整数值执行按位 `AND`、`OR` 和 `XOR` 更新。 |
+
+## 常见更新表达式
+
+1. **`$set`**
+   - **说明**: 设置字段的值。
+   - **示例**:
+     ```javascript
+     db.collection.updateOne(
+       { name: "John" },
+       { $set: { age: 30 } }
+     )
+     ```
+
+2. **`$unset`**
+   - **说明**: 删除字段。
+   - **示例**:
+     ```javascript
+     db.collection.updateOne(
+       { name: "John" },
+       { $unset: { age: 1 } }
+     )
+     ```
+
+3. **`$inc`**
+   - **说明**: 增加字段的值。
+   - **示例**:
+     ```javascript
+     db.collection.updateOne(
+       { name: "John" },
+       { $inc: { age: 1 } }
+     )
+     ```
+
+4. **`$mul`**
+   - **说明**: 乘以字段的值。
+   - **示例**:
+     ```javascript
+     db.collection.updateOne(
+       { name: "John" },
+       { $mul: { age: 2 } }
+     )
+     ```
+
+5. **`$rename`**
+   - **说明**: 重命名字段。
+   - **示例**:
+     ```javascript
+     db.collection.updateOne(
+       { name: "John" },
+       { $rename: { age: "years" } }
+     )
+     ```
+
+6. **`$min`**
+   - **说明**: 只有当字段的值大于指定值时，才更新字段。
+   - **示例**:
+     ```javascript
+     db.collection.updateOne(
+       { name: "John" },
+       { $min: { age: 25 } }
+     )
+     ```
+
+7. **`$max`**
+   - **说明**: 只有当字段的值小于指定值时，才更新字段。
+   - **示例**:
+     ```javascript
+     db.collection.updateOne(
+       { name: "John" },
+       { $max: { age: 35 } }
+     )
+     ```
+
+8. **`$currentDate`**
+   - **说明**: 设置字段为当前日期或时间戳。
+   - **示例**:
+     ```javascript
+     db.collection.updateOne(
+       { name: "John" },
+       { $currentDate: { lastModified: true } }
+     )
+     ```
+
+9. **`$setOnInsert`**
+   - **说明**: 仅在插入新文档时设置字段。
+   - **示例**:
+     ```javascript
+     db.collection.updateOne(
+       { name: "John" },
+       { $setOnInsert: { createdAt: new Date() } },
+       { upsert: true }
+     )
+     ```
+
+10. **`$addToSet`**
+    - **说明**: 向数组字段添加一个元素，仅当该元素不存在时。
+    - **示例**:
+      ```javascript
+      db.collection.updateOne(
+        { name: "John" },
+        { $addToSet: { hobbies: "reading" } }
+      )
+      ```
+      ```javascript
+      db.collection.updateOne(
+        { name: "John" },
+        { $addToSet: { hobbies: { $each: [ "reading", "swimming" ] } } }
+      )
+
+11. **`$pop`**
+    - **说明**: 移除数组字段的第一个或最后一个元素。
+    - **示例**:
+      ```javascript
+      db.collection.updateOne(
+        { name: "John" },
+        { $pop: { hobbies: 1 } } // 移除最后一个元素
+      )
+      ```
+
+12. **`$pull`**
+    - **说明**: 从数组字段中移除所有匹配的元素。
+    - **示例**:
+      ```javascript
+      db.collection.updateOne(
+        { name: "John" },
+        { $pull: { hobbies: "reading" } }
+      )
+      ```
+
+13. **`$push`**
+    - **说明**: 向数组字段添加一个或多个元素。
+    - **示例**:
+      ```javascript
+      db.collection.updateOne(
+        { name: "John" },
+        { $push: { hobbies: "swimming" } }
+      )
+      ```
+
+14. **`$bit`**
+    - **说明**: 对整型字段执行位操作。
+    - **示例**:
+      ```javascript
+      db.collection.updateOne(
+        { name: "John" },
+        { $bit: { flags: { and: 8 } } }
+      )
+      ```
+
+## 示例
+
+以下是一个综合示例，展示了如何在一次更新操作中使用多个更新表达式：
+
+```javascript
+db.collection.updateOne(
+  { name: "John" },
+  {
+    $set: { age: 30 },
+    $inc: { visits: 1 },
+    $mul: { salary: 1.1 },
+    $rename: { age: "years" },
+    $min: { years: 25 },
+    $max: { years: 35 },
+    $currentDate: { lastModified: true },
+    $addToSet: { hobbies: "reading" },
+    $pop: { hobbies: -1 }, // 移除第一个元素
+    $pull: { hobbies: "swimming" },
+    $push: { hobbies: "cycling" },
+    $bit: { flags: { and: 8 } }
+  }
+)
+```
