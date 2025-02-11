@@ -49,6 +49,8 @@
       - [deleteOne](#deleteone)
     - [Query](#query)
       - [find](#find)
+      - [findOne](#findone)
+      - [sort / limit / skip](#sort--limit--skip)
     - [Condition of Query](#condition-of-query)
 - [Query Operators](#query-operators)
   - [查询选择器](#查询选择器)
@@ -335,16 +337,16 @@ db.createCollection("myCollection", {
 - use `show collections` or `db.getCollectionNames()` to show all collections in current database
 
 ### drop
-- `db.<collection_name>.drop()`: drop a collection
+- `db.<collection>.drop()`: drop a collection
 
 ### collection info
-- `db.<collection_name>.stats()`: show collection info
+- `db.<collection>.stats()`: show collection info
 - `db.printCollections()`: show all collections in current database
 - count
-  - `db.<collection_name>.count()`: (deprecated) show collection size
-  - `db.<collection_name>.countDocuments()`: show collection size
-  - `db.<collection_name>.estimatedDocumentCount()`: show collection size
-- `db.<collection_name>.totalSize()`: show collection size
+  - `db.<collection>.count()`: (deprecated) show collection size
+  - `db.<collection>.countDocuments()`: show collection size
+  - `db.<collection>.estimatedDocumentCount()`: show collection size
+- `db.<collection>.totalSize()`: show collection size
 
 ## Documents
 
@@ -480,6 +482,33 @@ db.inventory.insertMany( [
 ] );
 ```
 ### Update
+```javascript
+db.<collection>.updateOne(
+  <query>,
+  <update>,
+  <options>
+)
+```
+- `<update>`
+  ```javascript
+  {
+    <update operator>: { <field1>: <value1>, ... },
+    <update operator>: { <field2>: <value2>, ... },
+    ...
+  }
+  ```
+- `<options>`
+  ```javascript
+  {
+    upsert: <boolean>,  // 默认为false, 如果为true，则如果查询条件没有匹配到任何文档，则插入一条新文档
+    multi: <boolean>,  // 默认为false, 如果为true，则更新所有匹配到的文档
+    arrayFilters: [ { "element.qty": { $gt: 10 } } ],  //  用于指定更新操作中数组字段的过滤条件
+    hint: { name: 1 },  // 指定索引
+    bypassDocumentValidation: true,  // 如果设置为 true，则跳过文档验证
+    writeConcern: { w: "majority", wtimeout: 5000 } //  指定写操作的写关注级别
+  }
+  ```
+
 #### updateOne
 ```javascript
 db.inventory.updateOne(
@@ -503,12 +532,12 @@ db.inventory.updateMany(
 ```
 ```javascript
 // mongodb对所有price大于1的文档quantity减1
-db.collection.updateMany(
+db.<collection>.updateMany(
   { price: { $gt: 1 } },
   { $inc: { quantity: -1 } }
 )
 // mongodb对所有price大于1的文档quantity减半
-db.collection.updateMany(
+db.<collection>.updateMany(
   { price: { $gt: 1 } },
   [
     { $set: { quantity: { $floor: { $multiply: ["$quantity", 0.5] } } } }
@@ -543,6 +572,26 @@ db.inventory.deleteOne( { status: "D" } )
 db.inventory.find( {} )
 db.inventory.find( { status: "D" } )
 ```
+#### findOne
+```javascript
+db.inventory.findOne( {} )
+db.inventory.findOne( { status: "D" } )
+```
+
+#### sort / limit / skip
+```javascript
+// order by status asc
+db.inventory.find( {} ).sort( { status: 1 } )
+// order by status desc
+db.inventory.find( {} ).sort( { status: -1 } )
+// order by status asc, item desc
+db.inventory.find( {} ).sort( { status: 1, item: -1 } )
+// show first 5
+db.inventory.find( {} ).sort( { status: 1, item: -1 } ).limit( 5 )
+// show 3rd to 7th
+db.inventory.find( {} ).sort( { status: 1, item: -1 } ).limit( 5 ).skip( 2 )
+```
+
 ### Condition of Query
 - AND: `db.inventory.find( { status: "A", qty: { $lt: 30 } } )`
 - OR: `db.inventory.find( { $or: [ { status: "A" }, { qty: { $lt: 30 } } ] } )`
