@@ -510,7 +510,7 @@ db.inventory.find( { status: "D" } )
 ## 查询选择器
 ### Usage
   ```javascript
-  db.inventory.find( { <field1>: { <operator1>: <value1> }, ... } )
+  db.<collection>.find( { <field1>: { <operator1>: <value1> }, ... } )
   ```
 
 ### 对比
@@ -623,9 +623,30 @@ db.inventory.find( { status: "D" } )
 - `$jsonSchema`
 - `$mod`
   ```javascript
+  // find all documents that quantity%4==0
   db.inventory.find( { qty: { $mod: [ 4, 0 ] } } )
   ```
 - `$regex`
+  ```javascript
+  // { <field>: { $regex: /pattern/, $options: '<options>' } }
+  // { "<field>": { "$regex": "pattern", "$options": "<options>" } }
+  // { <field>: { $regex: /pattern/<options> } }
+  // 匹配以 789 结尾的 sku
+  db.products.find( { sku: { $regex: /789$/ } } )
+  // 使用 m 选项为多行字符串匹配以字母 S 开头的行
+  db.products.find( { description: { $regex: /^S/, $options: 'm' } } )
+  // 利用 i 选项对 sku 值以 ABC 开头的文档执行不区分大小写的匹配
+  db.products.find( { sku: { $regex: /^ABC/i } } )
+  ```
+  - `<options>`
+
+  | 选项 | 说明                                                                                                                                                                                                                                                                                                                                                                                             |
+  | :--- | :----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+  | `i`  | 不区分大小写，以匹配大小写。 [有关示例，请参阅执行不区分大小写的正则表达式匹配。](https://www.mongodb.com/zh-cn/docs/manual/reference/operator/query/regex/#std-label-regex-case-insensitive)                                                                                                                                                                                                    |
+  | `m`  | 对于包含锚点的模式（即 `^` 表示开始，`$` 表示结束），匹配具有多行值的字符串的每行的开头或结尾。 如果没有此选项，这些锚点将在字符串的开头或结尾匹配。 [有关示例，请参阅以指定模式开头的行的多行匹配。](https://www.mongodb.com/zh-cn/docs/manual/reference/operator/query/regex/#std-label-regex-multiline-match)如果模式不包含锚点，或者字符串值没有换行符（如 `\n`），则 `m` 选项没有任何作用。 |
+  | `x`  | “扩展”功能，可忽略 `$regex` 模式中的所有空白字符，除非转义或包含在字符类中。此外，其还会忽略未转义的哈希/磅 (`#`) 字符和下一新行（含）之间的字符，因此您可以在复杂的模式中加入注释。这种情况只适用于数据字符；空白字符绝不能出现在模式中的特殊字符序列中。`x` 选项不影响对 VT 字符的处理（如代码 11）。                                                                                          |
+  | `s`  | 允许点字符（即 `.`）匹配所有字符，包括换行符。有关示例，请参阅使用[ `.`点字符匹配新行。](https://www.mongodb.com/zh-cn/docs/manual/reference/operator/query/regex/#std-label-regex-dot-new-line)                                                                                                                                                                                                 |
+  | `u`  | 支持 Unicode。此标记被接受，但多余。在 `$regex` 操作符中，UTF 是默认设置的，因此不必使用 `u` 选项。                                                                                                                                                                                                                                                                                              |
 - `$text`
 - `$where`
 
