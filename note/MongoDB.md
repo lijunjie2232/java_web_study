@@ -67,6 +67,7 @@
       - [Usage](#usage-5)
     - [Bitwise](#bitwise)
   - [投影操作符](#投影操作符)
+      - [Usage](#usage-6)
   - [其他操作符](#其他操作符)
 
 # Mongodb install
@@ -802,7 +803,29 @@ db.inventory.find( { status: "D" } )
 | [`$meta`](https://www.mongodb.com/zh-cn/docs/manual/reference/operator/aggregation/meta/#mongodb-expression-exp.-meta)                | 预测在 `$text` 操作中分配的文件分数。`$text` 提供了自管理（非 Atlas）部署的文本查询功能。对于托管在 MongoDB Atlas 上的数据，MongoDB 提供了一种改进的全文查询解决方案，[Atlas Search](https://www.mongodb.com/zh-cn/docs/atlas/atlas-search/)。 |
 | [`$slice`](https://www.mongodb.com/zh-cn/docs/manual/reference/operator/projection/slice/#mongodb-projection-proj.-slice)             | 限制从数组中投影的元素数量。支持跳过切片和对切片进行数量限制。                                                                                                                                                                                 |
 
-
+#### Usage
+- `$slice`
+  ```javascript
+  /*
+  db.collection.find(
+    <query>,
+    { <arrayField>: { $slice: <limit:number> } }
+  );
+  db.collection.find(
+    <query>,
+    { <arrayField>: { $slice: [ <offset:number>, <limit:number> ] } }
+  );
+  */
+  db.inventory.find( { }, { qty: 1, "details.colors": { $slice: 1 } } )
+  ```
+- `$`: 投影
+  ```javascript
+  // 投影 { "grades.$": 1 } 仅比较且返回 grades 数组的第一个元素，该元素大于或等于 85 
+  db.students.find(
+    { semester: 1, grades: { $gte: 85 } },
+    { "grades.$": 1 }
+  )
+  ```
 
 ## 其他操作符
 
