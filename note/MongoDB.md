@@ -648,6 +648,28 @@ db.inventory.find( { status: "D" } )
   | `s`  | 允许点字符（即 `.`）匹配所有字符，包括换行符。有关示例，请参阅使用[ `.`点字符匹配新行。](https://www.mongodb.com/zh-cn/docs/manual/reference/operator/query/regex/#std-label-regex-dot-new-line)                                                                                                                                                                                                 |
   | `u`  | 支持 Unicode。此标记被接受，但多余。在 `$regex` 操作符中，UTF 是默认设置的，因此不必使用 `u` 选项。                                                                                                                                                                                                                                                                                              |
 - `$text`
+  ```javascript
+  /*{
+    $text: {
+      $search: <string>,
+      $language: <string>,  // 可选。用于确定查询停用词列表以及词干分析器和分词器规则的语言。
+      $caseSensitive: <boolean>,  // 可选。用于启用或禁用区分大小写的布尔标志。默认值为 false
+      $diacriticSensitive: <boolean>  // 可选。一个布尔标志，用于启用或禁用针对版本 3 文本索引的变音符号敏感性。默认为 false。
+    }
+  }*/
+  // 创建一个文本索引
+  db.articles.createIndex( { subject: "text" } )
+  // subject 字段中包含 bake、coffee 或 cake 词干的文档
+  db.articles.find( { $text: { $search: "bake coffee cake" } } )
+  // subject 字段匹配短语 coffee shop
+  db.articles.find( { $text: { $search: "\"coffee shop\"" } } )
+  // subject 字段匹配 coffee 但不匹配 shop
+  db.articles.find( { $text: { $search: "coffee -shop" } } )
+  // 指定 es，即西班牙语, subject 字段匹配 leche
+  db.articles.find( { $text: { $search: "leche", $language: "es" } } )
+  // subject 字段区分大小写匹配 Coffee
+  db.articles.find( { $text: { $search: "Coffee", $caseSensitive: true } } )
+  ```
 - `$where`
 
 ### 地理空间
