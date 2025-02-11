@@ -94,6 +94,14 @@
   - [累加器（其他阶段中）](#累加器其他阶段中)
   - [变量表达式操作符](#变量表达式操作符)
   - [窗口运算符](#窗口运算符)
+- [更新操作符](#更新操作符)
+  - [语法](#语法)
+  - [行为](#行为)
+  - [字段](#字段)
+  - [阵列](#阵列-1)
+    - [操作符](#操作符)
+    - [Modifiers](#modifiers)
+  - [Bitwise](#bitwise-1)
 
 # Mongodb install
 ## install in ubuntu
@@ -1271,3 +1279,70 @@ db.donors.updateMany(
 | [`$top`](https://www.mongodb.com/zh-cn/docs/manual/reference/operator/aggregation/top/#mongodb-group-grp.-top)                                  | 根据指定的排序顺序返回群组内第一个元素。*5.2 版本中的新增功能*。可在 [`$group`](https://www.mongodb.com/zh-cn/docs/manual/reference/operator/aggregation/group/#mongodb-pipeline-pipe.-group) 和 [`$setWindowFields`](https://www.mongodb.com/zh-cn/docs/manual/reference/operator/aggregation/setWindowFields/#mongodb-pipeline-pipe.-setWindowFields) 阶段使用。                                                                                                                                                                                                                                                                               |
 | [`$topN`](https://www.mongodb.com/zh-cn/docs/manual/reference/operator/aggregation/topN/#mongodb-group-grp.-topN)                               | 根据指定的排序顺序，返回群组内前 `n` 个字段的聚合。*5.2 版本中的新增功能*。可在 [`$group`](https://www.mongodb.com/zh-cn/docs/manual/reference/operator/aggregation/group/#mongodb-pipeline-pipe.-group) 和 [`$setWindowFields`](https://www.mongodb.com/zh-cn/docs/manual/reference/operator/aggregation/setWindowFields/#mongodb-pipeline-pipe.-setWindowFields) 阶段使用。算术表达式操作符                                                                                                                                                                                                                                                    |
 
+# 更新操作符
+## 语法
+```javascript
+{
+   <operator1>: { <field1>: <value1>, ... },
+   <operator2>: { <field2>: <value2>, ... },
+   ...
+}
+```
+
+
+
+## 行为
+
+从 MongoDB 5.0 开始，更新运算符按字典顺序处理具有基于字符串的名称的文档字段。具有数字名称的字段按数字顺序处理。
+
+参考该 [`$set`](https://www.mongodb.com/zh-cn/docs/manual/reference/operator/update/set/#mongodb-update-up.-set) 命令示例：
+
+```
+{ $set: { "a.2": <new value>, "a.10": <new value>, } }
+```
+
+在 MongoDB 5.0 及更高版本中，`"a.2"` 在 `"a.10"` 之前处理，因为 `2` 按数字顺序排在 `10` 之前。
+
+## 字段
+
+| 名称                                                                                                                              | 说明                                                                             |
+| :-------------------------------------------------------------------------------------------------------------------------------- | :------------------------------------------------------------------------------- |
+| [`$currentDate`](https://www.mongodb.com/zh-cn/docs/manual/reference/operator/update/currentDate/#mongodb-update-up.-currentDate) | 将字段的值设置为当前日期，可以是日期或时间戳。                                   |
+| [`$inc`](https://www.mongodb.com/zh-cn/docs/manual/reference/operator/update/inc/#mongodb-update-up.-inc)                         | 将字段的值按指定量递增。                                                         |
+| [`$min`](https://www.mongodb.com/zh-cn/docs/manual/reference/operator/update/min/#mongodb-update-up.-min)                         | 仅当指定值小于现有字段值时才更新字段。                                           |
+| [`$max`](https://www.mongodb.com/zh-cn/docs/manual/reference/operator/update/max/#mongodb-update-up.-max)                         | 仅当指定值大于现有字段值时才更新字段。                                           |
+| [`$mul`](https://www.mongodb.com/zh-cn/docs/manual/reference/operator/update/mul/#mongodb-update-up.-mul)                         | 将字段的值乘以指定量。                                                           |
+| [`$rename`](https://www.mongodb.com/zh-cn/docs/manual/reference/operator/update/rename/#mongodb-update-up.-rename)                | 重命名字段。                                                                     |
+| [`$set`](https://www.mongodb.com/zh-cn/docs/manual/reference/operator/update/set/#mongodb-update-up.-set)                         | 设置文档中字段的值。                                                             |
+| [`$setOnInsert`](https://www.mongodb.com/zh-cn/docs/manual/reference/operator/update/setOnInsert/#mongodb-update-up.-setOnInsert) | 如果某一更新操作导致插入文档，则设置字段的值。对修改现有文档的更新操作没有影响。 |
+| [`$unset`](https://www.mongodb.com/zh-cn/docs/manual/reference/operator/update/unset/#mongodb-update-up.-unset)                   | 从文档中删除指定的字段。                                                         |
+
+## 阵列
+
+### 操作符
+
+| 名称                                                                                                                                 | 说明                                                                         |
+| :----------------------------------------------------------------------------------------------------------------------------------- | :--------------------------------------------------------------------------- |
+| [`$`](https://www.mongodb.com/zh-cn/docs/manual/reference/operator/update/positional/#mongodb-update-up.-)                           | 充当占位符，用于更新与查询条件匹配的第一个元素。                             |
+| [`$[\]`](https://www.mongodb.com/zh-cn/docs/manual/reference/operator/update/positional-all/#mongodb-update-up.---)                  | 充当占位符，以更新数组中与查询条件匹配的文档中的所有元素。                   |
+| [`$[\]`](https://www.mongodb.com/zh-cn/docs/manual/reference/operator/update/positional-filtered/#mongodb-update-up.---identifier--) | 充当占位符，以更新与查询条件匹配的文档中所有符合 `arrayFilters` 条件的元素。 |
+| [`$addToSet`](https://www.mongodb.com/zh-cn/docs/manual/reference/operator/update/addToSet/#mongodb-update-up.-addToSet)             | 仅向数组中添加尚不存在于该数组的元素。                                       |
+| [`$pop`](https://www.mongodb.com/zh-cn/docs/manual/reference/operator/update/pop/#mongodb-update-up.-pop)                            | 删除数组的第一项或最后一项。                                                 |
+| [`$pull`](https://www.mongodb.com/zh-cn/docs/manual/reference/operator/update/pull/#mongodb-update-up.-pull)                         | 删除与指定查询匹配的所有数组元素。                                           |
+| [`$push`](https://www.mongodb.com/zh-cn/docs/manual/reference/operator/update/push/#mongodb-update-up.-push)                         | 向数组添加一项。                                                             |
+| [`$pullAll`](https://www.mongodb.com/zh-cn/docs/manual/reference/operator/update/pullAll/#mongodb-update-up.-pullAll)                | 从数组中删除所有匹配值。                                                     |
+
+### Modifiers
+
+| 名称                                                                                                                     | 说明                                                                                                                                                                                                                                                                               |
+| :----------------------------------------------------------------------------------------------------------------------- | :--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| [`$each`](https://www.mongodb.com/zh-cn/docs/manual/reference/operator/update/each/#mongodb-update-up.-each)             | 修改 [`$push`](https://www.mongodb.com/zh-cn/docs/manual/reference/operator/update/push/#mongodb-update-up.-push) 和 [`$addToSet`](https://www.mongodb.com/zh-cn/docs/manual/reference/operator/update/addToSet/#mongodb-update-up.-addToSet) 运算符，以在数组更新时追加多个项目。 |
+| [`$position`](https://www.mongodb.com/zh-cn/docs/manual/reference/operator/update/position/#mongodb-update-up.-position) | 修改 [`$push`](https://www.mongodb.com/zh-cn/docs/manual/reference/operator/update/push/#mongodb-update-up.-push) 运算符，以指定在数组中添加元素的位置。                                                                                                                           |
+| [`$slice`](https://www.mongodb.com/zh-cn/docs/manual/reference/operator/update/slice/#mongodb-update-up.-slice)          | 修改 [`$push`](https://www.mongodb.com/zh-cn/docs/manual/reference/operator/update/push/#mongodb-update-up.-push) 运算符以限制更新后数组的大小。                                                                                                                                   |
+| [`$sort`](https://www.mongodb.com/zh-cn/docs/manual/reference/operator/update/sort/#mongodb-update-up.-sort)             | 修改 [`$push`](https://www.mongodb.com/zh-cn/docs/manual/reference/operator/update/push/#mongodb-update-up.-push) 运算符，以对存储在数组中的文档重新排序。                                                                                                                         |
+
+## Bitwise
+
+| 名称                                                                                                      | 说明                                         |
+| :-------------------------------------------------------------------------------------------------------- | :------------------------------------------- |
+| [`$bit`](https://www.mongodb.com/zh-cn/docs/manual/reference/operator/update/bit/#mongodb-update-up.-bit) | 对整数值执行按位 `AND`、`OR` 和 `XOR` 更新。 |
