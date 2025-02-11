@@ -424,14 +424,24 @@ db.inventory.find( {} )
 db.inventory.find( { status: "D" } )
 ```
 ### Condition of Query
-- Usage
+- AND: `db.inventory.find( { status: "A", qty: { $lt: 30 } } )`
+- OR: `db.inventory.find( { $or: [ { status: "A" }, { qty: { $lt: 30 } } ] } )`
+- AND + OR:
   ```javascript
-  db.inventory.find( { <field1>: { <operator1>: <value1> }, ... } )
+  {
+    status: 'A',
+    $or: [
+      { qty: { $lt: 30 } }, { item: { $regex: '^p' } }
+    ]
+  }
   ```
 
+
 ## 查询选择器
-
-
+### Usage
+```javascript
+db.inventory.find( { <field1>: { <operator1>: <value1> }, ... } )
+```
 
 ### 对比
 
