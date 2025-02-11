@@ -403,3 +403,16 @@ db.inventory.replaceOne(
    { item: "paper", instock: [ { warehouse: "A", qty: 60 }, { warehouse: "B", qty: 40 } ] }
 )
 ```
+
+### Delete
+#### deleteMany
+```bash
+db.inventory.deleteMany({})
+db.inventory.deleteMany({ status : "A" })
+db.inventory.deleteMany({ "qty": { $lt: 50 } })
+```
+#### deleteOne
+```bash
+db.inventory.deleteOne( { status: "D" } )
+```
+
