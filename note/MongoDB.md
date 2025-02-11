@@ -215,7 +215,7 @@ db.revokeRolesFromUser("myUser", ["customRole"])
 ## Collections
 - there's no need to create collections manually but some times collectinos need some options to specify
 ### create
-```bash
+```javascript
 db.createCollection("myCollection", {
   capped: true,
   size: 100000,
@@ -342,7 +342,7 @@ ObjectID 是 MongoDB 中的一个特殊数据类型，用于唯一标识数据�
 ## CRUD
 ### Insert
 #### insertOne
-```bash
+```javascript
 use sample_mflix
 
 db.movies.insertOne(
@@ -360,7 +360,7 @@ db.movies.insertOne(
 ```
 
 #### insertMany
-```bash
+```javascript
 db.inventory.insertMany( [
    { item: "canvas", qty: 100, size: { h: 28, w: 35.5, uom: "cm" }, status: "A" },
    { item: "journal", qty: 25, size: { h: 14, w: 21, uom: "cm" }, status: "A" },
@@ -376,7 +376,7 @@ db.inventory.insertMany( [
 ```
 ### Update
 #### updateOne
-```bash
+```javascript
 db.inventory.updateOne(
    { item: "paper" },
    {
@@ -387,7 +387,7 @@ db.inventory.updateOne(
 ```
 
 #### updateMany
-```bash
+```javascript
 db.inventory.updateMany(
    { "qty": { $lt: 50 } },
    {
@@ -397,7 +397,7 @@ db.inventory.updateMany(
 )
 ```
 #### replaceOne
-```bash
+```javascript
 db.inventory.replaceOne(
    { item: "paper" },
    { item: "paper", instock: [ { warehouse: "A", qty: 60 }, { warehouse: "B", qty: 40 } ] }
@@ -406,13 +406,126 @@ db.inventory.replaceOne(
 
 ### Delete
 #### deleteMany
-```bash
+```javascript
 db.inventory.deleteMany({})
 db.inventory.deleteMany({ status : "A" })
 db.inventory.deleteMany({ "qty": { $lt: 50 } })
 ```
 #### deleteOne
-```bash
+```javascript
 db.inventory.deleteOne( { status: "D" } )
 ```
+
+
+### Query
+#### find
+```javascript
+db.inventory.find( {} )
+db.inventory.find( { status: "D" } )
+```
+### Condition of Query
+- Usage
+  ```javascript
+  db.inventory.find( { <field1>: { <operator1>: <value1> }, ... } )
+  ```
+
+## 查询选择器
+
+
+
+### 对比
+
+关于不同 BSON 类型值的比较，请参阅[指定的 BSON 比较顺序。](https://www.mongodb.com/zh-cn/docs/manual/reference/bson-type-comparison-order/#std-label-bson-types-comparison-order)
+
+| 名称                                                                                                    | 说明                       |
+| :------------------------------------------------------------------------------------------------------ | :------------------------- |
+| [`$eq`](https://www.mongodb.com/zh-cn/docs/manual/reference/operator/query/eq/#mongodb-query-op.-eq)    | 匹配等于指定值的值。       |
+| [`$gt`](https://www.mongodb.com/zh-cn/docs/manual/reference/operator/query/gt/#mongodb-query-op.-gt)    | 匹配大于指定值的值。       |
+| [`$gte`](https://www.mongodb.com/zh-cn/docs/manual/reference/operator/query/gte/#mongodb-query-op.-gte) | 匹配大于等于指定值的值。   |
+| [`$in`](https://www.mongodb.com/zh-cn/docs/manual/reference/operator/query/in/#mongodb-query-op.-in)    | 匹配数组中指定的任何值。   |
+| [`$lt`](https://www.mongodb.com/zh-cn/docs/manual/reference/operator/query/lt/#mongodb-query-op.-lt)    | 匹配小于指定值的值。       |
+| [`$lte`](https://www.mongodb.com/zh-cn/docs/manual/reference/operator/query/lte/#mongodb-query-op.-lte) | 匹配小于等于指定值的值。   |
+| [`$ne`](https://www.mongodb.com/zh-cn/docs/manual/reference/operator/query/ne/#mongodb-query-op.-ne)    | 匹配所有不等于指定值的值。 |
+| [`$nin`](https://www.mongodb.com/zh-cn/docs/manual/reference/operator/query/nin/#mongodb-query-op.-nin) | 不匹配数组中指定的任何值。 |
+```javascript
+// $eq / $ne / $gt / $gte / $lt / $lte 
+{ <field>: { $eq: <value> } }
+// in / $nin
+{ <field>: { $in: [<value1>, <value2>, ... <valueN> ] } }
+```
+
+### 逻辑
+
+| 名称                                                                                                    | 说明                                                              |
+| :------------------------------------------------------------------------------------------------------ | :---------------------------------------------------------------- |
+| [`$and`](https://www.mongodb.com/zh-cn/docs/manual/reference/operator/query/and/#mongodb-query-op.-and) | 使用逻辑 `AND` 连接查询子句将返回与两个子句的条件匹配的所有文档。 |
+| [`$not`](https://www.mongodb.com/zh-cn/docs/manual/reference/operator/query/not/#mongodb-query-op.-not) | 反转查询谓词的效果，并返回与查询谓词*不*匹配的文档。              |
+| [`$nor`](https://www.mongodb.com/zh-cn/docs/manual/reference/operator/query/nor/#mongodb-query-op.-nor) | 使用逻辑 `NOR` 的联接查询子句会返回无法匹配这两个子句的所有文档。 |
+| [`$or`](https://www.mongodb.com/zh-cn/docs/manual/reference/operator/query/or/#mongodb-query-op.-or)    | 使用逻辑 `OR` 连接多个查询子句会返回符合任一子句条件的所有文档。  |
+
+### 元素
+
+| 名称                                                                                                             | 说明                             |
+| :--------------------------------------------------------------------------------------------------------------- | :------------------------------- |
+| [`$exists`](https://www.mongodb.com/zh-cn/docs/manual/reference/operator/query/exists/#mongodb-query-op.-exists) | 匹配具有指定字段的文档。         |
+| [`$type`](https://www.mongodb.com/zh-cn/docs/manual/reference/operator/query/type/#mongodb-query-op.-type)       | 如果字段为指定类型，则选择文档。 |
+
+### 求值
+
+| 名称                                                                                                                         | 说明                                                                                                                                                                                                                    |
+| :--------------------------------------------------------------------------------------------------------------------------- | :---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| [`$expr`](https://www.mongodb.com/zh-cn/docs/manual/reference/operator/query/expr/#mongodb-query-op.-expr)                   | 允许在查询语言中使用聚合表达式。                                                                                                                                                                                        |
+| [`$jsonSchema`](https://www.mongodb.com/zh-cn/docs/manual/reference/operator/query/jsonSchema/#mongodb-query-op.-jsonSchema) | 根据给定的 JSON 模式验证文档。                                                                                                                                                                                          |
+| [`$mod`](https://www.mongodb.com/zh-cn/docs/manual/reference/operator/query/mod/#mongodb-query-op.-mod)                      | 对字段值执行模运算，并选择具有指定结果的文档。                                                                                                                                                                          |
+| [`$regex`](https://www.mongodb.com/zh-cn/docs/manual/reference/operator/query/regex/#mongodb-query-op.-regex)                | 选择值匹配指定正则表达式的文档。                                                                                                                                                                                        |
+| [`$text`](https://www.mongodb.com/zh-cn/docs/manual/reference/operator/query/text/#mongodb-query-op.-text)                   | 执行文本搜索。`$text` 提供了自管理（非 Atlas）部署的文本查询功能。对于托管在 MongoDB Atlas 上的数据，MongoDB 提供了一种改进的全文查询解决方案，[Atlas Search](https://www.mongodb.com/zh-cn/docs/atlas/atlas-search/)。 |
+| [`$where`](https://www.mongodb.com/zh-cn/docs/manual/reference/operator/query/where/#mongodb-query-op.-where)                | 匹配满足 JavaScript 表达式的文档。                                                                                                                                                                                      |
+
+### 地理空间
+
+| 名称                                                                                                                                  | 说明                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                |
+| :------------------------------------------------------------------------------------------------------------------------------------ | :---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| [`$geoIntersects`](https://www.mongodb.com/zh-cn/docs/manual/reference/operator/query/geoIntersects/#mongodb-query-op.-geoIntersects) | 选择与 [GeoJSON](https://www.mongodb.com/zh-cn/docs/manual/reference/glossary/#std-term-GeoJSON) 几何图形相交的几何图形。[2dsphere](https://www.mongodb.com/zh-cn/docs/manual/core/indexes/index-types/geospatial/2dsphere/#std-label-2dsphere-index) 索引支持 [`$geoIntersects`。](https://www.mongodb.com/zh-cn/docs/manual/reference/operator/query/geoIntersects/#mongodb-query-op.-geoIntersects)                                                                                                                              |
+| [`$geoWithin`](https://www.mongodb.com/zh-cn/docs/manual/reference/operator/query/geoWithin/#mongodb-query-op.-geoWithin)             | 选择在边界 [GeoJSON 几何图形](https://www.mongodb.com/zh-cn/docs/manual/reference/geojson/#std-label-geospatial-indexes-store-geojson)内的几何图形。[2dsphere](https://www.mongodb.com/zh-cn/docs/manual/core/indexes/index-types/geospatial/2dsphere/#std-label-2dsphere-index) 和 [2d](https://www.mongodb.com/zh-cn/docs/manual/core/indexes/index-types/geospatial/2d/#std-label-2d-index) 索引支持 [`$geoWithin`](https://www.mongodb.com/zh-cn/docs/manual/reference/operator/query/geoWithin/#mongodb-query-op.-geoWithin)。 |
+| [`$near`](https://www.mongodb.com/zh-cn/docs/manual/reference/operator/query/near/#mongodb-query-op.-near)                            | 返回接近某个点的地理空间对象。需要地理空间索引。[2dsphere](https://www.mongodb.com/zh-cn/docs/manual/core/indexes/index-types/geospatial/2dsphere/#std-label-2dsphere-index) 和 [2d](https://www.mongodb.com/zh-cn/docs/manual/core/indexes/index-types/geospatial/2d/#std-label-2d-index) 索引支持 [`$near`](https://www.mongodb.com/zh-cn/docs/manual/reference/operator/query/near/#mongodb-query-op.-near)。                                                                                                                    |
+| [`$nearSphere`](https://www.mongodb.com/zh-cn/docs/manual/reference/operator/query/nearSphere/#mongodb-query-op.-nearSphere)          | 返回与球面上的某个点接近的地理空间对象。需要地理空间索引。[2dsphere](https://www.mongodb.com/zh-cn/docs/manual/core/indexes/index-types/geospatial/2dsphere/#std-label-2dsphere-index) 和 [2d](https://www.mongodb.com/zh-cn/docs/manual/core/indexes/index-types/geospatial/2d/#std-label-2d-index) 索引支持 [`$nearSphere`](https://www.mongodb.com/zh-cn/docs/manual/reference/operator/query/nearSphere/#mongodb-query-op.-nearSphere)。                                                                                        |
+
+
+
+### 阵列
+
+| 名称                                                                                                                      | 说明                                                                                                                                                                                |
+| :------------------------------------------------------------------------------------------------------------------------ | :---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| [`$all`](https://www.mongodb.com/zh-cn/docs/manual/reference/operator/query/all/#mongodb-query-op.-all)                   | 匹配包含查询中指定的所有元素的数组。                                                                                                                                                |
+| [`$elemMatch`](https://www.mongodb.com/zh-cn/docs/manual/reference/operator/query/elemMatch/#mongodb-query-op.-elemMatch) | 如果数组字段中的元素与所有指定的 [`$elemMatch`](https://www.mongodb.com/zh-cn/docs/manual/reference/operator/query/elemMatch/#mongodb-query-op.-elemMatch) 条件均匹配，则选择文档。 |
+| [`$size`](https://www.mongodb.com/zh-cn/docs/manual/reference/operator/query/size/#mongodb-query-op.-size)                | 如果数组字段达到指定大小，则选择文档。                                                                                                                                              |
+
+### Bitwise
+
+| 名称                                                                                                                               | 说明                                                        |
+| :--------------------------------------------------------------------------------------------------------------------------------- | :---------------------------------------------------------- |
+| [`$bitsAllClear`](https://www.mongodb.com/zh-cn/docs/manual/reference/operator/query/bitsAllClear/#mongodb-query-op.-bitsAllClear) | 匹配数字或二进制值，其中一组片段位置*均*包含值`0`。         |
+| [`$bitsAllSet`](https://www.mongodb.com/zh-cn/docs/manual/reference/operator/query/bitsAllSet/#mongodb-query-op.-bitsAllSet)       | 匹配数字或二进制值，其中一组片段位置*均*包含值`1`。         |
+| [`$bitsAnyClear`](https://www.mongodb.com/zh-cn/docs/manual/reference/operator/query/bitsAnyClear/#mongodb-query-op.-bitsAnyClear) | 匹配数字或二进制值，其中一组位位置中的*任何* 位的值为 `0`。 |
+| [`$bitsAnySet`](https://www.mongodb.com/zh-cn/docs/manual/reference/operator/query/bitsAnySet/#mongodb-query-op.-bitsAnySet)       | 匹配数字或二进制值，其中一组位位置中的*任何* 位的值为 `1`。 |
+
+
+
+## 投影操作符
+
+| 名称                                                                                                                                  | 说明                                                                                                                                                                                                                                           |
+| :------------------------------------------------------------------------------------------------------------------------------------ | :--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| [`$`](https://www.mongodb.com/zh-cn/docs/manual/reference/operator/projection/positional/#mongodb-projection-proj.-)                  | 对数组中与查询条件匹配的第一个元素进行投影。                                                                                                                                                                                                   |
+| [`$elemMatch`](https://www.mongodb.com/zh-cn/docs/manual/reference/operator/projection/elemMatch/#mongodb-projection-proj.-elemMatch) | 对数组中与指定 [`$elemMatch`](https://www.mongodb.com/zh-cn/docs/manual/reference/operator/projection/elemMatch/#mongodb-projection-proj.-elemMatch) 条件匹配的第一个元素进行投影。                                                            |
+| [`$meta`](https://www.mongodb.com/zh-cn/docs/manual/reference/operator/aggregation/meta/#mongodb-expression-exp.-meta)                | 预测在 `$text` 操作中分配的文件分数。`$text` 提供了自管理（非 Atlas）部署的文本查询功能。对于托管在 MongoDB Atlas 上的数据，MongoDB 提供了一种改进的全文查询解决方案，[Atlas Search](https://www.mongodb.com/zh-cn/docs/atlas/atlas-search/)。 |
+| [`$slice`](https://www.mongodb.com/zh-cn/docs/manual/reference/operator/projection/slice/#mongodb-projection-proj.-slice)             | 限制从数组中投影的元素数量。支持跳过切片和对切片进行数量限制。                                                                                                                                                                                 |
+
+
+
+## 其他操作符
+
+| 名称                                                                                                                       | 说明                                                                                                                                                                                                                                                                                           |
+| :------------------------------------------------------------------------------------------------------------------------- | :--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| [`$rand`](https://www.mongodb.com/zh-cn/docs/manual/reference/operator/query/rand/#mongodb-query-op.-rand)                 | 生成介于 0 和 1 之间的随机浮点数。                                                                                                                                                                                                                                                             |
+| [`$natural`](https://www.mongodb.com/zh-cn/docs/manual/reference/operator/query/natural/#mongodb-operator-metaOp.-natural) | 可通过 [`sort()`](https://www.mongodb.com/zh-cn/docs/manual/reference/method/cursor.sort/#mongodb-method-cursor.sort) 或 [`hint()`](https://www.mongodb.com/zh-cn/docs/manual/reference/method/cursor.hint/#mongodb-method-cursor.hint) 方法提供的特殊提示，可用于强制执行正向或反向集合扫描。 |
 
