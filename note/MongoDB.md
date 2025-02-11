@@ -50,7 +50,7 @@
     - [Query](#query)
       - [find](#find)
     - [Condition of Query](#condition-of-query)
-- [Operators](#operators)
+- [Query Operators](#query-operators)
   - [查询选择器](#查询选择器)
     - [Usage](#usage)
     - [对比](#对比)
@@ -61,6 +61,7 @@
       - [MongoDB字段类型](#mongodb字段类型)
       - [Usage](#usage-3)
     - [求值](#求值)
+      - [Usage](#usage-4)
     - [地理空间](#地理空间)
     - [阵列](#阵列)
     - [Bitwise](#bitwise)
@@ -505,12 +506,12 @@ db.inventory.find( { status: "D" } )
   }
   ```
 
-# Operators
+# Query Operators
 ## 查询选择器
 ### Usage
-```javascript
-db.inventory.find( { <field1>: { <operator1>: <value1> }, ... } )
-```
+  ```javascript
+  db.inventory.find( { <field1>: { <operator1>: <value1> }, ... } )
+  ```
 
 ### 对比
 
@@ -528,13 +529,13 @@ db.inventory.find( { <field1>: { <operator1>: <value1> }, ... } )
 | [`$nin`](https://www.mongodb.com/zh-cn/docs/manual/reference/operator/query/nin/#mongodb-query-op.-nin) | 不匹配数组中指定的任何值。 |
 #### Usage
 - `$eq / $ne / $gt / $gte / $lt / $lte`
-```javascript
-{ <field>: { $eq: <value> } }
-```
+  ```javascript
+  { <field>: { $eq: <value> } }
+  ```
 - `$in / $nin`
-```javascript
-{ <field>: { <$in>: [<value1>, <value2>, ... <valueN> ] } }
-```
+  ```javascript
+  { <field>: { <$in>: [<value1>, <value2>, ... <valueN> ] } }
+  ```
 
 ### 逻辑
 
@@ -547,18 +548,18 @@ db.inventory.find( { <field1>: { <operator1>: <value1> }, ... } )
 
 #### Usage
 - `$and / $nor / $or`
-```javascript
-db.example.find( {
-   $and: [
-      { x: { $ne: 0 } },
-      { $expr: { $eq: [ { $divide: [ 1, "$x" ] }, 3 ] } }
-   ]
-} )
-```
+  ```javascript
+  db.example.find( {
+    $and: [
+        { x: { $ne: 0 } },
+        { $expr: { $eq: [ { $divide: [ 1, "$x" ] }, 3 ] } }
+    ]
+  } )
+  ```
 - `$not`
-```javascript
-db.example.find( { $not: { x: { $gt: 0 } } } )
-```
+  ```javascript
+  db.example.find( { $not: { x: { $gt: 0 } } } )
+  ```
 
 ### 元素
 
@@ -592,7 +593,15 @@ db.example.find( { $not: { x: { $gt: 0 } } } )
 | Max key    | 127  | "maxKey"     |          |
 
 #### Usage
-
+- `$exists`
+  ```javascript
+  db.spices.find( { saffron: { $exists: true } } )
+  ```
+- `$type`
+  ```javascript
+  db.addressBook.find( { zipCode : { $type : 2 } } );
+  db.addressBook.find( { zipCode : { $type : "string" } } );
+  ```
 
 
 ### 求值
@@ -605,7 +614,20 @@ db.example.find( { $not: { x: { $gt: 0 } } } )
 | [`$regex`](https://www.mongodb.com/zh-cn/docs/manual/reference/operator/query/regex/#mongodb-query-op.-regex)                | 选择值匹配指定正则表达式的文档。                                                                                                                                                                                        |
 | [`$text`](https://www.mongodb.com/zh-cn/docs/manual/reference/operator/query/text/#mongodb-query-op.-text)                   | 执行文本搜索。`$text` 提供了自管理（非 Atlas）部署的文本查询功能。对于托管在 MongoDB Atlas 上的数据，MongoDB 提供了一种改进的全文查询解决方案，[Atlas Search](https://www.mongodb.com/zh-cn/docs/atlas/atlas-search/)。 |
 | [`$where`](https://www.mongodb.com/zh-cn/docs/manual/reference/operator/query/where/#mongodb-query-op.-where)                | 匹配满足 JavaScript 表达式的文档。                                                                                                                                                                                      |
-
+#### Usage
+- `$expr`
+  ```javascript
+  // find all documents where the spent amount is greater than the budget amount
+  db.monthlyBudget.find( { $expr: { $gt: [ "$spent" , "$budget" ] } } )
+  ```
+- `$jsonSchema`
+- `$mod`
+  ```javascript
+  db.inventory.find( { qty: { $mod: [ 4, 0 ] } } )
+  ```
+- `$regex`
+- `$text`
+- `$where`
 
 ### 地理空间
 
