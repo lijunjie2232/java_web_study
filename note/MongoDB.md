@@ -1,3 +1,70 @@
+- [Mongodb install](#mongodb-install)
+  - [install in ubuntu](#install-in-ubuntu)
+  - [install in docker](#install-in-docker)
+- [Mongosh](#mongosh)
+  - [basic operation](#basic-operation)
+  - [backup / restore / export / import](#backup--restore--export--import)
+    - [backup data](#backup-data)
+    - [restore data](#restore-data)
+    - [export data](#export-data)
+    - [import data](#import-data)
+  - [Roles](#roles)
+    - [内置角色](#内置角色)
+      - [数据库用户角色（Database User Roles)](#数据库用户角色database-user-roles)
+      - [数据库管理角色（Database Admininstration Roles)](#数据库管理角色database-admininstration-roles)
+      - [​备份和还原角色（Backup and Restoration Roles)​​​​​​​](#备份和还原角色backup-and-restoration-roles)
+      - [跨库角色（All-Database Roles)](#跨库角色all-database-roles)
+      - [集群管理角色（Cluster Administration Roles)](#集群管理角色cluster-administration-roles)
+    - [自定义角色](#自定义角色)
+    - [角色管理命令](#角色管理命令)
+  - [Users](#users)
+    - [切换到管理数据库](#切换到管理数据库)
+    - [创建管理员用户](#创建管理员用户)
+    - [认证管理员用户](#认证管理员用户)
+    - [创建其他数据库用户](#创建其他数据库用户)
+    - [查看用户列表](#查看用户列表)
+    - [修改用户密码](#修改用户密码)
+    - [删除用户](#删除用户)
+    - [查看角色](#查看角色)
+    - [将角色分配给用户](#将角色分配给用户)
+    - [撤销用户角色](#撤销用户角色)
+  - [Collections](#collections)
+    - [create](#create)
+    - [show](#show)
+    - [drop](#drop)
+    - [collection info](#collection-info)
+  - [Documents](#documents)
+    - [ObjectID](#objectid)
+    - [基本数据类型](#基本数据类型)
+  - [CRUD](#crud)
+    - [Insert](#insert)
+      - [insertOne](#insertone)
+      - [insertMany](#insertmany)
+    - [Update](#update)
+      - [updateOne](#updateone)
+      - [updateMany](#updatemany)
+      - [replaceOne](#replaceone)
+    - [Delete](#delete)
+      - [deleteMany](#deletemany)
+      - [deleteOne](#deleteone)
+    - [Query](#query)
+      - [find](#find)
+    - [Condition of Query](#condition-of-query)
+- [Operators](#operators)
+  - [查询选择器](#查询选择器)
+    - [Usage](#usage)
+    - [对比](#对比)
+      - [Usage](#usage-1)
+    - [逻辑](#逻辑)
+      - [Usage](#usage-2)
+    - [元素](#元素)
+    - [求值](#求值)
+    - [地理空间](#地理空间)
+    - [阵列](#阵列)
+    - [Bitwise](#bitwise)
+  - [投影操作符](#投影操作符)
+  - [其他操作符](#其他操作符)
+
 # Mongodb install
 ## install in ubuntu
 ```bash
@@ -436,7 +503,7 @@ db.inventory.find( { status: "D" } )
   }
   ```
 
-
+# Operators
 ## 查询选择器
 ### Usage
 ```javascript
@@ -457,11 +524,14 @@ db.inventory.find( { <field1>: { <operator1>: <value1> }, ... } )
 | [`$lte`](https://www.mongodb.com/zh-cn/docs/manual/reference/operator/query/lte/#mongodb-query-op.-lte) | 匹配小于等于指定值的值。   |
 | [`$ne`](https://www.mongodb.com/zh-cn/docs/manual/reference/operator/query/ne/#mongodb-query-op.-ne)    | 匹配所有不等于指定值的值。 |
 | [`$nin`](https://www.mongodb.com/zh-cn/docs/manual/reference/operator/query/nin/#mongodb-query-op.-nin) | 不匹配数组中指定的任何值。 |
+#### Usage
+- `$eq / $ne / $gt / $gte / $lt / $lte`
 ```javascript
-// $eq / $ne / $gt / $gte / $lt / $lte 
 { <field>: { $eq: <value> } }
-// in / $nin
-{ <field>: { $in: [<value1>, <value2>, ... <valueN> ] } }
+```
+- `$in / $nin`
+```javascript
+{ <field>: { <$in>: [<value1>, <value2>, ... <valueN> ] } }
 ```
 
 ### 逻辑
@@ -472,6 +542,21 @@ db.inventory.find( { <field1>: { <operator1>: <value1> }, ... } )
 | [`$not`](https://www.mongodb.com/zh-cn/docs/manual/reference/operator/query/not/#mongodb-query-op.-not) | 反转查询谓词的效果，并返回与查询谓词*不*匹配的文档。              |
 | [`$nor`](https://www.mongodb.com/zh-cn/docs/manual/reference/operator/query/nor/#mongodb-query-op.-nor) | 使用逻辑 `NOR` 的联接查询子句会返回无法匹配这两个子句的所有文档。 |
 | [`$or`](https://www.mongodb.com/zh-cn/docs/manual/reference/operator/query/or/#mongodb-query-op.-or)    | 使用逻辑 `OR` 连接多个查询子句会返回符合任一子句条件的所有文档。  |
+
+#### Usage
+- `$and / $nor / $or`
+```javascript
+db.example.find( {
+   $and: [
+      { x: { $ne: 0 } },
+      { $expr: { $eq: [ { $divide: [ 1, "$x" ] }, 3 ] } }
+   ]
+} )
+```
+- `$not`
+```javascript
+db.example.find( { $not: { x: { $gt: 0 } } } )
+```
 
 ### 元素
 
