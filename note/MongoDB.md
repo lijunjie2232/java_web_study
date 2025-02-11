@@ -671,6 +671,19 @@ db.inventory.find( { status: "D" } )
   db.articles.find( { $text: { $search: "Coffee", $caseSensitive: true } } )
   ```
 - `$where`
+  ```javascript
+  // find all players whose name matches specific MD5 hash
+  // method 1:
+  db.players.find( { $where: function() {
+    return (hex_md5(this.name) == "9b53e667f30cd329dca1ec9e6a83e994")
+  } } );
+  // method 2:
+  db.players.find( {$expr: { $function: {
+        body: function(name) { return hex_md5(name) == "9b53e667f30cd329dca1ec9e6a83e994"; },
+        args: [ "$name" ],
+        lang: "js"
+  } } } )
+  ```
 
 ### 地理空间
 
