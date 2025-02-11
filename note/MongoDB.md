@@ -69,6 +69,7 @@
   - [投影操作符](#投影操作符)
       - [Usage](#usage-6)
   - [其他操作符](#其他操作符)
+      - [Usage](#usage-7)
 
 # Mongodb install
 ## install in ubuntu
@@ -833,4 +834,22 @@ db.inventory.find( { status: "D" } )
 | :------------------------------------------------------------------------------------------------------------------------- | :--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | [`$rand`](https://www.mongodb.com/zh-cn/docs/manual/reference/operator/query/rand/#mongodb-query-op.-rand)                 | 生成介于 0 和 1 之间的随机浮点数。                                                                                                                                                                                                                                                             |
 | [`$natural`](https://www.mongodb.com/zh-cn/docs/manual/reference/operator/query/natural/#mongodb-operator-metaOp.-natural) | 可通过 [`sort()`](https://www.mongodb.com/zh-cn/docs/manual/reference/method/cursor.sort/#mongodb-method-cursor.sort) 或 [`hint()`](https://www.mongodb.com/zh-cn/docs/manual/reference/method/cursor.hint/#mongodb-method-cursor.hint) 方法提供的特殊提示，可用于强制执行正向或反向集合扫描。 |
+
+#### Usage
+- `$rand`
+```javascript
+db.donors.updateMany(
+   {},
+   [
+      { $set:
+         { amount:
+            { $floor:
+               { $multiply: [ { $rand: {} }, 100 ] }
+            }
+         }
+      }
+    ]
+)
+// $floor: 向下取整
+```
 
