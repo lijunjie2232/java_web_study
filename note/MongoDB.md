@@ -777,6 +777,10 @@ db.inventory.find( { status: "D" } )
   })
   ```
 - `$size`
+  - size not accept range query
+  ```javascript
+  db.collection.find( { field: { $size: 2 } } );
+  ```
 
 ### Bitwise
 
