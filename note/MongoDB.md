@@ -58,6 +58,8 @@
     - [逻辑](#逻辑)
       - [Usage](#usage-2)
     - [元素](#元素)
+      - [MongoDB字段类型](#mongodb字段类型)
+      - [Usage](#usage-3)
     - [求值](#求值)
     - [地理空间](#地理空间)
     - [阵列](#阵列)
@@ -565,6 +567,34 @@ db.example.find( { $not: { x: { $gt: 0 } } } )
 | [`$exists`](https://www.mongodb.com/zh-cn/docs/manual/reference/operator/query/exists/#mongodb-query-op.-exists) | 匹配具有指定字段的文档。         |
 | [`$type`](https://www.mongodb.com/zh-cn/docs/manual/reference/operator/query/type/#mongodb-query-op.-type)       | 如果字段为指定类型，则选择文档。 |
 
+#### MongoDB字段类型
+| 类型       | 数值 | 别名         | 注意     |
+| :--------- | :--- | :----------- | :------- |
+| double     | 1    | "double"     |          |
+| 字符串     | 2    | "string"     |          |
+| 对象       | 3    | "object"     |          |
+| 阵列       | 4    | "array"      |          |
+| 二进制数据 | 5    | "binData"    |          |
+| 未定义     | 6    | "undefined"  | 已弃用。 |
+| ObjectId   | 7    | "objectId"   |          |
+| 布尔       | 8    | "bool"       |          |
+| Date       | 9    | "date"       |          |
+| null       | 10   | "null"       |          |
+| 正则表达式 | 11   | "regex"      |          |
+| 数据库指针 | 12   | "dbPointer"  | 已弃用。 |
+| JavaScript | 13   | "javascript" |          |
+| 符号       | 14   | "symbol"     | 已弃用。 |
+| 32 位整数  | 16   | "int"        |          |
+| 时间戳     | 17   | "timestamp"  |          |
+| 64 位整型  | 18   | "long"       |          |
+| Decimal128 | 19   | "decimal"    |          |
+| Min key    | -1   | "minKey"     |          |
+| Max key    | 127  | "maxKey"     |          |
+
+#### Usage
+
+
+
 ### 求值
 
 | 名称                                                                                                                         | 说明                                                                                                                                                                                                                    |
@@ -575,6 +605,7 @@ db.example.find( { $not: { x: { $gt: 0 } } } )
 | [`$regex`](https://www.mongodb.com/zh-cn/docs/manual/reference/operator/query/regex/#mongodb-query-op.-regex)                | 选择值匹配指定正则表达式的文档。                                                                                                                                                                                        |
 | [`$text`](https://www.mongodb.com/zh-cn/docs/manual/reference/operator/query/text/#mongodb-query-op.-text)                   | 执行文本搜索。`$text` 提供了自管理（非 Atlas）部署的文本查询功能。对于托管在 MongoDB Atlas 上的数据，MongoDB 提供了一种改进的全文查询解决方案，[Atlas Search](https://www.mongodb.com/zh-cn/docs/atlas/atlas-search/)。 |
 | [`$where`](https://www.mongodb.com/zh-cn/docs/manual/reference/operator/query/where/#mongodb-query-op.-where)                | 匹配满足 JavaScript 表达式的文档。                                                                                                                                                                                      |
+
 
 ### 地理空间
 
