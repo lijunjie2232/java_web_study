@@ -684,6 +684,39 @@ db.inventory.find( { status: "D" } )
         lang: "js"
   } } } )
   ```
+  - avilable methods: 
+    - assert()
+    - BinData()
+    - DBPointer()
+    - DBRef()
+    - doassert()
+    - emit()
+    - gc()
+    - HexData()
+    - hex_md5()
+    - isNumber()
+    - isObject()
+    - ISODate()
+    - isString()
+    - Map()
+    - MD5()
+    - NumberInt()
+    - NumberLong()
+    - ObjectId()
+    - print()
+    - printjson()
+    - printjsononeline()
+    - sleep()
+    - Timestamp()
+    - tojson()
+    - tojsononeline()
+    - tojsonObject()
+    - UUID()
+    - version()
+  - avilable Properties:
+    - args
+    - MaxKey
+    - MinKey
 
 ### 地理空间
 
