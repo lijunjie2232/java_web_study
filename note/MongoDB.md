@@ -1,3 +1,4 @@
+- [Tips](#tips)
 - [Mongodb install](#mongodb-install)
   - [install in ubuntu](#install-in-ubuntu)
   - [install in docker](#install-in-docker)
@@ -105,7 +106,12 @@
     - [Modifiers](#modifiers)
   - [Bitwise](#bitwise-1)
   - [常见更新表达式](#常见更新表达式)
-  - [示例](#示例)
+    - [示例](#示例)
+
+# Tips
+1. `$addToSet` and `$push`
+   - `$push`: 无条件地添加元素，可能导致数组中出现重复项。
+   - `$addToSet`: 仅在元素不存在时添加，确保数组中没有重复项。
 
 # Mongodb install
 ## install in ubuntu
@@ -1514,8 +1520,6 @@ db.donors.updateMany(
         { name: "John" },
         { $addToSet: { hobbies: "reading" } }
       )
-      ```
-      ```javascript
       db.collection.updateOne(
         { name: "John" },
         { $addToSet: { hobbies: { $each: [ "reading", "swimming" ] } } }
@@ -1549,6 +1553,10 @@ db.donors.updateMany(
         { name: "John" },
         { $push: { hobbies: "swimming" } }
       )
+      db.collection.updateOne(
+        { name: "John" },
+        { $push: { hobbies: { $each: ["reading", "swimming"] } } }
+      )
       ```
 
 14. **`$bit`**
@@ -1561,7 +1569,7 @@ db.donors.updateMany(
       )
       ```
 
-## 示例
+### 示例
 
 以下是一个综合示例，展示了如何在一次更新操作中使用多个更新表达式：
 
