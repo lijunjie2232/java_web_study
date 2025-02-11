@@ -501,6 +501,21 @@ db.inventory.updateMany(
    }
 )
 ```
+```javascript
+// mongodb对所有price大于1的文档quantity减1
+db.collection.updateMany(
+  { price: { $gt: 1 } },
+  { $inc: { quantity: -1 } }
+)
+// mongodb对所有price大于1的文档quantity减半
+db.collection.updateMany(
+  { price: { $gt: 1 } },
+  [
+    { $set: { quantity: { $floor: { $multiply: ["$quantity", 0.5] } } } }
+  ]
+)
+
+```
 #### replaceOne
 ```javascript
 db.inventory.replaceOne(
