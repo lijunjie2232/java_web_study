@@ -13,7 +13,7 @@ import java.time.Duration;
 
 
 @NoArgsConstructor
-@Component
+//@Component
 public class LettuceUtil {
 
     @Value("${redis.host:127.0.0.1}")

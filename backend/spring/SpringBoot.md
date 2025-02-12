@@ -2662,7 +2662,7 @@ public class SentinelConfig {
 ```
 
 # Use MongoDB in Spring Boot
-## Use spring boot data mongodb
+## Use MongoTemplate
 ### dependency
 ```xml
 <dependency>
@@ -2676,12 +2676,13 @@ public class SentinelConfig {
 ```properties
 spring.data.mongodb.host=127.0.0.1
 spring.data.mongodb.port=27017
-spring.data.mongodb.database=binance
+spring.data.mongodb.database=java_test
 spring.data.mongodb.username=root
 spring.data.mongodb.password=root
 spring.data.mongodb.authentication-database=admin
 ```
 - method 2 (use uri):
 ```properties
-spring.data.mongodb.uri=mongodb://root:root@127.0.0.1:27017/binance?authSource=admin
+spring.data.mongodb.uri=mongodb://root:root@127.0.0.1:27017/java_test?authSource=admin
 ```
+

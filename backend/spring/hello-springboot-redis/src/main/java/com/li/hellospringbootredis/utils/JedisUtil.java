@@ -8,7 +8,7 @@ import redis.clients.jedis.Jedis;
 
 
 @NoArgsConstructor
-@Component
+//@Component
 public class JedisUtil {
     @Value("${redis.host:127.0.0.1}")
     String host;
