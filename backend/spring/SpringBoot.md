@@ -2662,3 +2662,11 @@ public class SentinelConfig {
 ```
 
 # Use MongoDB in Spring Boot
+## Use spring boot data mongodb
+- dependency
+```xml
+<dependency>
+  <groupId>org.springframework.boot</groupId>
+  <artifactId>spring-boot-starter-data-mongodb</artifactId>
+</dependency>
+```
