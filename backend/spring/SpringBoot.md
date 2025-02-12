@@ -2686,3 +2686,228 @@ spring.data.mongodb.authentication-database=admin
 spring.data.mongodb.uri=mongodb://root:root@127.0.0.1:27017/java_test?authSource=admin
 ```
 
+### Usage of MongoTemplate
+#### Document
+- `@Document(collection="<collectionName>")`: Map Bean class to collection
+- `@Id`: Map Bean field to collection's `_id` field
+- `@Field("<fieldName>")`: Map Bean field to collection's field
+- `@Transient`: Ignore Bean field when mapping to collection
+
+
+#### 基本 CRUD 操作
+1. **插入文档**
+  - `insert(Object objectToSave, String collectionName)`
+  - `insert(Object objectToSave)`
+
+2. **保存文档**
+  - `save(Object objectToSave, String collectionName)`
+  - `save(Object objectToSave)`
+
+3. **更新文档**
+  - `updateFirst(Query query, Update update, Class<?> entityClass, String collectionName)`
+  - `updateFirst(Query query, Update update, Class<?> entityClass)`
+  - `updateMulti(Query query, Update update, Class<?> entityClass, String collectionName)`
+  - `updateMulti(Query query, Update update, Class<?> entityClass)`
+
+4. **删除文档**
+  - `remove(Object object, String collectionName)`
+  - `remove(Object object)`
+  - `remove(Query query, Class<?> entityClass, String collectionName)`
+  - `remove(Query query, Class<?> entityClass)`
+
+#### 查询操作
+
+5. **查找单个文档**
+  - `findOne(Query query, Class<T> entityClass, String collectionName)`
+  - `findOne(Query query, Class<T> entityClass)`
+
+6. **查找多个文档**
+  - `find(Query query, Class<T> entityClass, String collectionName)`
+  - `find(Query query, Class<T> entityClass)`
+
+7. **查找所有文档**
+  - `findAll(Class<T> entityClass, String collectionName)`
+  - `findAll(Class<T> entityClass)`
+
+8. **聚合操作**
+  - `aggregate(Aggregation aggregation, Class<T> inputType, Class<O> outputType, String collectionName)`
+  - `aggregate(Aggregation aggregation, Class<T> inputType, Class<O> outputType)`
+
+#### 其他操作
+
+9. **执行命令**
+  - `executeCommand(String jsonCommand)`
+  - `executeCommand(Document command)`
+
+10. **索引操作**
+  - `createIndex(Class<?> entityClass, IndexDefinition indexDefinition)`
+  - `createIndex(String collectionName, IndexDefinition indexDefinition)`
+
+11. **集合操作**
+  - `createCollection(String collectionName)`
+  - `dropCollection(String collectionName)`
+
+### 示例代码
+
+
+#### 插入文档
+
+```java
+@Test 
+public void test() {
+    YourEntity entity = new YourEntity();
+    entity.setName("Example");
+    mongoTemplate.insert(entity);
+}
+```
+
+
+#### 保存文档
+
+```java
+@Test
+public void test(){
+    YourEntity entity = new YourEntity();
+    entity.setName("Example");
+    mongoTemplate.save(entity);
+}
+```
+
+
+#### 更新文档
+
+```java
+@Test
+public void test() {
+    Query query = new Query(Criteria.where("name").is("Example"));
+    Update update = new Update().set("name", "Updated Example");
+    mongoTemplate.updateFirst(query, update, YourEntity.class);
+}
+```
+
+
+#### 删除文档
+
+```java
+@Test
+public void test(){
+    Query query = new Query(Criteria.where("name").is("Updated Example"));
+    mongoTemplate.remove(query, YourEntity.class);
+}
+```
+
+
+#### 查找文档
+
+```java
+@Test
+public void test(){
+    Query query = new Query(Criteria.where("name").is("Example"));
+    YourEntity entity = mongoTemplate.findOne(query, YourEntity.class);
+}
+```
+
+
+#### 聚合操作
+
+```java
+@Test
+public void test(){
+    Aggregation aggregation = Aggregation.newAggregation(
+        Aggregation.match(Criteria.where("status").is("A")),
+        Aggregation.group("category").count().as("total")
+    );
+    AggregationResults<AggregationResult> results = mongoTemplate.aggregate(aggregation, "yourCollectionName", AggregationResult.class);
+}
+```
+
+### 操作实例
+```java
+package com.li.hellospringbootredis;
+
+import com.li.hellospringbootredis.pojo.TestCollection;
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.data.mongodb.core.index.Index;
+import org.springframework.data.mongodb.core.query.Criteria;
+import org.springframework.data.mongodb.core.query.Query;
+import org.springframework.data.mongodb.core.query.Update;
+
+@SpringBootTest
+public class MongoDBTest {
+  @Autowired
+  MongoTemplate mongoTemplate;
+
+  @Test
+  public void testMongoCreateCol() {
+    if (mongoTemplate.collectionExists("test_collection")) {
+      mongoTemplate.dropCollection("test_collection");
+    }
+    mongoTemplate.createCollection("test_collection");
+  }
+
+  @Test
+  public void testMongoIndex() {
+      // "name" in Index("name") means the field name in mongodb collection
+//        Index index = new Index("name", Sort.Direction.ASC);
+    Index index = new Index("name", Sort.Direction.DESC);
+    mongoTemplate.indexOps("test_collection").ensureIndex(index);
+  }
+
+  @Test
+  public void testMongoInsert() {
+    mongoTemplate.insert(new TestCollection("1", "test1", ""));
+    mongoTemplate.insert(new TestCollection("2", "test2", ""));
+    mongoTemplate.insert(new TestCollection("3", "test3", ""));
+    mongoTemplate.insert(new TestCollection("4", "test4", ""));
+    mongoTemplate.insert(new TestCollection("5", "test5", ""));
+    mongoTemplate.insert(new TestCollection("6", "test6", ""));
+    mongoTemplate.insert(new TestCollection("7", "test7", ""));
+    mongoTemplate.insert(new TestCollection("8", "test8", ""));
+  }
+
+  @Test
+  public void testMongoQuery() {
+    System.out.println(mongoTemplate.findOne(new Query(), TestCollection.class));
+
+    // 查询单个 TestCollection 对象，name 为 "test1"
+    Query query = new Query(Criteria.where("name").is("test1"));
+    TestCollection testCollection = mongoTemplate.findOne(query, TestCollection.class);
+    System.out.println(testCollection);
+
+    System.out.println(mongoTemplate.findAll(TestCollection.class));
+
+  }
+
+  @Test
+  public void testMongoUpdate() {
+    Query query = new Query(Criteria.where("name").is("test1"));
+    System.out.println(mongoTemplate.findOne(query, TestCollection.class));
+    Update update = new Update().set("name", "Updata test1");
+    System.out.println(mongoTemplate.findOne(query, TestCollection.class));
+    mongoTemplate.updateFirst(query, update, TestCollection.class);
+    System.out.println(mongoTemplate.findOne(
+            new Query(
+                    Criteria.where("id")
+                            .is("1")
+            ),
+            TestCollection.class)
+    );
+  }
+
+  @Test
+  public void testMongoDelete() {
+    Query query = new Query(Criteria.where("name").is("Updata test1"));
+    mongoTemplate.remove(query, TestCollection.class);
+    System.out.println(mongoTemplate.findAll(TestCollection.class));
+//        mongoTemplate.dropCollection("test_collection");
+    mongoTemplate.remove(new Query(), TestCollection.class);
+    System.out.println(mongoTemplate.findAll(TestCollection.class));
+  }
+
+}
+
+```
