@@ -2660,3 +2660,5 @@ public class SentinelConfig {
     }
 }
 ```
+
+# Use MongoDB in Spring Boot
