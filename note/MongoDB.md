@@ -53,6 +53,9 @@
       - [findOne](#findone)
       - [sort / limit / skip](#sort--limit--skip)
     - [Condition of Query](#condition-of-query)
+  - [index](#index)
+    - [createIndex](#createindex)
+    - [dropIndex / dropIndexes](#dropindex--dropindexes)
 - [Query Operators](#query-operators)
   - [查询选择器](#查询选择器)
     - [Usage](#usage)
@@ -612,6 +615,37 @@ db.inventory.find( {} ).sort( { status: 1, item: -1 } ).limit( 5 ).skip( 2 )
     ]
   }
   ```
+
+## index
+- a collection could at most have 64 indexes
+- one indexes could at most contains 31 keys
+- name of index could not be longer than 127 bytes
+- index mongodb managed in system.indexes collection, which only support `createIndex` and `dropIndex` operation
+
+### createIndex
+```javascript
+db.collection.createIndex(
+  {
+      <key_1>: 1,
+      <key_2>: 1,
+  },
+  {
+      unique: true,  // 默认为false, 如果为true，则不允许重复
+      sparse: true,  // 默认为false, 如果为true，则不索引空值
+      expireAfterSeconds: 3600  // 默认为null, 如果不为null，则设置索引过期时间，单位为秒
+  }
+)
+```
+
+### dropIndex / dropIndexes
+```javascript
+// 删除单个索引
+db.<collection>.dropIndex("<index1>")
+// 删除多个索引
+db.<collection>.dropIndexes( [ "<index1>", "<index2>", "<index3>" ] )
+// 删除 _id 索引之外的所有索引
+db.<collection>.dropIndexes()
+```
 
 # Query Operators
 ## 查询选择器
