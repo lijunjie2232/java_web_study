@@ -137,6 +137,23 @@
     * [10. 递增/递减操作](#10-递增递减操作)
   * [Auto-refresh cluster view in RedisTemplate and Lettuce](#auto-refresh-cluster-view-in-redistemplate-and-lettuce)
   * [Sentinel](#sentinel)
+* [Use MongoDB in Spring Boot](#use-mongodb-in-spring-boot)
+  * [Use MongoTemplate](#use-mongotemplate)
+    * [dependency](#dependency-3)
+    * [config](#config)
+    * [Usage of MongoTemplate](#usage-of-mongotemplate)
+      * [Document](#document)
+      * [基本 CRUD 操作](#基本-crud-操作)
+      * [查询操作](#查询操作)
+      * [其他操作](#其他操作)
+    * [示例代码](#示例代码-1)
+      * [插入文档](#插入文档)
+      * [保存文档](#保存文档)
+      * [更新文档](#更新文档)
+      * [删除文档](#删除文档)
+      * [查找文档](#查找文档)
+      * [聚合操作](#聚合操作)
+    * [操作实例](#操作实例)
 <!-- TOC -->
 
 # Spring Boot auto configuration
