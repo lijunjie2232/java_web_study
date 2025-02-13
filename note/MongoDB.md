@@ -55,12 +55,15 @@
     - [Condition of Query](#condition-of-query)
   - [Index](#index)
     - [createIndex](#createindex)
+    - [dropIndex / dropIndexes](#dropindex--dropindexes)
   - [Aggregate \& Pipeline](#aggregate--pipeline)
     - [Aggregate](#aggregate)
     - [Pipeline](#pipeline)
-      - [常见的聚合阶段](#常见的聚合阶段)
-    - [3. **示例**](#3-示例)
-    - [dropIndex / dropIndexes](#dropindex--dropindexes)
+      - [常见聚合阶段](#常见聚合阶段)
+      - [示例](#示例)
+    - [常见的 MongoDB 聚合案例](#常见的-mongodb-聚合案例)
+      - [1. **按字段分组并计算总和**](#1-按字段分组并计算总和)
+      - [2. **按字段分组并计算平均值**](#2-按字段分组并计算平均值)
 - [查询操作符](#查询操作符)
   - [查询选择器](#查询选择器)
     - [Usage](#usage)
@@ -90,7 +93,7 @@
     - [Modifiers](#modifiers)
   - [Bitwise](#bitwise-1)
   - [常见更新表达式](#常见更新表达式)
-    - [示例](#示例)
+    - [示例](#示例-1)
 - [聚合操作符](#聚合操作符)
   - [Usage](#usage-8)
   - [算术表达式操作符](#算术表达式操作符)
@@ -647,6 +650,17 @@ db.collection.createIndex(
 )
 ```
 
+### dropIndex / dropIndexes
+```javascript
+// 删除单个索引
+db.<collection>.dropIndex("<index1>")
+// 删除多个索引
+db.<collection>.dropIndexes( [ "<index1>", "<index2>", "<index3>" ] )
+// 删除 _id 索引之外的所有索引
+db.<collection>.dropIndexes()
+```
+
+
 ## Aggregate & Pipeline
 ### Aggregate
 Aggregate is a pipeline of stages that process documents in a collection. 
@@ -661,8 +675,20 @@ Basic aggregate is: `db.collection.aggregate(<pipeline(s)>, <options>)`
   ```
 ### Pipeline
 pipeline 是一个数组，包含多个聚合阶段。每个阶段都是一个对象，定义了如何处理输入文档并输出到下一个阶段。
-
-#### 常见的聚合阶段
+`<pipeline>`: `[ { <stage1> }, { <stage2> }, ... ]`
+- 常见聚合阶段
+  - **`$match`**：过滤文档。
+  - **`$group`**：按字段分组并计算聚合值。
+  - **`$sort`**：对文档进行排序。
+  - **`$project`**：选择或重命名字段，或计算新字段。
+  - **`$limit`**：限制输出的文档数量。
+  - **`$skip`**：跳过指定数量的文档。
+  - **`$unwind`**：将数组字段拆分为多个文档。
+  - **`$lookup`**：连接集合。
+  - **`$facet`**：同时执行多个聚合管道。
+  - **`$addFields`**：添加新字段。
+  - **`$redact`**：控制文档访问。
+#### 常见聚合阶段
 
 - **`$match`**：过滤文档，只传递符合条件的文档。
 
@@ -706,7 +732,7 @@ pipeline 是一个数组，包含多个聚合阶段。每个阶段都是一个�
   { $unwind: "$tags" }
   ```
 
-### 3. **示例**
+#### 示例
 
 假设有一个 `orders` 集合，包含以下文档：
 
@@ -737,17 +763,238 @@ db.orders.aggregate([
 ]
 ```
 
+### 常见的 MongoDB 聚合案例
 
+#### 1. **按字段分组并计算总和**
+**案例描述**：计算每个客户的总订单金额。
 
-### dropIndex / dropIndexes
-```javascript
-// 删除单个索引
-db.<collection>.dropIndex("<index1>")
-// 删除多个索引
-db.<collection>.dropIndexes( [ "<index1>", "<index2>", "<index3>" ] )
-// 删除 _id 索引之外的所有索引
-db.<collection>.dropIndexes()
+**集合示例**：
+```json
+[
+  { _id: 1, customer: "A", amount: 100, status: "completed" },
+  { _id: 2, customer: "B", amount: 200, status: "pending" },
+  { _id: 3, customer: "A", amount: 150, status: "completed" }
+]
 ```
+
+**聚合管道**：
+```javascript
+db.orders.aggregate([
+  { $match: { status: "completed" } }, // 过滤出状态为 "completed" 的订单
+  { $group: { _id: "$customer", totalAmount: { $sum: "$amount" } } }, // 按客户分组并计算总金额
+  { $sort: { totalAmount: -1 } } // 按总金额降序排序
+])
+```
+
+**解释**：
+- **`$match`**：过滤出 `status` 为 `"completed"` 的订单。
+- **`$group`**：按 `customer` 字段分组，并使用 `$sum` 计算每个客户的总金额。
+- **`$sort`**：按 `totalAmount` 字段降序排序。
+
+#### 2. **按字段分组并计算平均值**
+**案例描述**：计算每个产品的平均评分。
+
+**集合示例**：
+```json
+[
+  { _id: 1, product: "X", rating: 4.5 },
+  { _id: 2, product: "Y", rating: 3.0 },
+  { _id: 3, product: "X", rating: 5.0 },
+  { _id: 4, product: "Y", rating: 4.0 }
+]
+```
+
+**聚合管道**：
+```javascript
+db.reviews.aggregate([
+  { $group: { _id: "$product", averageRating: { $avg: "$rating" } } }, // 按产品分组并计算平均评分
+  { $sort: { averageRating: -1 } } // 按平均评分降序排序
+])
+```
+
+**解释**：
+- **`$group`**：按 `product` 字段分组，并使用 `$avg` 计算每个产品的平均评分。
+- **`$sort`**：按 `averageRating` 字段降序排序。
+
+3. **按字段分组并计算文档数量**
+**案例描述**：统计每个类别的文档数量。
+
+**集合示例**：
+```json
+[
+  { _id: 1, category: "A", name: "Item1" },
+  { _id: 2, category: "B", name: "Item2" },
+  { _id: 3, category: "A", name: "Item3" },
+  { _id: 4, category: "C", name: "Item4" }
+]
+```
+
+**聚合管道**：
+```javascript
+db.items.aggregate([
+  { $group: { _id: "$category", count: { $sum: 1 } } }, // 按类别分组并计算每个类别的文档数量
+  { $sort: { count: -1 } } // 按文档数量降序排序
+])
+```
+
+**解释**：
+- **`$group`**：按 `category` 字段分组，并使用 `$sum` 计算每个类别的文档数量。
+- **`$sort`**：按 `count` 字段降序排序。
+
+4. **使用 `$unwind` 处理数组字段**
+**案例描述**：统计每个标签出现的次数。
+
+**集合示例**：
+```json
+[
+  { _id: 1, tags: ["red", "blue"], name: "Item1" },
+  { _id: 2, tags: ["green"], name: "Item2" },
+  { _id: 3, tags: ["red", "green", "blue"], name: "Item3" }
+]
+```
+
+**聚合管道**：
+```javascript
+db.items.aggregate([
+  { $unwind: "$tags" }, // 将 tags 数组拆分为多个文档
+  { $group: { _id: "$tags", count: { $sum: 1 } } }, // 按 tags 字段分组并计算每个标签的出现次数
+  { $sort: { count: -1 } } // 按出现次数降序排序
+])
+```
+
+**解释**：
+- **`$unwind`**：将 `tags` 数组拆分为多个文档，每个文档包含一个标签。
+- **`$group`**：按 `tags` 字段分组，并使用 `$sum` 计算每个标签的出现次数。
+- **`$sort`**：按 `count` 字段降序排序。
+
+5. **使用 `$lookup` 进行集合连接**
+**案例描述**：连接 `orders` 和 `customers` 集合，获取每个订单的客户信息。
+
+**集合示例**：
+```json
+// orders 集合
+[
+  { _id: 1, customerId: 1, amount: 100 },
+  { _id: 2, customerId: 2, amount: 200 }
+]
+
+// customers 集合
+[
+  { _id: 1, name: "Alice" },
+  { _id: 2, name: "Bob" }
+]
+```
+
+**聚合管道**：
+```javascript
+db.orders.aggregate([
+  {
+    $lookup: {
+      from: "customers", // 要连接的集合
+      localField: "customerId", // 当前集合中的字段
+      foreignField: "_id", // 要连接的集合中的字段
+      as: "customerInfo" // 结果字段
+    }
+  },
+  { $unwind: "$customerInfo" }, // 将数组拆分为多个文档
+  { $project: { _id: 0, orderId: "$_id", amount: 1, customerName: "$customerInfo.name" } } // 选择字段
+])
+```
+
+**解释**：
+- **`$lookup`**：将 `orders` 集合与 `customers` 集合连接，通过 `customerId` 和 `_id` 字段进行匹配，并将结果存储在 `customerInfo` 字段中。
+- **`$unwind`**：将 `customerInfo` 数组拆分为多个文档。
+- **`$project`**：选择需要的字段，包括订单 ID、金额和客户名称。
+
+6. **使用 `$facet` 进行多阶段聚合**
+**案例描述**：同时计算每个客户的总订单金额和订单数量。
+
+**集合示例**：
+```json
+[
+  { _id: 1, customer: "A", amount: 100, status: "completed" },
+  { _id: 2, customer: "B", amount: 200, status: "pending" },
+  { _id: 3, customer: "A", amount: 150, status: "completed" }
+]
+```
+
+**聚合管道**：
+```javascript
+db.orders.aggregate([
+  { $match: { status: "completed" } }, // 过滤出状态为 "completed" 的订单
+  {
+    $facet: {
+      totalAmount: [
+        { $group: { _id: "$customer", totalAmount: { $sum: "$amount" } } } // 计算每个客户的总金额
+      ],
+      orderCount: [
+        { $group: { _id: "$customer", orderCount: { $sum: 1 } } } // 计算每个客户的订单数量
+      ]
+    }
+  },
+  { $project: { _id: 0, customer: "$totalAmount._id", totalAmount: "$totalAmount.totalAmount", orderCount: "$orderCount.orderCount" } } // 选择字段
+])
+```
+
+**解释**：
+- **`$match`**：过滤出 `status` 为 `"completed"` 的订单。
+- **`$facet`**：同时执行多个聚合管道，分别计算每个客户的总金额和订单数量。
+- **`$project`**：选择需要的字段，包括客户、总金额和订单数量。
+
+7. **使用 `$addFields` 添加新字段**
+**案例描述**：为每个订单添加一个折扣字段。
+
+**集合示例**：
+```json
+[
+  { _id: 1, amount: 100 },
+  { _id: 2, amount: 200 }
+]
+```
+
+**聚合管道**：
+```javascript
+db.orders.aggregate([
+  { $addFields: { discount: { $multiply: ["$amount", 0.1] } } }, // 添加折扣字段
+  { $project: { _id: 0, amount: 1, discount: 1 } } // 选择字段
+])
+```
+
+**解释**：
+- **`$addFields`**：添加一个新的 `discount` 字段，其值为 `amount` 的 10%。
+- **`$project`**：选择需要的字段，包括金额和折扣。
+
+8. **使用 `$redact` 控制文档访问**
+**案例描述**：根据用户权限过滤文档。
+
+**集合示例**：
+```json
+[
+  { _id: 1, name: "Alice", accessLevel: "admin" },
+  { _id: 2, name: "Bob", accessLevel: "user" }
+]
+```
+
+**聚合管道**：
+```javascript
+db.users.aggregate([
+  {
+    $redact: {
+      $cond: {
+        if: { $eq: ["$accessLevel", "admin"] }, // 如果 accessLevel 为 "admin"
+        then: "$$DESCEND", // 包含所有子文档
+        else: "$$PRUNE" // 排除该文档
+      }
+    }
+  }
+])
+```
+
+**解释**：
+- **`$redact`**：根据条件过滤文档。如果 `accessLevel` 为 `"admin"`，则包含该文档及其子文档；否则排除该文档。
+- **`$$DESCEND`**：包含文档及其子文档。
+- **`$$PRUNE`**：排除文档。
+
 
 # 查询操作符
 ## 查询选择器
