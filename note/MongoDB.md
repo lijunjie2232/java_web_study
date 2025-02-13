@@ -57,8 +57,9 @@
     - [createIndex](#createindex)
     - [Aggregate \& Pipeline](#aggregate--pipeline)
       - [Aggregate](#aggregate)
+      - [Pipeline](#pipeline)
     - [dropIndex / dropIndexes](#dropindex--dropindexes)
-- [Query Operators](#query-operators)
+- [查询操作符](#查询操作符)
   - [查询选择器](#查询选择器)
     - [Usage](#usage)
     - [对比](#对比)
@@ -78,6 +79,16 @@
       - [Usage](#usage-6)
   - [其他操作符](#其他操作符)
       - [Usage](#usage-7)
+- [更新操作符](#更新操作符)
+  - [语法](#语法)
+  - [行为](#行为)
+  - [字段](#字段)
+  - [阵列](#阵列-1)
+    - [操作符](#操作符)
+    - [Modifiers](#modifiers)
+  - [Bitwise](#bitwise-1)
+  - [常见更新表达式](#常见更新表达式)
+    - [示例](#示例)
 - [聚合操作符](#聚合操作符)
   - [Usage](#usage-8)
   - [算术表达式操作符](#算术表达式操作符)
@@ -102,16 +113,11 @@
   - [累加器（其他阶段中）](#累加器其他阶段中)
   - [变量表达式操作符](#变量表达式操作符)
   - [窗口运算符](#窗口运算符)
-- [更新操作符](#更新操作符)
-  - [语法](#语法)
-  - [行为](#行为)
-  - [字段](#字段)
-  - [阵列](#阵列-1)
-    - [操作符](#操作符)
-    - [Modifiers](#modifiers)
-  - [Bitwise](#bitwise-1)
-  - [常见更新表达式](#常见更新表达式)
-    - [示例](#示例)
+- [聚合阶段](#聚合阶段)
+  - [db.collection.aggregate() Stages](#dbcollectionaggregate-stages)
+  - [注意](#注意)
+  - [db.aggregate() Stages](#dbaggregate-stages)
+  - [可更新的阶段](#可更新的阶段)
 
 # Tips
 1. `$addToSet` and `$push`
@@ -651,6 +657,9 @@ Basic aggregate is: `db.collection.aggregate(<pipeline(s)>, <options>)`
     ]
   )
   ```
+#### Pipeline
+pipeline 是一个数组，包含多个聚合阶段。每个阶段都是一个对象，定义了如何处理输入文档并输出到下一个阶段。常见的聚合阶段包括：
+
 
 
 ### dropIndex / dropIndexes
@@ -663,7 +672,7 @@ db.<collection>.dropIndexes( [ "<index1>", "<index2>", "<index3>" ] )
 db.<collection>.dropIndexes()
 ```
 
-# Query Operators
+# 查询操作符
 ## 查询选择器
 ### Usage
   ```javascript
@@ -1006,6 +1015,249 @@ db.donors.updateMany(
 )
 // $floor: 向下取整
 ```
+
+# 更新操作符
+## 语法
+```javascript
+{
+   <operator1>: { <field1>: <value1>, ... },
+   <operator2>: { <field2>: <value2>, ... },
+   ...
+}
+```
+
+
+
+## 行为
+
+从 MongoDB 5.0 开始，更新运算符按字典顺序处理具有基于字符串的名称的文档字段。具有数字名称的字段按数字顺序处理。
+
+参考该 [`$set`](https://www.mongodb.com/zh-cn/docs/manual/reference/operator/update/set/#mongodb-update-up.-set) 命令示例：
+
+```
+{ $set: { "a.2": <new value>, "a.10": <new value>, } }
+```
+
+在 MongoDB 5.0 及更高版本中，`"a.2"` 在 `"a.10"` 之前处理，因为 `2` 按数字顺序排在 `10` 之前。
+
+## 字段
+
+| 名称                                                                                                                              | 说明                                                                             |
+| :-------------------------------------------------------------------------------------------------------------------------------- | :------------------------------------------------------------------------------- |
+| [`$currentDate`](https://www.mongodb.com/zh-cn/docs/manual/reference/operator/update/currentDate/#mongodb-update-up.-currentDate) | 将字段的值设置为当前日期，可以是日期或时间戳。                                   |
+| [`$inc`](https://www.mongodb.com/zh-cn/docs/manual/reference/operator/update/inc/#mongodb-update-up.-inc)                         | 将字段的值按指定量递增。                                                         |
+| [`$min`](https://www.mongodb.com/zh-cn/docs/manual/reference/operator/update/min/#mongodb-update-up.-min)                         | 仅当指定值小于现有字段值时才更新字段。                                           |
+| [`$max`](https://www.mongodb.com/zh-cn/docs/manual/reference/operator/update/max/#mongodb-update-up.-max)                         | 仅当指定值大于现有字段值时才更新字段。                                           |
+| [`$mul`](https://www.mongodb.com/zh-cn/docs/manual/reference/operator/update/mul/#mongodb-update-up.-mul)                         | 将字段的值乘以指定量。                                                           |
+| [`$rename`](https://www.mongodb.com/zh-cn/docs/manual/reference/operator/update/rename/#mongodb-update-up.-rename)                | 重命名字段。                                                                     |
+| [`$set`](https://www.mongodb.com/zh-cn/docs/manual/reference/operator/update/set/#mongodb-update-up.-set)                         | 设置文档中字段的值。                                                             |
+| [`$setOnInsert`](https://www.mongodb.com/zh-cn/docs/manual/reference/operator/update/setOnInsert/#mongodb-update-up.-setOnInsert) | 如果某一更新操作导致插入文档，则设置字段的值。对修改现有文档的更新操作没有影响。 |
+| [`$unset`](https://www.mongodb.com/zh-cn/docs/manual/reference/operator/update/unset/#mongodb-update-up.-unset)                   | 从文档中删除指定的字段。                                                         |
+
+## 阵列
+
+### 操作符
+
+| 名称                                                                                                                                 | 说明                                                                         |
+| :----------------------------------------------------------------------------------------------------------------------------------- | :--------------------------------------------------------------------------- |
+| [`$`](https://www.mongodb.com/zh-cn/docs/manual/reference/operator/update/positional/#mongodb-update-up.-)                           | 充当占位符，用于更新与查询条件匹配的第一个元素。                             |
+| [`$[\]`](https://www.mongodb.com/zh-cn/docs/manual/reference/operator/update/positional-all/#mongodb-update-up.---)                  | 充当占位符，以更新数组中与查询条件匹配的文档中的所有元素。                   |
+| [`$[\]`](https://www.mongodb.com/zh-cn/docs/manual/reference/operator/update/positional-filtered/#mongodb-update-up.---identifier--) | 充当占位符，以更新与查询条件匹配的文档中所有符合 `arrayFilters` 条件的元素。 |
+| [`$addToSet`](https://www.mongodb.com/zh-cn/docs/manual/reference/operator/update/addToSet/#mongodb-update-up.-addToSet)             | 仅向数组中添加尚不存在于该数组的元素。                                       |
+| [`$pop`](https://www.mongodb.com/zh-cn/docs/manual/reference/operator/update/pop/#mongodb-update-up.-pop)                            | 删除数组的第一项或最后一项。                                                 |
+| [`$pull`](https://www.mongodb.com/zh-cn/docs/manual/reference/operator/update/pull/#mongodb-update-up.-pull)                         | 删除与指定查询匹配的所有数组元素。                                           |
+| [`$push`](https://www.mongodb.com/zh-cn/docs/manual/reference/operator/update/push/#mongodb-update-up.-push)                         | 向数组添加一项。                                                             |
+| [`$pullAll`](https://www.mongodb.com/zh-cn/docs/manual/reference/operator/update/pullAll/#mongodb-update-up.-pullAll)                | 从数组中删除所有匹配值。                                                     |
+
+### Modifiers
+
+| 名称                                                                                                                     | 说明                                                                                                                                                                                                                                                                               |
+| :----------------------------------------------------------------------------------------------------------------------- | :--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| [`$each`](https://www.mongodb.com/zh-cn/docs/manual/reference/operator/update/each/#mongodb-update-up.-each)             | 修改 [`$push`](https://www.mongodb.com/zh-cn/docs/manual/reference/operator/update/push/#mongodb-update-up.-push) 和 [`$addToSet`](https://www.mongodb.com/zh-cn/docs/manual/reference/operator/update/addToSet/#mongodb-update-up.-addToSet) 运算符，以在数组更新时追加多个项目。 |
+| [`$position`](https://www.mongodb.com/zh-cn/docs/manual/reference/operator/update/position/#mongodb-update-up.-position) | 修改 [`$push`](https://www.mongodb.com/zh-cn/docs/manual/reference/operator/update/push/#mongodb-update-up.-push) 运算符，以指定在数组中添加元素的位置。                                                                                                                           |
+| [`$slice`](https://www.mongodb.com/zh-cn/docs/manual/reference/operator/update/slice/#mongodb-update-up.-slice)          | 修改 [`$push`](https://www.mongodb.com/zh-cn/docs/manual/reference/operator/update/push/#mongodb-update-up.-push) 运算符以限制更新后数组的大小。                                                                                                                                   |
+| [`$sort`](https://www.mongodb.com/zh-cn/docs/manual/reference/operator/update/sort/#mongodb-update-up.-sort)             | 修改 [`$push`](https://www.mongodb.com/zh-cn/docs/manual/reference/operator/update/push/#mongodb-update-up.-push) 运算符，以对存储在数组中的文档重新排序。                                                                                                                         |
+
+## Bitwise
+
+| 名称                                                                                                      | 说明                                         |
+| :-------------------------------------------------------------------------------------------------------- | :------------------------------------------- |
+| [`$bit`](https://www.mongodb.com/zh-cn/docs/manual/reference/operator/update/bit/#mongodb-update-up.-bit) | 对整数值执行按位 `AND`、`OR` 和 `XOR` 更新。 |
+
+## 常见更新表达式
+
+1. **`$set`**
+   - **说明**: 设置字段的值。
+   - **示例**:
+     ```javascript
+     db.collection.updateOne(
+       { name: "John" },
+       { $set: { age: 30 } }
+     )
+     ```
+
+2. **`$unset`**
+   - **说明**: 删除字段。
+   - **示例**:
+     ```javascript
+     db.collection.updateOne(
+       { name: "John" },
+       { $unset: { age: 1 } }
+     )
+     ```
+
+3. **`$inc`**
+   - **说明**: 增加字段的值。
+   - **示例**:
+     ```javascript
+     db.collection.updateOne(
+       { name: "John" },
+       { $inc: { age: 1 } }
+     )
+     ```
+
+4. **`$mul`**
+   - **说明**: 乘以字段的值。
+   - **示例**:
+     ```javascript
+     db.collection.updateOne(
+       { name: "John" },
+       { $mul: { age: 2 } }
+     )
+     ```
+
+5. **`$rename`**
+   - **说明**: 重命名字段。
+   - **示例**:
+     ```javascript
+     db.collection.updateOne(
+       { name: "John" },
+       { $rename: { age: "years" } }
+     )
+     ```
+
+6. **`$min`**
+   - **说明**: 只有当字段的值大于指定值时，才更新字段。
+   - **示例**:
+     ```javascript
+     db.collection.updateOne(
+       { name: "John" },
+       { $min: { age: 25 } }
+     )
+     ```
+
+7. **`$max`**
+   - **说明**: 只有当字段的值小于指定值时，才更新字段。
+   - **示例**:
+     ```javascript
+     db.collection.updateOne(
+       { name: "John" },
+       { $max: { age: 35 } }
+     )
+     ```
+
+8. **`$currentDate`**
+   - **说明**: 设置字段为当前日期或时间戳。
+   - **示例**:
+     ```javascript
+     db.collection.updateOne(
+       { name: "John" },
+       { $currentDate: { lastModified: true } }
+     )
+     ```
+
+9. **`$setOnInsert`**
+   - **说明**: 仅在插入新文档时设置字段。
+   - **示例**:
+     ```javascript
+     db.collection.updateOne(
+       { name: "John" },
+       { $setOnInsert: { createdAt: new Date() } },
+       { upsert: true }
+     )
+     ```
+
+10. **`$addToSet`**
+    - **说明**: 向数组字段添加一个元素，仅当该元素不存在时。
+    - **示例**:
+      ```javascript
+      db.collection.updateOne(
+        { name: "John" },
+        { $addToSet: { hobbies: "reading" } }
+      )
+      db.collection.updateOne(
+        { name: "John" },
+        { $addToSet: { hobbies: { $each: [ "reading", "swimming" ] } } }
+      )
+
+11. **`$pop`**
+    - **说明**: 移除数组字段的第一个或最后一个元素。
+    - **示例**:
+      ```javascript
+      db.collection.updateOne(
+        { name: "John" },
+        { $pop: { hobbies: 1 } } // 移除最后一个元素
+      )
+      ```
+
+12. **`$pull`**
+    - **说明**: 从数组字段中移除所有匹配的元素。
+    - **示例**:
+      ```javascript
+      db.collection.updateOne(
+        { name: "John" },
+        { $pull: { hobbies: "reading" } }
+      )
+      ```
+
+13. **`$push`**
+    - **说明**: 向数组字段添加一个或多个元素。
+    - **示例**:
+      ```javascript
+      db.collection.updateOne(
+        { name: "John" },
+        { $push: { hobbies: "swimming" } }
+      )
+      db.collection.updateOne(
+        { name: "John" },
+        { $push: { hobbies: { $each: ["reading", "swimming"] } } }
+      )
+      ```
+
+14. **`$bit`**
+    - **说明**: 对整型字段执行位操作。
+    - **示例**:
+      ```javascript
+      db.collection.updateOne(
+        { name: "John" },
+        { $bit: { flags: { and: 8 } } }
+      )
+      ```
+
+### 示例
+
+以下是一个综合示例，展示了如何在一次更新操作中使用多个更新表达式：
+
+```javascript
+db.collection.updateOne(
+  { name: "John" },
+  {
+    $set: { age: 30 },
+    $inc: { visits: 1 },
+    $mul: { salary: 1.1 },
+    $rename: { age: "years" },
+    $min: { years: 25 },
+    $max: { years: 35 },
+    $currentDate: { lastModified: true },
+    $addToSet: { hobbies: "reading" },
+    $pop: { hobbies: -1 }, // 移除第一个元素
+    $pull: { hobbies: "swimming" },
+    $push: { hobbies: "cycling" },
+    $bit: { flags: { and: 8 } }
+  }
+)
+```
+
 
 # 聚合操作符
 ## Usage
@@ -1401,244 +1653,92 @@ db.donors.updateMany(
 | [`$top`](https://www.mongodb.com/zh-cn/docs/manual/reference/operator/aggregation/top/#mongodb-group-grp.-top)                                  | 根据指定的排序顺序返回群组内第一个元素。*5.2 版本中的新增功能*。可在 [`$group`](https://www.mongodb.com/zh-cn/docs/manual/reference/operator/aggregation/group/#mongodb-pipeline-pipe.-group) 和 [`$setWindowFields`](https://www.mongodb.com/zh-cn/docs/manual/reference/operator/aggregation/setWindowFields/#mongodb-pipeline-pipe.-setWindowFields) 阶段使用。                                                                                                                                                                                                                                                                               |
 | [`$topN`](https://www.mongodb.com/zh-cn/docs/manual/reference/operator/aggregation/topN/#mongodb-group-grp.-topN)                               | 根据指定的排序顺序，返回群组内前 `n` 个字段的聚合。*5.2 版本中的新增功能*。可在 [`$group`](https://www.mongodb.com/zh-cn/docs/manual/reference/operator/aggregation/group/#mongodb-pipeline-pipe.-group) 和 [`$setWindowFields`](https://www.mongodb.com/zh-cn/docs/manual/reference/operator/aggregation/setWindowFields/#mongodb-pipeline-pipe.-setWindowFields) 阶段使用。算术表达式操作符                                                                                                                                                                                                                                                    |
 
-# 更新操作符
-## 语法
-```javascript
-{
-   <operator1>: { <field1>: <value1>, ... },
-   <operator2>: { <field2>: <value2>, ... },
-   ...
-}
-```
 
+# 聚合阶段
+## db.collection.aggregate() Stages
 
+除 [`$out`](https://www.mongodb.com/zh-cn/docs/manual/reference/operator/aggregation/out/#mongodb-pipeline-pipe.-out)、[`$merge`](https://www.mongodb.com/zh-cn/docs/manual/reference/operator/aggregation/merge/#mongodb-pipeline-pipe.-merge)、[`$geoNear`](https://www.mongodb.com/zh-cn/docs/manual/reference/operator/aggregation/geoNear/#mongodb-pipeline-pipe.-geoNear)、[`$changeStream`](https://www.mongodb.com/zh-cn/docs/manual/reference/operator/aggregation/changeStream/#mongodb-pipeline-pipe.-changeStream) 和 [`$changeStreamSplitLargeEvent`](https://www.mongodb.com/zh-cn/docs/manual/reference/operator/aggregation/changeStreamSplitLargeEvent/#mongodb-pipeline-pipe.-changeStreamSplitLargeEvent) 阶段之外的所有阶段都可以在管道中多次出现。
 
-## 行为
+## 注意
 
-从 MongoDB 5.0 开始，更新运算符按字典顺序处理具有基于字符串的名称的文档字段。具有数字名称的字段按数字顺序处理。
-
-参考该 [`$set`](https://www.mongodb.com/zh-cn/docs/manual/reference/operator/update/set/#mongodb-update-up.-set) 命令示例：
+有关特定操作符（包括事务语法和示例）的详细信息，请单击该操作符的参考页面链接。
 
 ```
-{ $set: { "a.2": <new value>, "a.10": <new value>, } }
+db.collection.aggregate( [ { <stage> }, ... ] )
 ```
 
-在 MongoDB 5.0 及更高版本中，`"a.2"` 在 `"a.10"` 之前处理，因为 `2` 按数字顺序排在 `10` 之前。
+| 阶段                                                                                                                                                                                       | 说明                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       |
+| :----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | :----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| [`$addFields`](https://www.mongodb.com/zh-cn/docs/manual/reference/operator/aggregation/addFields/#mongodb-pipeline-pipe.-addFields)                                                       | 为文档添加新字段。与 [`$project`](https://www.mongodb.com/zh-cn/docs/manual/reference/operator/aggregation/project/#mongodb-pipeline-pipe.-project) 类似，[`$addFields`](https://www.mongodb.com/zh-cn/docs/manual/reference/operator/aggregation/addFields/#mongodb-pipeline-pipe.-addFields) 重塑了流中的每个文档；具体来说，就是在输出文档中添加新字段，这些输出文档既包含输入文档中的现有字段，也包含新添加的字段。[`$set`](https://www.mongodb.com/zh-cn/docs/manual/reference/operator/aggregation/set/#mongodb-pipeline-pipe.-set) 是 [`$addFields` 的别名。](https://www.mongodb.com/zh-cn/docs/manual/reference/operator/aggregation/addFields/#mongodb-pipeline-pipe.-addFields) |
+| [`$bucket`](https://www.mongodb.com/zh-cn/docs/manual/reference/operator/aggregation/bucket/#mongodb-pipeline-pipe.-bucket)                                                                | 根据指定的表达式和存储桶边界将传入的文档分为多个组（称为存储桶）。                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         |
+| [`$bucketAuto`](https://www.mongodb.com/zh-cn/docs/manual/reference/operator/aggregation/bucketAuto/#mongodb-pipeline-pipe.-bucketAuto)                                                    | 根据指定的表达式，将接收到的文档归类到特定数量的群组中（称为“存储桶”）。自动确定存储桶边界，以尝试将文档均匀地分配到指定数量的存储桶中。                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   |
+| [`$changeStream`](https://www.mongodb.com/zh-cn/docs/manual/reference/operator/aggregation/changeStream/#mongodb-pipeline-pipe.-changeStream)                                              | 返回集合的 [Change Stream](https://www.mongodb.com/zh-cn/docs/manual/changeStreams/#std-label-changeStreams) 游标。此阶段只能在 aggregation pipeline 中发生一次，并且必须作为第一阶段发生。                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                |
+| [`$changeStreamSplitLargeEvent`](https://www.mongodb.com/zh-cn/docs/manual/reference/operator/aggregation/changeStreamSplitLargeEvent/#mongodb-pipeline-pipe.-changeStreamSplitLargeEvent) | 将超过 16 MB 的大型 [change stream](https://www.mongodb.com/zh-cn/docs/manual/changeStreams/#std-label-changeStreams) 事件分割成较小的分段，在 change stream 游标中返回。您只能在 `$changeStream` 管道中使用 `$changeStreamSplitLargeEvent`，且它必须为该管道中的最后阶段。                                                                                                                                                                                                                                                                                                                                                                                                                |
+| [`$collStats`](https://www.mongodb.com/zh-cn/docs/manual/reference/operator/aggregation/collStats/#mongodb-pipeline-pipe.-collStats)                                                       | 返回有关集合或视图的统计信息。                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             |
+| [`$count`](https://www.mongodb.com/zh-cn/docs/manual/reference/operator/aggregation/count/#mongodb-pipeline-pipe.-count)                                                                   | 返回聚合管道此阶段的文档数量计数。有别于 [`$count`](https://www.mongodb.com/zh-cn/docs/manual/reference/operator/aggregation/count-accumulator/#mongodb-group-grp.-count) 聚合累加器。                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     |
+| [`$densify`](https://www.mongodb.com/zh-cn/docs/manual/reference/operator/aggregation/densify/#mongodb-pipeline-pipe.-densify)                                                             | 在文档序列中创建新文档，其中缺少字段中的某些值。                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           |
+| [`$documents`](https://www.mongodb.com/zh-cn/docs/manual/reference/operator/aggregation/documents/#mongodb-pipeline-pipe.-documents)                                                       | 从输入表达式返回字面文档。                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 |
+| [`$facet`](https://www.mongodb.com/zh-cn/docs/manual/reference/operator/aggregation/facet/#mongodb-pipeline-pipe.-facet)                                                                   | 在单个阶段内处理同一组输入文档上的多个[聚合管道](https://www.mongodb.com/zh-cn/docs/manual/core/aggregation-pipeline/#std-label-aggregation-pipeline)。支持创建多分面聚合，能够在单个阶段中跨多个维度或分面描述数据特征。                                                                                                                                                                                                                                                                                                                                                                                                                                                                  |
+| [`$fill`](https://www.mongodb.com/zh-cn/docs/manual/reference/operator/aggregation/fill/#mongodb-pipeline-pipe.-fill)                                                                      | 填充文档中的 `null` 和缺失的字段值。                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       |
+| [`$geoNear`](https://www.mongodb.com/zh-cn/docs/manual/reference/operator/aggregation/geoNear/#mongodb-pipeline-pipe.-geoNear)                                                             | 根据与地理空间点的接近程度返回有序的文档流。针对地理空间数据，整合了 [`$match`](https://www.mongodb.com/zh-cn/docs/manual/reference/operator/aggregation/match/#mongodb-pipeline-pipe.-match)、[`$sort`](https://www.mongodb.com/zh-cn/docs/manual/reference/operator/aggregation/sort/#mongodb-pipeline-pipe.-sort) 和 [`$limit`](https://www.mongodb.com/zh-cn/docs/manual/reference/operator/aggregation/limit/#mongodb-pipeline-pipe.-limit) 功能。输出文档包含一个额外的距离字段，并可包含一个位置标识符字段。                                                                                                                                                                        |
+| [`$graphLookup`](https://www.mongodb.com/zh-cn/docs/manual/reference/operator/aggregation/graphLookup/#mongodb-pipeline-pipe.-graphLookup)                                                 | 对集合执行递归搜索。为每个输出文档添加一个新数组字段，其中包含该文档的递归搜索遍历结果。                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   |
+| [`$group`](https://www.mongodb.com/zh-cn/docs/manual/reference/operator/aggregation/group/#mongodb-pipeline-pipe.-group)                                                                   | 按指定的标识符表达式对输入文档进行分组，并将累加器表达式（如果指定）应用于每个群组。接收所有输入文档，并为每个不同群组输出一个文档。输出文档仅包含标识符字段和累积字段（如果指定）。                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       |
+| [`$indexStats`](https://www.mongodb.com/zh-cn/docs/manual/reference/operator/aggregation/indexStats/#mongodb-pipeline-pipe.-indexStats)                                                    | 返回有关集合的每个索引使用情况的统计信息。                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 |
+| [`$limit`](https://www.mongodb.com/zh-cn/docs/manual/reference/operator/aggregation/limit/#mongodb-pipeline-pipe.-limit)                                                                   | 将未修改的前 *n 个*文档传递到管道，其中 *n* 为指定的限制。对于每个输入文档，输出一个文档（针对前 *n 个*文档）或零个文档（前 *n 个*文档之后）。                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             |
+| [`$listSampledQueries`](https://www.mongodb.com/zh-cn/docs/manual/reference/operator/aggregation/listSampledQueries/#mongodb-pipeline-pipe.-listSampledQueries)                            | 列出所有集合或特定集合的抽样查询。                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         |
+| [`$listSearchIndexes`](https://www.mongodb.com/zh-cn/docs/manual/reference/operator/aggregation/listSearchIndexes/#mongodb-pipeline-pipe.-listSearchIndexes)                               | 返回指定集合上现有 [Atlas Search 索引](https://www.mongodb.com/zh-cn/docs/atlas/atlas-search/atlas-search-overview/#fts-indexes)的信息。                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   |
+| [`$listSessions`](https://www.mongodb.com/zh-cn/docs/manual/reference/operator/aggregation/listSessions/#mongodb-pipeline-pipe.-listSessions)                                              | 列出活动时间足够长、足以传播到 `system.sessions` 集合的所有会话。                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          |
+| [`$lookup`](https://www.mongodb.com/zh-cn/docs/manual/reference/operator/aggregation/lookup/#mongodb-pipeline-pipe.-lookup)                                                                | 对*同一* 数据库中的另一个集合执行左外连接，以过滤“已连接”集合中的文档以便进行处理。                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        |
+| [`$match`](https://www.mongodb.com/zh-cn/docs/manual/reference/operator/aggregation/match/#mongodb-pipeline-pipe.-match)                                                                   | 筛选文档流以仅允许匹配的文档将未修改的文档传入下一管道阶段。[`$match`](https://www.mongodb.com/zh-cn/docs/manual/reference/operator/aggregation/match/#mongodb-pipeline-pipe.-match) 使用标准 MongoDB 查询。对于每个输入文档，输出一个文档（一个匹配项）或零个文档（无匹配项）。                                                                                                                                                                                                                                                                                                                                                                                                           |
+| [`$merge`](https://www.mongodb.com/zh-cn/docs/manual/reference/operator/aggregation/merge/#mongodb-pipeline-pipe.-merge)                                                                   | 将 aggregation pipeline 的结果文档写入集合。该阶段可将结果（插入新文档、合并文档、替换文档、保留现有文档、操作失败、使用自定义更新管道处理文档）纳入输出集合。要使用 [`$merge`](https://www.mongodb.com/zh-cn/docs/manual/reference/operator/aggregation/merge/#mongodb-pipeline-pipe.-merge) 阶段，它必须是管道中的最后一个阶段。                                                                                                                                                                                                                                                                                                                                                         |
+| [`$out`](https://www.mongodb.com/zh-cn/docs/manual/reference/operator/aggregation/out/#mongodb-pipeline-pipe.-out)                                                                         | 将 aggregation pipeline 的结果文档写入集合。要使用 [`$out`](https://www.mongodb.com/zh-cn/docs/manual/reference/operator/aggregation/out/#mongodb-pipeline-pipe.-out) 阶段，它必须是管道中的最后一个阶段。                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 |
+| [`$planCacheStats`](https://www.mongodb.com/zh-cn/docs/manual/reference/operator/aggregation/planCacheStats/#mongodb-pipeline-pipe.-planCacheStats)                                        | 返回集合的[计划缓存](https://www.mongodb.com/zh-cn/docs/manual/core/query-plans/#std-label-query-plans-query-optimization)信息。                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           |
+| [`$project`](https://www.mongodb.com/zh-cn/docs/manual/reference/operator/aggregation/project/#mongodb-pipeline-pipe.-project)                                                             | 重塑流中的每个文档，例如添加新的字段或删除现有字段。对于每个输入文档，输出一个文档。另请参阅 [`$unset`](https://www.mongodb.com/zh-cn/docs/manual/reference/operator/aggregation/unset/#mongodb-pipeline-pipe.-unset) 以了解如何删除现有字段。                                                                                                                                                                                                                                                                                                                                                                                                                                             |
+| [`$querySettings`](https://www.mongodb.com/zh-cn/docs/manual/reference/operator/aggregation/querySettings/#mongodb-pipeline-pipe.-querySettings)                                           | 返回之前使用 [`setQuerySettings`](https://www.mongodb.com/zh-cn/docs/manual/reference/command/setQuerySettings/#mongodb-dbcommand-dbcmd.setQuerySettings) 添加的查询设置。*8.0版本新增*。                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  |
+| [`$queryStats`](https://www.mongodb.com/zh-cn/docs/manual/reference/operator/aggregation/queryStats/#mongodb-pipeline-pipe.-queryStats)                                                    | 返回已记录查询的运行时统计信息。**警告：**不支持 `$queryStats` 聚合阶段，也不能保证在未来的版本中保持稳定。不要构建依赖于此阶段特定输出格式的功能，因为输出可能会在未来的版本中发生变化。                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  |
+| [`$redact`](https://www.mongodb.com/zh-cn/docs/manual/reference/operator/aggregation/redact/#mongodb-pipeline-pipe.-redact)                                                                | 根据文档中存储的信息来限制每个文档的内容，从而重塑流中的每个文档。结合了 [`$project`](https://www.mongodb.com/zh-cn/docs/manual/reference/operator/aggregation/project/#mongodb-pipeline-pipe.-project) 和 [`$match`](https://www.mongodb.com/zh-cn/docs/manual/reference/operator/aggregation/match/#mongodb-pipeline-pipe.-match) 的功能。可用于实现字段级别访问控制。对于每个输入文档，输出一个或零个文档。                                                                                                                                                                                                                                                                             |
+| [`$replaceRoot`](https://www.mongodb.com/zh-cn/docs/manual/reference/operator/aggregation/replaceRoot/#mongodb-pipeline-pipe.-replaceRoot)                                                 | 用指定的嵌入文档替换文档。该操作会替换输入文档中的所有现有字段，包括 `_id` 字段。指定嵌入在输入文档中的文档，以将嵌入的文档提升到顶层。[`$replaceWith`](https://www.mongodb.com/zh-cn/docs/manual/reference/operator/aggregation/replaceWith/#mongodb-pipeline-pipe.-replaceWith) 是 [`$replaceRoot`](https://www.mongodb.com/zh-cn/docs/manual/reference/operator/aggregation/replaceRoot/#mongodb-pipeline-pipe.-replaceRoot) 阶段的别名。                                                                                                                                                                                                                                               |
+| [`$replaceWith`](https://www.mongodb.com/zh-cn/docs/manual/reference/operator/aggregation/replaceWith/#mongodb-pipeline-pipe.-replaceWith)                                                 | 用指定的嵌入文档替换文档。该操作会替换输入文档中的所有现有字段，包括 `_id` 字段。指定嵌入在输入文档中的文档，以将嵌入的文档提升到顶层。[`$replaceWith`](https://www.mongodb.com/zh-cn/docs/manual/reference/operator/aggregation/replaceWith/#mongodb-pipeline-pipe.-replaceWith) 是 [`$replaceRoot`](https://www.mongodb.com/zh-cn/docs/manual/reference/operator/aggregation/replaceRoot/#mongodb-pipeline-pipe.-replaceRoot) 阶段的别名。                                                                                                                                                                                                                                               |
+| [`$sample`](https://www.mongodb.com/zh-cn/docs/manual/reference/operator/aggregation/sample/#mongodb-pipeline-pipe.-sample)                                                                | 从其输入中随机选择指定数量的文件。                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         |
+| [`$search`](https://www.mongodb.com/zh-cn/docs/atlas/atlas-search/aggregation-stages/search/#mongodb-pipeline-pipe.-search)                                                                | 对 [Atlas](https://www.mongodb.com/zh-cn/docs/atlas/reference/atlas-search/query-syntax/) 集合中的一个或多个字段执行全文搜索。`$search` 仅适用于 MongoDB Atlas 集群，不适用于自托管部署。要了解更多信息，请参阅 [Atlas Search 聚合管道阶段](https://www.mongodb.com/zh-cn/docs/atlas/reference/atlas-search/query-syntax/)。                                                                                                                                                                                                                                                                                                                                                               |
+| [`$searchMeta`](https://www.mongodb.com/zh-cn/docs/atlas/atlas-search/aggregation-stages/searchMeta/#mongodb-pipeline-pipe.-searchMeta)                                                    | 返回对 [Atlas](https://www.mongodb.com/zh-cn/docs/atlas/atlas-search/) 集合进行 [Atlas Search](https://www.mongodb.com/zh-cn/docs/atlas/reference/atlas-search/query-syntax/) 查询时，得到的不同类型的元数据结果文档。`$searchMeta` 仅适用于 MongoDB Atlas 集群，不适用于自托管部署。要了解更多信息，请参阅 [Atlas Search 聚合管道阶段](https://www.mongodb.com/zh-cn/docs/atlas/reference/atlas-search/query-syntax/)。                                                                                                                                                                                                                                                                   |
+| [`$set`](https://www.mongodb.com/zh-cn/docs/manual/reference/operator/aggregation/set/#mongodb-pipeline-pipe.-set)                                                                         | 为文档添加新字段。与 [`$project`](https://www.mongodb.com/zh-cn/docs/manual/reference/operator/aggregation/project/#mongodb-pipeline-pipe.-project) 类似，[`$set`](https://www.mongodb.com/zh-cn/docs/manual/reference/operator/aggregation/set/#mongodb-pipeline-pipe.-set) 重塑了流中的每个文档；具体来说，就是在输出文档中添加新字段，这些输出文档既包含输入文档中的现有字段，也包含新添加的字段。[`$set`](https://www.mongodb.com/zh-cn/docs/manual/reference/operator/aggregation/set/#mongodb-pipeline-pipe.-set) 是 [`$addFields`](https://www.mongodb.com/zh-cn/docs/manual/reference/operator/aggregation/addFields/#mongodb-pipeline-pipe.-addFields) 阶段的别名。               |
+| [`$setWindowFields`](https://www.mongodb.com/zh-cn/docs/manual/reference/operator/aggregation/setWindowFields/#mongodb-pipeline-pipe.-setWindowFields)                                     | 将文档分组到窗口中，并将一个或多个操作符应用于每个窗口中的文档。*版本 5.0 中的新增功能*。                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                  |
+| [`$skip`](https://www.mongodb.com/zh-cn/docs/manual/reference/operator/aggregation/skip/#mongodb-pipeline-pipe.-skip)                                                                      | 跳过前 *n* 个文档，其中 *n* 是指定的跳过编号，并将未修改的剩余文档传递到管道。对于每个输入文档，输出零个文档（对于前 *n* 个文档）或一个文档（如果在前 *n* 个文档之后）。                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   |
+| [`$sort`](https://www.mongodb.com/zh-cn/docs/manual/reference/operator/aggregation/sort/#mongodb-pipeline-pipe.-sort)                                                                      | 按指定的排序键对文档流重新排序。仅顺序会改变，而文档则保持不变。对于每个输入文档，输出一个文档。                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           |
+| [`$sortByCount`](https://www.mongodb.com/zh-cn/docs/manual/reference/operator/aggregation/sortByCount/#mongodb-pipeline-pipe.-sortByCount)                                                 | 根据指定表达式的值对传入文档进行分组，然后计算每个不同群组中的文档数量。                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   |
+| [`$unionWith`](https://www.mongodb.com/zh-cn/docs/manual/reference/operator/aggregation/unionWith/#mongodb-pipeline-pipe.-unionWith)                                                       | 执行两个集合的联合；即将两个集合的管道结果合并到一个结果集中。                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             |
+| [`$unset`](https://www.mongodb.com/zh-cn/docs/manual/reference/operator/aggregation/unset/#mongodb-pipeline-pipe.-unset)                                                                   | 从文档中删除/排除字段。[`$unset`](https://www.mongodb.com/zh-cn/docs/manual/reference/operator/aggregation/unset/#mongodb-pipeline-pipe.-unset) 是删除字段的 [`$project`](https://www.mongodb.com/zh-cn/docs/manual/reference/operator/aggregation/project/#mongodb-pipeline-pipe.-project) 阶段的别名。                                                                                                                                                                                                                                                                                                                                                                                   |
+| [`$unwind`](https://www.mongodb.com/zh-cn/docs/manual/reference/operator/aggregation/unwind/#mongodb-pipeline-pipe.-unwind)                                                                | 对输入文档中的某一数组字段进行解构，以便为*每个*元素输出文档。每个输出文档均会将此数组替换为元素值。对于每个输入文档，输出 *n 个*文档，其中 *n* 为数组元素的数量，且对于空数组可为零。                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     |
+| [`$vectorSearch`](https://www.mongodb.com/zh-cn/docs/atlas/atlas-vector-search/vector-search-stage/#mongodb-pipeline-pipe.-vectorSearch)                                                   | [对Atlas集合的指定字段中的向量执行](https://www.mongodb.com/zh-cn/docs/atlas/reference/atlas-search/query-syntax/) ANN 或 ENN搜索。`$vectorSearch` 仅适用于运行 MongoDB v6.0.11 或更高版本的 MongoDB Atlas 集群，不适用于自托管部署。*版本 7.0.2 新增内容*。                                                                                                                                                                                                                                                                                                                                                                                                                               |
 
-## 字段
+有关管道阶段中使用的聚合表达式操作符，请参阅[聚合操作符](https://www.mongodb.com/zh-cn/docs/manual/reference/operator/aggregation/#std-label-aggregation-pipeline-operators)。
 
-| 名称                                                                                                                              | 说明                                                                             |
-| :-------------------------------------------------------------------------------------------------------------------------------- | :------------------------------------------------------------------------------- |
-| [`$currentDate`](https://www.mongodb.com/zh-cn/docs/manual/reference/operator/update/currentDate/#mongodb-update-up.-currentDate) | 将字段的值设置为当前日期，可以是日期或时间戳。                                   |
-| [`$inc`](https://www.mongodb.com/zh-cn/docs/manual/reference/operator/update/inc/#mongodb-update-up.-inc)                         | 将字段的值按指定量递增。                                                         |
-| [`$min`](https://www.mongodb.com/zh-cn/docs/manual/reference/operator/update/min/#mongodb-update-up.-min)                         | 仅当指定值小于现有字段值时才更新字段。                                           |
-| [`$max`](https://www.mongodb.com/zh-cn/docs/manual/reference/operator/update/max/#mongodb-update-up.-max)                         | 仅当指定值大于现有字段值时才更新字段。                                           |
-| [`$mul`](https://www.mongodb.com/zh-cn/docs/manual/reference/operator/update/mul/#mongodb-update-up.-mul)                         | 将字段的值乘以指定量。                                                           |
-| [`$rename`](https://www.mongodb.com/zh-cn/docs/manual/reference/operator/update/rename/#mongodb-update-up.-rename)                | 重命名字段。                                                                     |
-| [`$set`](https://www.mongodb.com/zh-cn/docs/manual/reference/operator/update/set/#mongodb-update-up.-set)                         | 设置文档中字段的值。                                                             |
-| [`$setOnInsert`](https://www.mongodb.com/zh-cn/docs/manual/reference/operator/update/setOnInsert/#mongodb-update-up.-setOnInsert) | 如果某一更新操作导致插入文档，则设置字段的值。对修改现有文档的更新操作没有影响。 |
-| [`$unset`](https://www.mongodb.com/zh-cn/docs/manual/reference/operator/update/unset/#mongodb-update-up.-unset)                   | 从文档中删除指定的字段。                                                         |
+## db.aggregate() Stages
 
-## 阵列
+MongoDB 还提供了 [`db.aggregate()`](https://www.mongodb.com/zh-cn/docs/manual/reference/method/db.aggregate/#mongodb-method-db.aggregate) 方法：
 
-### 操作符
-
-| 名称                                                                                                                                 | 说明                                                                         |
-| :----------------------------------------------------------------------------------------------------------------------------------- | :--------------------------------------------------------------------------- |
-| [`$`](https://www.mongodb.com/zh-cn/docs/manual/reference/operator/update/positional/#mongodb-update-up.-)                           | 充当占位符，用于更新与查询条件匹配的第一个元素。                             |
-| [`$[\]`](https://www.mongodb.com/zh-cn/docs/manual/reference/operator/update/positional-all/#mongodb-update-up.---)                  | 充当占位符，以更新数组中与查询条件匹配的文档中的所有元素。                   |
-| [`$[\]`](https://www.mongodb.com/zh-cn/docs/manual/reference/operator/update/positional-filtered/#mongodb-update-up.---identifier--) | 充当占位符，以更新与查询条件匹配的文档中所有符合 `arrayFilters` 条件的元素。 |
-| [`$addToSet`](https://www.mongodb.com/zh-cn/docs/manual/reference/operator/update/addToSet/#mongodb-update-up.-addToSet)             | 仅向数组中添加尚不存在于该数组的元素。                                       |
-| [`$pop`](https://www.mongodb.com/zh-cn/docs/manual/reference/operator/update/pop/#mongodb-update-up.-pop)                            | 删除数组的第一项或最后一项。                                                 |
-| [`$pull`](https://www.mongodb.com/zh-cn/docs/manual/reference/operator/update/pull/#mongodb-update-up.-pull)                         | 删除与指定查询匹配的所有数组元素。                                           |
-| [`$push`](https://www.mongodb.com/zh-cn/docs/manual/reference/operator/update/push/#mongodb-update-up.-push)                         | 向数组添加一项。                                                             |
-| [`$pullAll`](https://www.mongodb.com/zh-cn/docs/manual/reference/operator/update/pullAll/#mongodb-update-up.-pullAll)                | 从数组中删除所有匹配值。                                                     |
-
-### Modifiers
-
-| 名称                                                                                                                     | 说明                                                                                                                                                                                                                                                                               |
-| :----------------------------------------------------------------------------------------------------------------------- | :--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| [`$each`](https://www.mongodb.com/zh-cn/docs/manual/reference/operator/update/each/#mongodb-update-up.-each)             | 修改 [`$push`](https://www.mongodb.com/zh-cn/docs/manual/reference/operator/update/push/#mongodb-update-up.-push) 和 [`$addToSet`](https://www.mongodb.com/zh-cn/docs/manual/reference/operator/update/addToSet/#mongodb-update-up.-addToSet) 运算符，以在数组更新时追加多个项目。 |
-| [`$position`](https://www.mongodb.com/zh-cn/docs/manual/reference/operator/update/position/#mongodb-update-up.-position) | 修改 [`$push`](https://www.mongodb.com/zh-cn/docs/manual/reference/operator/update/push/#mongodb-update-up.-push) 运算符，以指定在数组中添加元素的位置。                                                                                                                           |
-| [`$slice`](https://www.mongodb.com/zh-cn/docs/manual/reference/operator/update/slice/#mongodb-update-up.-slice)          | 修改 [`$push`](https://www.mongodb.com/zh-cn/docs/manual/reference/operator/update/push/#mongodb-update-up.-push) 运算符以限制更新后数组的大小。                                                                                                                                   |
-| [`$sort`](https://www.mongodb.com/zh-cn/docs/manual/reference/operator/update/sort/#mongodb-update-up.-sort)             | 修改 [`$push`](https://www.mongodb.com/zh-cn/docs/manual/reference/operator/update/push/#mongodb-update-up.-push) 运算符，以对存储在数组中的文档重新排序。                                                                                                                         |
-
-## Bitwise
-
-| 名称                                                                                                      | 说明                                         |
-| :-------------------------------------------------------------------------------------------------------- | :------------------------------------------- |
-| [`$bit`](https://www.mongodb.com/zh-cn/docs/manual/reference/operator/update/bit/#mongodb-update-up.-bit) | 对整数值执行按位 `AND`、`OR` 和 `XOR` 更新。 |
-
-## 常见更新表达式
-
-1. **`$set`**
-   - **说明**: 设置字段的值。
-   - **示例**:
-     ```javascript
-     db.collection.updateOne(
-       { name: "John" },
-       { $set: { age: 30 } }
-     )
-     ```
-
-2. **`$unset`**
-   - **说明**: 删除字段。
-   - **示例**:
-     ```javascript
-     db.collection.updateOne(
-       { name: "John" },
-       { $unset: { age: 1 } }
-     )
-     ```
-
-3. **`$inc`**
-   - **说明**: 增加字段的值。
-   - **示例**:
-     ```javascript
-     db.collection.updateOne(
-       { name: "John" },
-       { $inc: { age: 1 } }
-     )
-     ```
-
-4. **`$mul`**
-   - **说明**: 乘以字段的值。
-   - **示例**:
-     ```javascript
-     db.collection.updateOne(
-       { name: "John" },
-       { $mul: { age: 2 } }
-     )
-     ```
-
-5. **`$rename`**
-   - **说明**: 重命名字段。
-   - **示例**:
-     ```javascript
-     db.collection.updateOne(
-       { name: "John" },
-       { $rename: { age: "years" } }
-     )
-     ```
-
-6. **`$min`**
-   - **说明**: 只有当字段的值大于指定值时，才更新字段。
-   - **示例**:
-     ```javascript
-     db.collection.updateOne(
-       { name: "John" },
-       { $min: { age: 25 } }
-     )
-     ```
-
-7. **`$max`**
-   - **说明**: 只有当字段的值小于指定值时，才更新字段。
-   - **示例**:
-     ```javascript
-     db.collection.updateOne(
-       { name: "John" },
-       { $max: { age: 35 } }
-     )
-     ```
-
-8. **`$currentDate`**
-   - **说明**: 设置字段为当前日期或时间戳。
-   - **示例**:
-     ```javascript
-     db.collection.updateOne(
-       { name: "John" },
-       { $currentDate: { lastModified: true } }
-     )
-     ```
-
-9. **`$setOnInsert`**
-   - **说明**: 仅在插入新文档时设置字段。
-   - **示例**:
-     ```javascript
-     db.collection.updateOne(
-       { name: "John" },
-       { $setOnInsert: { createdAt: new Date() } },
-       { upsert: true }
-     )
-     ```
-
-10. **`$addToSet`**
-    - **说明**: 向数组字段添加一个元素，仅当该元素不存在时。
-    - **示例**:
-      ```javascript
-      db.collection.updateOne(
-        { name: "John" },
-        { $addToSet: { hobbies: "reading" } }
-      )
-      db.collection.updateOne(
-        { name: "John" },
-        { $addToSet: { hobbies: { $each: [ "reading", "swimming" ] } } }
-      )
-
-11. **`$pop`**
-    - **说明**: 移除数组字段的第一个或最后一个元素。
-    - **示例**:
-      ```javascript
-      db.collection.updateOne(
-        { name: "John" },
-        { $pop: { hobbies: 1 } } // 移除最后一个元素
-      )
-      ```
-
-12. **`$pull`**
-    - **说明**: 从数组字段中移除所有匹配的元素。
-    - **示例**:
-      ```javascript
-      db.collection.updateOne(
-        { name: "John" },
-        { $pull: { hobbies: "reading" } }
-      )
-      ```
-
-13. **`$push`**
-    - **说明**: 向数组字段添加一个或多个元素。
-    - **示例**:
-      ```javascript
-      db.collection.updateOne(
-        { name: "John" },
-        { $push: { hobbies: "swimming" } }
-      )
-      db.collection.updateOne(
-        { name: "John" },
-        { $push: { hobbies: { $each: ["reading", "swimming"] } } }
-      )
-      ```
-
-14. **`$bit`**
-    - **说明**: 对整型字段执行位操作。
-    - **示例**:
-      ```javascript
-      db.collection.updateOne(
-        { name: "John" },
-        { $bit: { flags: { and: 8 } } }
-      )
-      ```
-
-### 示例
-
-以下是一个综合示例，展示了如何在一次更新操作中使用多个更新表达式：
-
-```javascript
-db.collection.updateOne(
-  { name: "John" },
-  {
-    $set: { age: 30 },
-    $inc: { visits: 1 },
-    $mul: { salary: 1.1 },
-    $rename: { age: "years" },
-    $min: { years: 25 },
-    $max: { years: 35 },
-    $currentDate: { lastModified: true },
-    $addToSet: { hobbies: "reading" },
-    $pop: { hobbies: -1 }, // 移除第一个元素
-    $pull: { hobbies: "swimming" },
-    $push: { hobbies: "cycling" },
-    $bit: { flags: { and: 8 } }
-  }
-)
 ```
+db.aggregate( [ { <stage> }, ... ] )
+```
+
+以下阶段使用 [`db.aggregate()`](https://www.mongodb.com/zh-cn/docs/manual/reference/method/db.aggregate/#mongodb-method-db.aggregate)方法，而不是 [`db.collection.aggregate()`](https://www.mongodb.com/zh-cn/docs/manual/reference/method/db.collection.aggregate/#mongodb-method-db.collection.aggregate) 方法。
+
+| 阶段                                                                                                                                                         | 说明                                                                                                                                                                                                                                                                                                                |
+| :----------------------------------------------------------------------------------------------------------------------------------------------------------- | :------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| [`$changeStream`](https://www.mongodb.com/zh-cn/docs/manual/reference/operator/aggregation/changeStream/#mongodb-pipeline-pipe.-changeStream)                | 返回集合的 [Change Stream](https://www.mongodb.com/zh-cn/docs/manual/changeStreams/#std-label-changeStreams) 游标。此阶段只能在 aggregation pipeline 中发生一次，并且必须作为第一阶段发生。                                                                                                                         |
+| [`$currentOp`](https://www.mongodb.com/zh-cn/docs/manual/reference/operator/aggregation/currentOp/#mongodb-pipeline-pipe.-currentOp)                         | 返回 MongoDB 部署的活动和/或休眠操作的信息。                                                                                                                                                                                                                                                                        |
+| [`$documents`](https://www.mongodb.com/zh-cn/docs/manual/reference/operator/aggregation/documents/#mongodb-pipeline-pipe.-documents)                         | 根据输入值返回字面文档。                                                                                                                                                                                                                                                                                            |
+| [`$listLocalSessions`](https://www.mongodb.com/zh-cn/docs/manual/reference/operator/aggregation/listLocalSessions/#mongodb-pipeline-pipe.-listLocalSessions) | 列出当前连接的 [`mongos`](https://www.mongodb.com/zh-cn/docs/manual/reference/program/mongos/#mongodb-binary-bin.mongos) 或 [`mongod`](https://www.mongodb.com/zh-cn/docs/manual/reference/program/mongod/#mongodb-binary-bin.mongod) 实例上最近使用的所有活动会话。这些会话可能尚未传播到 `system.sessions` 集合。 |
+
+## 可更新的阶段
+
+| 命令                                                                                                                                | `mongosh`方法                                                                                                                                                          |
+| :---------------------------------------------------------------------------------------------------------------------------------- | :--------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| [`findAndModify`](https://www.mongodb.com/zh-cn/docs/manual/reference/command/findAndModify/#mongodb-dbcommand-dbcmd.findAndModify) | [db.collection.findOneAndUpdate()](https://www.mongodb.com/zh-cn/docs/manual/reference/method/db.collection.findOneAndUpdate/#std-label-findOneAndUpdate-agg-pipeline) |
+|                                                                                                                                     | [db.collection.findAndModify()](https://www.mongodb.com/zh-cn/docs/manual/reference/method/db.collection.findAndModify/#std-label-findAndModify-agg-pipeline)          |
+| [`update`](https://www.mongodb.com/zh-cn/docs/manual/reference/command/update/#mongodb-dbcommand-dbcmd.update)                      | [ db.collection.updateOne()](https://www.mongodb.com/zh-cn/docs/manual/reference/method/db.collection.updateOne/#std-label-updateOne-example-agg)                      |
+|                                                                                                                                     | [db.collection.updateMany()](https://www.mongodb.com/zh-cn/docs/manual/reference/method/db.collection.updateMany/#std-label-updateMany-example-agg)                    |
+|                                                                                                                                     | [Bulk.find.update()](https://www.mongodb.com/zh-cn/docs/manual/reference/method/Bulk.find.update/#std-label-example-bulk-find-update-agg)                              |
+|                                                                                                                                     | [Bulk.find.updateOne()](https://www.mongodb.com/zh-cn/docs/manual/reference/method/Bulk.find.updateOne/#std-label-example-bulk-find-update-one-agg)                    |
+|                                                                                                                                     | [Bulk.find.upsert()](https://www.mongodb.com/zh-cn/docs/manual/reference/method/Bulk.find.upsert/#std-label-bulk-find-upsert-update-agg-example)                       |
