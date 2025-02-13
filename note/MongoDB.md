@@ -67,6 +67,9 @@
       - [3. **按字段分组并计算文档数量**](#3-按字段分组并计算文档数量)
       - [4. **使用 `$unwind` 处理数组字段**](#4-使用-unwind-处理数组字段)
       - [5. **使用 `$lookup` 进行集合连接**](#5-使用-lookup-进行集合连接)
+      - [6. **使用 `$facet` 进行多阶段聚合**](#6-使用-facet-进行多阶段聚合)
+      - [7. **使用 `$addFields` 添加新字段**](#7-使用-addfields-添加新字段)
+      - [8. **使用 `$redact` 控制文档访问**](#8-使用-redact-控制文档访问)
 - [查询操作符](#查询操作符)
   - [查询选择器](#查询选择器)
     - [Usage](#usage)
@@ -126,6 +129,7 @@
   - [注意](#注意)
   - [db.aggregate() Stages](#dbaggregate-stages)
   - [可更新的阶段](#可更新的阶段)
+  - [累加器操作符](#累加器操作符)
 
 # Tips
 1. `$addToSet` and `$push`
@@ -687,7 +691,7 @@ pipeline 是一个数组，包含多个聚合阶段。每个阶段都是一个�
   - **`$limit`**：限制输出的文档数量。
   - **`$skip`**：跳过指定数量的文档。
   - **`$unwind`**：将数组字段拆分为多个文档。
-  - **`$lookup`**：连接集合。
+  - **`$lookup`**：连接集合。`<当前集合>left_join<"from"字段指定的集合>`
   - **`$facet`**：同时执行多个聚合管道。
   - **`$addFields`**：添加新字段。
   - **`$redact`**：控制文档访问。
@@ -909,7 +913,7 @@ db.orders.aggregate([
 - **`$unwind`**：将 `customerInfo` 数组拆分为多个文档。
 - **`$project`**：选择需要的字段，包括订单 ID、金额和客户名称。
 
-6. **使用 `$facet` 进行多阶段聚合**
+#### 6. **使用 `$facet` 进行多阶段聚合**
 **案例描述**：同时计算每个客户的总订单金额和订单数量。
 
 **集合示例**：
@@ -944,7 +948,7 @@ db.orders.aggregate([
 - **`$facet`**：同时执行多个聚合管道，分别计算每个客户的总金额和订单数量。
 - **`$project`**：选择需要的字段，包括客户、总金额和订单数量。
 
-7. **使用 `$addFields` 添加新字段**
+#### 7. **使用 `$addFields` 添加新字段**
 **案例描述**：为每个订单添加一个折扣字段。
 
 **集合示例**：
@@ -967,7 +971,7 @@ db.orders.aggregate([
 - **`$addFields`**：添加一个新的 `discount` 字段，其值为 `amount` 的 10%。
 - **`$project`**：选择需要的字段，包括金额和折扣。
 
-8. **使用 `$redact` 控制文档访问**
+#### 8. **使用 `$redact` 控制文档访问**
 **案例描述**：根据用户权限过滤文档。
 
 **集合示例**：
@@ -2070,3 +2074,34 @@ db.aggregate( [ { <stage> }, ... ] )
 |                                                                                                                                     | [Bulk.find.updateOne()](https://www.mongodb.com/zh-cn/docs/manual/reference/method/Bulk.find.updateOne/#std-label-example-bulk-find-update-one-agg)                    |
 |                                                                                                                                     | [Bulk.find.upsert()](https://www.mongodb.com/zh-cn/docs/manual/reference/method/Bulk.find.upsert/#std-label-bulk-find-upsert-update-agg-example)                       |
 
+## 累加器操作符
+`{ $group: { _id: <expression>, <field1>: { <accumulator1> : <expression1> }, ... } }`
+中的`<accumulator>` 操作符必须是以下累加器操作符之一：
+
+*5.0 版本中的更改*。
+
+| 名称                                                         | 说明                                                         |
+| :----------------------------------------------------------- | :----------------------------------------------------------- |
+| [`$accumulator`](https://www.mongodb.com/zh-cn/docs/manual/reference/operator/aggregation/accumulator/#mongodb-group-grp.-accumulator) | 返回用户定义的累加器函数的结果。                             |
+| [`$addToSet`](https://www.mongodb.com/zh-cn/docs/manual/reference/operator/aggregation/addToSet/#mongodb-group-grp.-addToSet) | 返回每个群组的*唯一*表达式值数组。未定义数组元素的排序。*5.0 版中的更改*：可在 [`$setWindowFields`](https://www.mongodb.com/zh-cn/docs/manual/reference/operator/aggregation/setWindowFields/#mongodb-pipeline-pipe.-setWindowFields) 阶段使用。 |
+| [`$avg`](https://www.mongodb.com/zh-cn/docs/manual/reference/operator/aggregation/avg/#mongodb-group-grp.-avg) | 返回数值的平均值。忽略非数字值。*5.0 版中的更改*：可在 [`$setWindowFields`](https://www.mongodb.com/zh-cn/docs/manual/reference/operator/aggregation/setWindowFields/#mongodb-pipeline-pipe.-setWindowFields) 阶段使用。 |
+| [`$bottom`](https://www.mongodb.com/zh-cn/docs/manual/reference/operator/aggregation/bottom/#mongodb-group-grp.-bottom) | 根据指定的排序顺序返回组内的底部元素。*5.2 版本中的新增功能*。可在 [`$group`](https://www.mongodb.com/zh-cn/docs/manual/reference/operator/aggregation/group/#mongodb-pipeline-pipe.-group) 和 [`$setWindowFields`](https://www.mongodb.com/zh-cn/docs/manual/reference/operator/aggregation/setWindowFields/#mongodb-pipeline-pipe.-setWindowFields) 阶段使用。 |
+| [`$bottomN`](https://www.mongodb.com/zh-cn/docs/manual/reference/operator/aggregation/bottomN/#mongodb-group-grp.-bottomN) | 根据指定的排序顺序，返回群组内后 `n` 个字段的聚合。*5.2 版本中的新增功能*。可在 [`$group`](https://www.mongodb.com/zh-cn/docs/manual/reference/operator/aggregation/group/#mongodb-pipeline-pipe.-group) 和 [`$setWindowFields`](https://www.mongodb.com/zh-cn/docs/manual/reference/operator/aggregation/setWindowFields/#mongodb-pipeline-pipe.-setWindowFields) 阶段使用。 |
+| [`$count`](https://www.mongodb.com/zh-cn/docs/manual/reference/operator/aggregation/count-accumulator/#mongodb-group-grp.-count) | 返回群组中的文档数。有别于 [`$count`](https://www.mongodb.com/zh-cn/docs/manual/reference/operator/aggregation/count/#mongodb-pipeline-pipe.-count) 管道阶段。*5.0 版新增功能*：可在 [`$group`](https://www.mongodb.com/zh-cn/docs/manual/reference/operator/aggregation/group/#mongodb-pipeline-pipe.-group) 和 [`$setWindowFields`](https://www.mongodb.com/zh-cn/docs/manual/reference/operator/aggregation/setWindowFields/#mongodb-pipeline-pipe.-setWindowFields) 阶段使用。 |
+| [`$first`](https://www.mongodb.com/zh-cn/docs/manual/reference/operator/aggregation/first/#mongodb-group-grp.-first) | 返回群组中第一个文档的[表达式](https://www.mongodb.com/zh-cn/docs/manual/reference/operator/aggregation/#std-label-aggregation-expressions)结果。*5.0 版中的更改*：可在 [`$setWindowFields`](https://www.mongodb.com/zh-cn/docs/manual/reference/operator/aggregation/setWindowFields/#mongodb-pipeline-pipe.-setWindowFields) 阶段使用。 |
+| [`$firstN`](https://www.mongodb.com/zh-cn/docs/manual/reference/operator/aggregation/firstN/#mongodb-group-grp.-firstN) | 返回群组内前 `n` 个元素的聚合。仅当文档按定义的顺序排列时才有意义。与 [`$firstN`](https://www.mongodb.com/zh-cn/docs/manual/reference/operator/aggregation/firstN/#mongodb-expression-exp.-firstN) 数组操作符不同。*5.2 版新增功能*：可在 [`$group`](https://www.mongodb.com/zh-cn/docs/manual/reference/operator/aggregation/group/#mongodb-pipeline-pipe.-group)、[表达式](https://www.mongodb.com/zh-cn/docs/manual/reference/operator/aggregation/#std-label-aggregation-expressions)和 [`$setWindowFields`](https://www.mongodb.com/zh-cn/docs/manual/reference/operator/aggregation/setWindowFields/#mongodb-pipeline-pipe.-setWindowFields) 阶段使用。 |
+| [`$last`](https://www.mongodb.com/zh-cn/docs/manual/reference/operator/aggregation/last/#mongodb-group-grp.-last) | 返回群组中最后一份文档的[表达式](https://www.mongodb.com/zh-cn/docs/manual/reference/operator/aggregation/#std-label-aggregation-expressions)结果。*5.0 版中的更改*：可在 [`$setWindowFields`](https://www.mongodb.com/zh-cn/docs/manual/reference/operator/aggregation/setWindowFields/#mongodb-pipeline-pipe.-setWindowFields) 阶段使用。 |
+| [`$lastN`](https://www.mongodb.com/zh-cn/docs/manual/reference/operator/aggregation/lastN/#mongodb-group-grp.-lastN) | 返回群组内后 `n` 个元素的聚合。仅当文档按定义的顺序排列时才有意义。与 [`$lastN`](https://www.mongodb.com/zh-cn/docs/manual/reference/operator/aggregation/lastN/#mongodb-expression-exp.-lastN) 数组操作符不同。*5.2 版新增功能*：可在 [`$group`](https://www.mongodb.com/zh-cn/docs/manual/reference/operator/aggregation/group/#mongodb-pipeline-pipe.-group)、[表达式](https://www.mongodb.com/zh-cn/docs/manual/reference/operator/aggregation/#std-label-aggregation-expressions)和 [`$setWindowFields`](https://www.mongodb.com/zh-cn/docs/manual/reference/operator/aggregation/setWindowFields/#mongodb-pipeline-pipe.-setWindowFields) 阶段使用。 |
+| [`$max`](https://www.mongodb.com/zh-cn/docs/manual/reference/operator/aggregation/max/#mongodb-group-grp.-max) | 返回每个群组的最大表达式值。*5.0 版中的更改*：可在 [`$setWindowFields`](https://www.mongodb.com/zh-cn/docs/manual/reference/operator/aggregation/setWindowFields/#mongodb-pipeline-pipe.-setWindowFields) 阶段使用。 |
+| [`$maxN`](https://www.mongodb.com/zh-cn/docs/manual/reference/operator/aggregation/maxN/#mongodb-group-grp.-maxN) | 返回群组中 `n` 个最大值元素的聚合。与 [`$maxN`](https://www.mongodb.com/zh-cn/docs/manual/reference/operator/aggregation/maxN-array-element/#mongodb-expression-exp.-maxN) 数组操作符不同。*5.2 版本中的新增功能*。在[`$group`](https://www.mongodb.com/zh-cn/docs/manual/reference/operator/aggregation/group/#mongodb-pipeline-pipe.-group) 、 [`$setWindowFields`](https://www.mongodb.com/zh-cn/docs/manual/reference/operator/aggregation/setWindowFields/#mongodb-pipeline-pipe.-setWindowFields)中可用，也可作为[表达式使用。](https://www.mongodb.com/zh-cn/docs/manual/reference/operator/aggregation/#std-label-aggregation-expressions) |
+| [`$median`](https://www.mongodb.com/zh-cn/docs/manual/reference/operator/aggregation/median/#mongodb-group-grp.-median) | 返回[中位数](https://www.mongodb.com/zh-cn/docs/manual/reference/glossary/#std-term-median)（第 50 [百分位数](https://www.mongodb.com/zh-cn/docs/manual/reference/glossary/#std-term-percentile)）的近似标量值。*7.0 版本中的新增功能*。此操作符可在以下阶段用作累加器：[`$group`](https://www.mongodb.com/zh-cn/docs/manual/reference/operator/aggregation/group/#mongodb-pipeline-pipe.-group)[`$setWindowFields`](https://www.mongodb.com/zh-cn/docs/manual/reference/operator/aggregation/setWindowFields/#mongodb-pipeline-pipe.-setWindowFields)它也可用作[聚合表达式](https://www.mongodb.com/zh-cn/docs/manual/reference/operator/aggregation/#std-label-aggregation-expressions)。 |
+| [`$mergeObjects`](https://www.mongodb.com/zh-cn/docs/manual/reference/operator/aggregation/mergeObjects/#mongodb-expression-exp.-mergeObjects) | 返回通过组合每个组的输入文档创建的文档。                     |
+| [`$min`](https://www.mongodb.com/zh-cn/docs/manual/reference/operator/aggregation/min/#mongodb-group-grp.-min) | 返回每个群组的最小表达式值。*5.0 版中的更改*：可在 [`$setWindowFields`](https://www.mongodb.com/zh-cn/docs/manual/reference/operator/aggregation/setWindowFields/#mongodb-pipeline-pipe.-setWindowFields) 阶段使用。 |
+| [`$minN`](https://www.mongodb.com/zh-cn/docs/manual/reference/operator/aggregation/minN/#mongodb-group-grp.-minN) | 返回组中 `n` 个最小值元素的聚合。与 [`$minN`](https://www.mongodb.com/zh-cn/docs/manual/reference/operator/aggregation/minN-array-element/#mongodb-expression-exp.-minN) 数组操作符不同。*5.2 版本中的新增功能*。在[`$group`](https://www.mongodb.com/zh-cn/docs/manual/reference/operator/aggregation/group/#mongodb-pipeline-pipe.-group) 、 [`$setWindowFields`](https://www.mongodb.com/zh-cn/docs/manual/reference/operator/aggregation/setWindowFields/#mongodb-pipeline-pipe.-setWindowFields)中可用，也可作为[表达式使用。](https://www.mongodb.com/zh-cn/docs/manual/reference/operator/aggregation/#std-label-aggregation-expressions) |
+| [`$percentile`](https://www.mongodb.com/zh-cn/docs/manual/reference/operator/aggregation/percentile/#mongodb-group-grp.-percentile) | 返回与指定的各[百分位数](https://www.mongodb.com/zh-cn/docs/manual/reference/glossary/#std-term-percentile)一一对应的标量值数组。*7.0 版本中的新增功能*。此操作符可在以下阶段用作累加器：[`$group`](https://www.mongodb.com/zh-cn/docs/manual/reference/operator/aggregation/group/#mongodb-pipeline-pipe.-group)[`$setWindowFields`](https://www.mongodb.com/zh-cn/docs/manual/reference/operator/aggregation/setWindowFields/#mongodb-pipeline-pipe.-setWindowFields)它也可用作[聚合表达式](https://www.mongodb.com/zh-cn/docs/manual/reference/operator/aggregation/#std-label-aggregation-expressions)。 |
+| [`$push`](https://www.mongodb.com/zh-cn/docs/manual/reference/operator/aggregation/push/#mongodb-group-grp.-push) | 返回每组中文档的大量表达式值。*5.0 版中的更改*：可在 [`$setWindowFields`](https://www.mongodb.com/zh-cn/docs/manual/reference/operator/aggregation/setWindowFields/#mongodb-pipeline-pipe.-setWindowFields) 阶段使用。 |
+| [`$stdDevPop`](https://www.mongodb.com/zh-cn/docs/manual/reference/operator/aggregation/stdDevPop/#mongodb-group-grp.-stdDevPop) | 返回输入值的总体标准偏差。*5.0 版中的更改*：可在 [`$setWindowFields`](https://www.mongodb.com/zh-cn/docs/manual/reference/operator/aggregation/setWindowFields/#mongodb-pipeline-pipe.-setWindowFields) 阶段使用。 |
+| [`$stdDevSamp`](https://www.mongodb.com/zh-cn/docs/manual/reference/operator/aggregation/stdDevSamp/#mongodb-group-grp.-stdDevSamp) | 返回输入值的样本标准偏差。*5.0 版中的更改*：可在 [`$setWindowFields`](https://www.mongodb.com/zh-cn/docs/manual/reference/operator/aggregation/setWindowFields/#mongodb-pipeline-pipe.-setWindowFields) 阶段使用。 |
+| [`$sum`](https://www.mongodb.com/zh-cn/docs/manual/reference/operator/aggregation/sum/#mongodb-group-grp.-sum) | 返回数值的总和。忽略非数字值。*5.0 版中的更改*：可在 [`$setWindowFields`](https://www.mongodb.com/zh-cn/docs/manual/reference/operator/aggregation/setWindowFields/#mongodb-pipeline-pipe.-setWindowFields) 阶段使用。 |
+| [`$top`](https://www.mongodb.com/zh-cn/docs/manual/reference/operator/aggregation/top/#mongodb-group-grp.-top) | 根据指定的排序顺序返回群组内第一个元素。*5.2 版本中的新增功能*。可在 [`$group`](https://www.mongodb.com/zh-cn/docs/manual/reference/operator/aggregation/group/#mongodb-pipeline-pipe.-group) 和 [`$setWindowFields`](https://www.mongodb.com/zh-cn/docs/manual/reference/operator/aggregation/setWindowFields/#mongodb-pipeline-pipe.-setWindowFields) 阶段使用。 |
+| [`$topN`](https://www.mongodb.com/zh-cn/docs/manual/reference/operator/aggregation/topN/#mongodb-group-grp.-topN) | 根据指定的排序顺序，返回群组内前 `n` 个字段的聚合。*5.2 版本中的新增功能*。可在 [`$group`](https://www.mongodb.com/zh-cn/docs/manual/reference/operator/aggregation/group/#mongodb-pipeline-pipe.-group) 和 [`$setWindowFields`](https://www.mongodb.com/zh-cn/docs/manual/reference/operator/aggregation/setWindowFields/#mongodb-pipeline-pipe.-setWindowFields) 阶段使用。 |
