@@ -55,6 +55,8 @@
     - [Condition of Query](#condition-of-query)
   - [index](#index)
     - [createIndex](#createindex)
+    - [Aggregate \& Pipeline](#aggregate--pipeline)
+      - [Aggregate](#aggregate)
     - [dropIndex / dropIndexes](#dropindex--dropindexes)
 - [Query Operators](#query-operators)
   - [查询选择器](#查询选择器)
@@ -636,6 +638,20 @@ db.collection.createIndex(
   }
 )
 ```
+
+### Aggregate & Pipeline
+#### Aggregate
+Aggregate is a pipeline of stages that process documents in a collection. 
+Basic aggregate is: `db.collection.aggregate(<pipeline(s)>, <options>)`
+  ```javascript
+  db.<collection>.aggregate(
+    [
+      { $match: { <query> },
+      { $group: { _id: "<expression>", <field1>: { <accumulator1>: "<expression1>" }, ... } },
+    ]
+  )
+  ```
+
 
 ### dropIndex / dropIndexes
 ```javascript
