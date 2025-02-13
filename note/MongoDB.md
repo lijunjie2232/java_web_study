@@ -64,6 +64,9 @@
     - [常见的 MongoDB 聚合案例](#常见的-mongodb-聚合案例)
       - [1. **按字段分组并计算总和**](#1-按字段分组并计算总和)
       - [2. **按字段分组并计算平均值**](#2-按字段分组并计算平均值)
+      - [3. **按字段分组并计算文档数量**](#3-按字段分组并计算文档数量)
+      - [4. **使用 `$unwind` 处理数组字段**](#4-使用-unwind-处理数组字段)
+      - [5. **使用 `$lookup` 进行集合连接**](#5-使用-lookup-进行集合连接)
 - [查询操作符](#查询操作符)
   - [查询选择器](#查询选择器)
     - [Usage](#usage)
@@ -816,7 +819,7 @@ db.reviews.aggregate([
 - **`$group`**：按 `product` 字段分组，并使用 `$avg` 计算每个产品的平均评分。
 - **`$sort`**：按 `averageRating` 字段降序排序。
 
-3. **按字段分组并计算文档数量**
+#### 3. **按字段分组并计算文档数量**
 **案例描述**：统计每个类别的文档数量。
 
 **集合示例**：
@@ -841,7 +844,7 @@ db.items.aggregate([
 - **`$group`**：按 `category` 字段分组，并使用 `$sum` 计算每个类别的文档数量。
 - **`$sort`**：按 `count` 字段降序排序。
 
-4. **使用 `$unwind` 处理数组字段**
+#### 4. **使用 `$unwind` 处理数组字段**
 **案例描述**：统计每个标签出现的次数。
 
 **集合示例**：
@@ -867,7 +870,7 @@ db.items.aggregate([
 - **`$group`**：按 `tags` 字段分组，并使用 `$sum` 计算每个标签的出现次数。
 - **`$sort`**：按 `count` 字段降序排序。
 
-5. **使用 `$lookup` 进行集合连接**
+#### 5. **使用 `$lookup` 进行集合连接**
 **案例描述**：连接 `orders` 和 `customers` 集合，获取每个订单的客户信息。
 
 **集合示例**：
@@ -2066,3 +2069,4 @@ db.aggregate( [ { <stage> }, ... ] )
 |                                                                                                                                     | [Bulk.find.update()](https://www.mongodb.com/zh-cn/docs/manual/reference/method/Bulk.find.update/#std-label-example-bulk-find-update-agg)                              |
 |                                                                                                                                     | [Bulk.find.updateOne()](https://www.mongodb.com/zh-cn/docs/manual/reference/method/Bulk.find.updateOne/#std-label-example-bulk-find-update-one-agg)                    |
 |                                                                                                                                     | [Bulk.find.upsert()](https://www.mongodb.com/zh-cn/docs/manual/reference/method/Bulk.find.upsert/#std-label-bulk-find-upsert-update-agg-example)                       |
+
