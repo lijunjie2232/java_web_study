@@ -70,6 +70,7 @@
       - [6. **使用 `$facet` 进行多阶段聚合**](#6-使用-facet-进行多阶段聚合)
       - [7. **使用 `$addFields` 添加新字段**](#7-使用-addfields-添加新字段)
       - [8. **使用 `$redact` 控制文档访问**](#8-使用-redact-控制文档访问)
+  - [View](#view)
 - [查询操作符](#查询操作符)
   - [查询选择器](#查询选择器)
     - [Usage](#usage)
@@ -1002,6 +1003,11 @@ db.users.aggregate([
 - **`$$DESCEND`**：包含文档及其子文档。
 - **`$$PRUNE`**：排除文档。
 
+## View
+- create view by : `db.createView(<viewName>, <viewOn>, <pipeline(s)>)`
+  - `viewOn`: the collection or view name to use as the base for the view.
+- drop view by : `db.dropView(<viewName>)`
+- show view by : `db.runCommand({ list: <viewName> })`
 
 # 查询操作符
 ## 查询选择器
