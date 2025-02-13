@@ -53,7 +53,7 @@
       - [findOne](#findone)
       - [sort / limit / skip](#sort--limit--skip)
     - [Condition of Query](#condition-of-query)
-  - [index](#index)
+  - [Index](#index)
     - [createIndex](#createindex)
     - [Aggregate \& Pipeline](#aggregate--pipeline)
       - [Aggregate](#aggregate)
@@ -624,7 +624,7 @@ db.inventory.find( {} ).sort( { status: 1, item: -1 } ).limit( 5 ).skip( 2 )
   }
   ```
 
-## index
+## Index
 - a collection could at most have 64 indexes
 - one indexes could at most contains 31 keys
 - name of index could not be longer than 127 bytes
