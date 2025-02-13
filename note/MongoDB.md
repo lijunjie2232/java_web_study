@@ -55,9 +55,9 @@
     - [Condition of Query](#condition-of-query)
   - [Index](#index)
     - [createIndex](#createindex)
-    - [Aggregate \& Pipeline](#aggregate--pipeline)
-      - [Aggregate](#aggregate)
-      - [Pipeline](#pipeline)
+  - [Aggregate \& Pipeline](#aggregate--pipeline)
+    - [Aggregate](#aggregate)
+    - [Pipeline](#pipeline)
     - [dropIndex / dropIndexes](#dropindex--dropindexes)
 - [查询操作符](#查询操作符)
   - [查询选择器](#查询选择器)
@@ -645,8 +645,8 @@ db.collection.createIndex(
 )
 ```
 
-### Aggregate & Pipeline
-#### Aggregate
+## Aggregate & Pipeline
+### Aggregate
 Aggregate is a pipeline of stages that process documents in a collection. 
 Basic aggregate is: `db.collection.aggregate(<pipeline(s)>, <options>)`
   ```javascript
@@ -657,9 +657,8 @@ Basic aggregate is: `db.collection.aggregate(<pipeline(s)>, <options>)`
     ]
   )
   ```
-#### Pipeline
+### Pipeline
 pipeline 是一个数组，包含多个聚合阶段。每个阶段都是一个对象，定义了如何处理输入文档并输出到下一个阶段。常见的聚合阶段包括：
-
 
 
 ### dropIndex / dropIndexes
