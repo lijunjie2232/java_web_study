@@ -58,6 +58,8 @@
   - [Aggregate \& Pipeline](#aggregate--pipeline)
     - [Aggregate](#aggregate)
     - [Pipeline](#pipeline)
+      - [常见的聚合阶段](#常见的聚合阶段)
+    - [3. **示例**](#3-示例)
     - [dropIndex / dropIndexes](#dropindex--dropindexes)
 - [查询操作符](#查询操作符)
   - [查询选择器](#查询选择器)
@@ -658,7 +660,83 @@ Basic aggregate is: `db.collection.aggregate(<pipeline(s)>, <options>)`
   )
   ```
 ### Pipeline
-pipeline 是一个数组，包含多个聚合阶段。每个阶段都是一个对象，定义了如何处理输入文档并输出到下一个阶段。常见的聚合阶段包括：
+pipeline 是一个数组，包含多个聚合阶段。每个阶段都是一个对象，定义了如何处理输入文档并输出到下一个阶段。
+
+#### 常见的聚合阶段
+
+- **`$match`**：过滤文档，只传递符合条件的文档。
+
+  ```javascript
+  { $match: { status: "A" } }
+  ```
+
+- **`$group`**：按指定字段对文档进行分组，并计算聚合值。
+
+  ```javascript
+  { $group: { _id: "$category", total: { $sum: "$quantity" } } }
+  ```
+
+- **`$sort`**：对文档进行排序。
+
+  ```javascript
+  { $sort: { age: 1 } } // 1 表示升序，-1 表示降序
+  ```
+
+- **`$project`**：选择或重命名字段，或计算新字段。
+
+  ```javascript
+  { $project: { name: 1, total: 1, _id: 0 } }
+  ```
+
+- **`$limit`**：限制输出的文档数量。
+
+  ```javascript
+  { $limit: 10 }
+  ```
+
+- **`$skip`**：跳过指定数量的文档。
+
+  ```javascript
+  { $skip: 5 }
+  ```
+
+- **`$unwind`**：将数组字段拆分为多个文档。
+
+  ```javascript
+  { $unwind: "$tags" }
+  ```
+
+### 3. **示例**
+
+假设有一个 `orders` 集合，包含以下文档：
+
+```json
+[
+  { _id: 1, customer: "A", amount: 100, status: "completed" },
+  { _id: 2, customer: "B", amount: 200, status: "pending" },
+  { _id: 3, customer: "A", amount: 150, status: "completed" }
+]
+```
+
+我们可以使用聚合管道来计算每个客户的总订单金额：
+
+```javascript
+db.orders.aggregate([
+  { $match: { status: "completed" } }, // 过滤出状态为 "completed" 的订单
+  { $group: { _id: "$customer", totalAmount: { $sum: "$amount" } } }, // 按客户分组并计算总金额
+  { $sort: { totalAmount: -1 } } // 按总金额降序排序
+])
+```
+
+结果将如下：
+
+```json
+[
+  { _id: "A", totalAmount: 250 },
+  { _id: "B", totalAmount: 0 }
+]
+```
+
 
 
 ### dropIndex / dropIndexes
