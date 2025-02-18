@@ -46,3 +46,16 @@
     </profile>
 </profiles>
 ```
+
+# Maven Artifact
+- groupid: package name, for example: com.example.demo
+- artifactid: project or module id, for example: student-management
+- version: version name, for example: 1.0.0-SNAPSHOT
+
+```xml
+<groupId>com.example.demo</groupId>
+<artifactId>student-management</artifactId>
+<version>1.0.0-SNAPSHOT</version>
+```
+
+# Maven Command+
