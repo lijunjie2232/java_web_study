@@ -61,3 +61,13 @@
 - jar package path in maven repo: `${localRepository}/com/example/demo/student-management/1.0.0-SNAPSHOT/student-management-1.0.0-SNAPSHOT.jar`
 
 # Maven Usage
+- `mvn [pluging]:[options]`
+
+## Create Project
+- `mvn archetype:generate`
+  - -DgroupId=com.example.demo 
+  - -DartifactId=student-management
+  - -DarchetypeArtifactId=maven-archetype-quickstart
+  - -DarchetypeVersion=1.4
+  - -DinteractiveMode=false
+

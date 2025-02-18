@@ -75,3 +75,4 @@ mvnw
 
 servlet/hello-servlet2/src/main/webapp/filemanager/
 node_modules
+backend/maven_test/
