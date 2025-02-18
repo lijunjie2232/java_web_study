@@ -71,3 +71,13 @@
   - -DarchetypeVersion=1.4
   - -DinteractiveMode=false
 
+
+### archetypeArtifactId
+- archetypeArtifactId 用于创建 Java 项目结构
+
+以下是几种常用的 archetypeArtifactId：
+
+- maven-archetype-quickstart: 创建一个简单的 Java 项目。
+- maven-archetype-webapp: 创建一个基于 Servlet 的 Web 应用程序。
+- maven-archetype-j2ee-simple: 创建一个简单的 J2EE 项目。
+- maven-archetype-site: 创建一个站点项目。
