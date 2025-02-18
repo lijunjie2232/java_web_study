@@ -58,4 +58,6 @@
 <version>1.0.0-SNAPSHOT</version>
 ```
 
-# Maven Command+
+- jar package path in maven repo: `${localRepository}/com/example/demo/student-management/1.0.0-SNAPSHOT/student-management-1.0.0-SNAPSHOT.jar`
+
+# Maven Usage
